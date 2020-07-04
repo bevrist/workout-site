@@ -26,7 +26,7 @@
   <h2>Crap ui page</h2>
 
 <!-- Input Form -->
-  <form method="POST" action="/">
+  <form method="POST">
     <label for="weight">Weight (lbs):</label><br>
     <input type="number" id="weight" name="weight" placeholder="150" required><br>
     <label for="height">Height (inches):</label><br>
@@ -78,7 +78,7 @@
 <script>
   // function getData() {
     //<!--FIXME: sub with actual "get" URL-->
-    fetch("http://dummy.restapiexample.com/api/v1/employees").then(function (
+    fetch("http://localhost:8090").then(function (
       response
     ) {
       response.json().then(function (data) {
@@ -88,8 +88,8 @@
   // }
 
   function updateChart(data) {
-    document.getElementById("a1").innerHTML = data.data[0].employee_name;
-    document.getElementById("a2").innerHTML = data.data[0].employee_salary;
+    document.getElementById("a1").innerHTML = data[0].FirstName;
+    document.getElementById("a2").innerHTML = data[0].Weight;
     document.getElementById("aa").innerHTML = JSON.stringify(data);
   }
 </script>
