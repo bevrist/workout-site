@@ -95,9 +95,8 @@
     tableRow.insertCell(2).appendChild(document.createTextNode("cccc"));
   }
 
-  //<!--FIXME: sub with actual "get" URL-->
   //get json object of chart data
-  fetch("http://localhost:8090").then(function (response) {
+  fetch("{{.BackendURL}}").then(function (response) {
     response.json().then(function (data) {
       updateChart(data);
     });

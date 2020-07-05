@@ -5,13 +5,28 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"html/template"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
 )
 
-var backendURL string //global variable for backend server address
+// Global Variables
+var backendURL = flag.String("b", "http://localhost:8090", "URL of backend endpoint") //holds backend server address (can be modified by command line flag e.g.'-b http://otherhost.com:5000')
+var listenAddress = flag.String("l", ":8080", "Weberver listen address")              //holds http server listen address
+var templates = template.Must(template.ParseFiles("frontend.html"))                   //holds all parsed templates
+
+// TemplateVars declares all information to be passed to the HTML template
+type TemplateVars struct {
+	BackendURL string
+}
+
+//serveTemplate processes template and returns final html file
+func serveTemplate(w http.ResponseWriter, r *http.Request) {
+	vars := &TemplateVars{BackendURL: *backendURL} //set template variables
+	templates.Execute(w, vars)
+}
 
 // ShowFrontend respond to get requests with webpage, forward POST form to backend
 func ShowFrontend(w http.ResponseWriter, r *http.Request) {
@@ -29,7 +44,7 @@ func ShowFrontend(w http.ResponseWriter, r *http.Request) {
 		jsonValue, _ := json.Marshal(values)
 
 		//forward form responses to backend server
-		response, _ := http.Post(backendURL, "application/json", bytes.NewBuffer(jsonValue))
+		response, _ := http.Post(*backendURL, "application/json", bytes.NewBuffer(jsonValue))
 		responseBody, err := ioutil.ReadAll(response.Body)
 		if err != nil {
 			log.Fatal(err)
@@ -38,9 +53,9 @@ func ShowFrontend(w http.ResponseWriter, r *http.Request) {
 		log.Println("POST:" + string(jsonValue))
 		log.Println("Backend Response: " + string(responseBody))
 
-		http.ServeFile(w, r, "index.html")
+		serveTemplate(w, r)
 	} else if r.Method == "GET" { //serve get request
-		http.ServeFile(w, r, "index.html") //TODO use templates to have javascript pull from proper backend
+		serveTemplate(w, r)
 	} else {
 		http.Error(w, "404 not found.", http.StatusNotFound)
 		return
@@ -48,22 +63,23 @@ func ShowFrontend(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	//take in command line flags
-	backendURL = *flag.String("b", "http://localhost:8090", "URL of backend endpoint")
+	//parse command line flags (declared with global variables)
 	flag.Parse()
 
+	log.Println("hiiiii" + *backendURL + ":" + *listenAddress)
+
 	//check for backend server avalibility
-	log.Println("Checking for backend server at " + backendURL)
-	backendResponse, err := http.Get(backendURL)
+	log.Println("Checking for backend server at " + *backendURL)
+	backendResponse, err := http.Get(*backendURL)
 	if err != nil {
 		log.Fatal(err)
 	}
 	log.Println("BackendStatus:" + backendResponse.Status)
 
-	//start server
+	//start http server
 	http.HandleFunc("/", ShowFrontend)
-	log.Println("Frontend listening at address localhost:8080")
-	if err := http.ListenAndServe(":8080", nil); err != nil {
+	log.Println("Frontend listening at address " + *listenAddress)
+	if err := http.ListenAndServe(*listenAddress, nil); err != nil {
 		log.Fatal(err)
 	}
 }
