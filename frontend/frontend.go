@@ -14,7 +14,7 @@ import (
 
 // Global Variables
 var backendURL = flag.String("b", "http://localhost:8090", "URL of backend endpoint") //holds backend server address (can be modified by command line flag e.g.'-b http://otherhost.com:5000')
-var listenAddress = flag.String("l", ":8080", "Weberver listen address")              //holds http server listen address
+var listenAddress = flag.String("l", ":8080", "Webserver listen address")             //holds http server listen address
 var templates = template.Must(template.ParseFiles("frontend.html"))                   //holds all parsed templates
 
 // TemplateVars declares all information to be passed to the HTML template
@@ -44,7 +44,12 @@ func ShowFrontend(w http.ResponseWriter, r *http.Request) {
 		jsonValue, _ := json.Marshal(values)
 
 		//forward form responses to backend server
-		response, _ := http.Post(*backendURL, "application/json", bytes.NewBuffer(jsonValue))
+		response, err := http.Post(*backendURL, "application/json", bytes.NewBuffer(jsonValue))
+		if err != nil { //if backend not responding, give 500 error and return
+			http.Error(w, "500 Backend Server Error", http.StatusInternalServerError)
+			log.Println("ERROR - POST: " + err.Error())
+			return
+		}
 		responseBody, err := ioutil.ReadAll(response.Body)
 		if err != nil {
 			log.Fatal(err)
@@ -66,15 +71,13 @@ func main() {
 	//parse command line flags (declared with global variables)
 	flag.Parse()
 
-	log.Println("hiiiii" + *backendURL + ":" + *listenAddress)
-
-	//check for backend server avalibility
+	//check for backend server availability
 	log.Println("Checking for backend server at " + *backendURL)
 	backendResponse, err := http.Get(*backendURL)
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Println("BackendStatus:" + backendResponse.Status)
+	log.Println("BackendStatus: " + backendResponse.Status)
 
 	//start http server
 	http.HandleFunc("/", ShowFrontend)
