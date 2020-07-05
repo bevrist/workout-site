@@ -16,7 +16,12 @@
       padding: 8px;
     }
 
-    tr:nth-child(even) {
+    #chart-title {
+      background-color: #d62121e5;
+      color: #ffffff;
+    }
+
+    tr:nth-child(odd) {
       background-color: #dddddd;
     }
   </style>
@@ -25,7 +30,7 @@
 <body>
   <h2>Crap ui page</h2>
 
-<!-- Input Form -->
+  <!-- Input Form -->
   <form method="POST">
     <label for="weight">Weight (lbs):</label><br>
     <input type="number" id="weight" name="weight" placeholder="150" required><br>
@@ -38,9 +43,13 @@
   </form>
 
   <!-- Output Chart -->
-  <br>
-  <h3>High Day</h3>
-  <table>
+  <br><br>
+  <table id="table">
+    <tr id="chart-title">
+      <th>High Day</th>
+      <th></th>
+      <th></th>
+    </tr>
     <tr>
       <th>Macros</th>
       <th>Grams</th>
@@ -68,24 +77,31 @@
     </tr>
   </table>
   <br>
-  <!-- <button onclick="getData()">Update</button> --> <!--TODO remove-->
+  <!--TODO remove-->
+  <button onclick="update()">Update</button>
 
-  <!-- Debug -->
+  <!-- Debug show raw json response -->
   <p id="aa"></p>
 </body>
+
 </html>
 
 <script>
-  // function getData() {
-    //<!--FIXME: sub with actual "get" URL-->
-    fetch("http://localhost:8090").then(function (
-      response
-    ) {
-      response.json().then(function (data) {
-        updateChart(data);
-      });
+  function update() {
+    var tableRow = document.getElementById("table").insertRow();
+
+    tableRow.insertCell(0).appendChild(document.createTextNode("aaaaaa"));
+    tableRow.insertCell(1).appendChild(document.createTextNode("bbbbb"));
+    tableRow.insertCell(2).appendChild(document.createTextNode("cccc"));
+  }
+
+  //<!--FIXME: sub with actual "get" URL-->
+  //get json object of chart data
+  fetch("http://localhost:8090").then(function (response) {
+    response.json().then(function (data) {
+      updateChart(data);
     });
-  // }
+  });
 
   function updateChart(data) {
     document.getElementById("a1").innerHTML = data[0].FirstName;
