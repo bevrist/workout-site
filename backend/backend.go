@@ -18,7 +18,7 @@ type Client struct {
 	LastName     string `json:"LastName"`
 	Weight       int    `json:"Weight"`
 	WaistCirc    int    `json:"WaistCirc"`
-	HeightInches int    `json:"Height"`
+	HeightInches int    `json:"HeightInches"`
 	LeanBodyMass int    `json:"LeanBodyMass"`
 }
 
