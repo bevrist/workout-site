@@ -1,0 +1,91 @@
+openapi: 3.0.0
+info:
+  title: backend
+  version: '1.0'
+  description: Processes user data
+servers:
+  - url: 'http://localhost:8090'
+paths:
+  '/userInfo/{UID}':
+    get:
+      summary: Get User Info
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  FirstName:
+                    type: string
+                  LastName:
+                    type: string
+                  Weight:
+                    type: string
+                  WaistCirc:
+                    type: string
+                  HeightInches:
+                    type: string
+                  LeanBodyMass:
+                    type: string
+      operationId: get-userInfo
+      parameters: []
+      description: Get information related to user ID
+    post:
+      summary: Update User Info
+      operationId: post-userInfo
+      responses:
+        '202':
+          description: Accepted
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: FirstName
+        - schema:
+            type: string
+          in: query
+          name: LastName
+        - schema:
+            type: number
+          in: query
+          name: Weight
+        - schema:
+            type: number
+          in: query
+          name: WaistCirc
+        - schema:
+            type: number
+          in: query
+          name: HeightInches
+        - schema:
+            type: number
+          in: query
+          name: LeanBodyMass
+      description: Update information related to user ID
+    parameters:
+      - schema:
+          type: string
+        name: UID
+        in: path
+        required: true
+  /apiVersion:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  apiVersion:
+                    type: number
+      operationId: get-apiVersion
+      description: Returns the symantec version number of the api
+components:
+  schemas: {}

@@ -1,0 +1,85 @@
+openapi: 3.0.0
+info:
+  title: frontend
+  version: '1.0'
+  contact:
+    name: Brett Evrist
+    email: brett@brettevrist.net
+servers:
+  - url: 'http://localhost:8080'
+paths:
+  /submitForm:
+    post:
+      summary: submitForm
+      operationId: post-submitForm
+      responses:
+        '202':
+          description: Accepted
+        '401':
+          description: Unauthorized
+      description: Receives input from user
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Session-Token
+          description: The session token of the currently logged in user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                FirstName:
+                  type: string
+                LastName:
+                  type: string
+                Weight:
+                  type: string
+                WaistCirc:
+                  type: string
+                HeightInches:
+                  type: string
+        description: ''
+  /getUserData:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  TODO:
+                    type: string
+        '401':
+          description: Unauthorized
+      operationId: get-getUserData
+      description: Returns calculations and other user data
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Session-Token
+          description: The session token of the currently logged in user
+  /apiVersion:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  apiVersion:
+                    type: number
+      operationId: get-apiVersion
+      description: Returns the symantec version number of the api
+components:
+  schemas: {}
