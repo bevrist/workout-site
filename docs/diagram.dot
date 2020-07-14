@@ -1,7 +1,7 @@
 # https://dreampuf.github.io/GraphvizOnline
 
 digraph G {
-    rankdir=LR;
+    #rankdir = LR;
     label = "Workout App Diagram";
     Client [shape=Mcircle];
     Firebase [shape=Msquare];
@@ -9,14 +9,14 @@ digraph G {
     Backend;
     Auth;
 
-    backDB [label="Back DB", shape=square];
+    BackDB [label="Back DB", shape=square];
 
     subgraph cluster_0 {
-        color=white;
-        label = "Idea #1";
-        Client -> Backend, Firebase, Frontend;
-        Frontend -> Backend;
-        Backend -> Auth, backDB;
+        color = white;
+        label = "";
+        Client -> Firebase, Frontend;
+        Frontend -> Backend, Auth;
+        Backend -> BackDB;
         Auth -> Firebase;
     }
 }

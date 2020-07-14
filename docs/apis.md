@@ -1,5 +1,6 @@
 # API Documentation 
 
+# Internet Accessible API's
 ## Frontend v1
 <!-- markdown-swagger -->
  Endpoint       | Method | Description
@@ -9,6 +10,7 @@
  `/apiVersion`  | GET    | Returns the symantec version number of the api
 <!-- /markdown-swagger -->
 
+# Backend API's
 ## Backend v1
 <!-- markdown-swagger -->
  Endpoint          | Method | Description
@@ -20,8 +22,8 @@
 
 ## Auth v1
 <!-- markdown-swagger -->
- Endpoint               | Method | Description
- ---------------------- | ------ | -------------------------------------------------
- `/getUID/{Session_ID}` | GET    | Get the UID associated with a valid session token
- `/apiVersion`          | GET    | Returns the symantec version number of the api
+ Endpoint                 | Method | Description
+ ------------------------ | ------ | -------------------------------------------------
+ `/getUID/{SessionToken}` | GET    | Get the UID associated with a valid session token
+ `/apiVersion`            | GET    | Returns the symantec version number of the api
 <!-- /markdown-swagger -->

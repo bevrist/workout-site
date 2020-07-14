@@ -6,15 +6,15 @@ info:
 servers:
   - url: 'http://localhost:8070'
 paths:
-  '/getUID/{Session_ID}':
+  '/getUID/{SessionToken}':
     parameters:
       - schema:
           type: string
-        name: Session_ID
+        name: SessionToken
         in: path
         required: true
     get:
-      summary: Your GET endpoint
+      summary: Get UID
       tags: []
       responses:
         '200':
@@ -34,7 +34,7 @@ paths:
       description: Get the UID associated with a valid session token
   /apiVersion:
     get:
-      summary: Your GET endpoint
+      summary: Get API Version
       tags: []
       responses:
         '200':

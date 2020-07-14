@@ -9,3 +9,5 @@ RUN apk --no-cache add ca-certificates
 WORKDIR /root/
 COPY --from=0 /app .
 ENTRYPOINT ["./frontend"]
+
+# TODO make script to replace references to localhost in html files with listening address

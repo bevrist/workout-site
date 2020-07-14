@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+</head>
+
+<body>
+  <center>
+    <h2>Crap login page</h2>
+    <button onclick="signInWithGithub()">Login with Github</button>
+    <br><br>
+    <button onclick="signInWithGoogle()">Login with Google</button>
+    <br><br><button onclick="signOut()">Sign Out</button>
+
+    <!-- firebase files -->
+    <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-firestore.js"></script>
+
+    <script>
+      // Your web app's Firebase configuration
+      var firebaseConfig = {
+        apiKey: "AIzaSyBPjt5odWGOGfibWvV6R8KpXg06DovhoGc",
+        authDomain: "workout-app-8b023.firebaseapp.com",
+        databaseURL: "https://workout-app-8b023.firebaseio.com",
+        projectId: "workout-app-8b023",
+        storageBucket: "workout-app-8b023.appspot.com",
+        messagingSenderId: "367406151070",
+        appId: "1:367406151070:web:96633b967a09b3a5b3528f",
+        measurementId: "G-V1Z7ZFZ3M2"
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      firebase.analytics();
+
+      //look for sign in token on login
+      firebase.auth().getRedirectResult().then(function (result) {
+        if (result.credential) {
+          var token = result.credential.accessToken;
+        }
+        // The signed-in user info.
+        var user = result.user;
+      }).catch(function (error) {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        var email = error.email;
+        var credential = error.credential;
+      });
+
+
+      //check if user is logged in when user object updates
+      firebase.auth().onAuthStateChanged(function (user) {
+        if (user) {
+          // User is signed in.
+          console.log(user);
+          console.log("User UID: " + user.uid)
+          console.log("User Token: " + user._lat)
+        } else {
+          // No user is signed in.
+          console.log("not signed in");
+        }
+      });
+
+
+
+      function signInWithGithub() {
+        //create github signin handler
+        var provider = new firebase.auth.GithubAuthProvider();
+        firebase.auth().signInWithRedirect(provider);
+      }
+
+      function signInWithGoogle() {
+        var provider = new firebase.auth.GoogleAuthProvider();
+        firebase.auth().signInWithRedirect(provider);
+      }
+
+      function signOut() {
+        firebase.auth().signOut().then(function () {
+          // Sign-out successful.
+        }).catch(function (error) {
+          // An error happened.
+        });
+      }
+    </script>
+  </center>
+</body>
+
+</html>
