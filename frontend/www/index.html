@@ -43,6 +43,8 @@
     <input type="submit" value="Submit">
   </form>
 
+  <br><button onclick="signOut()">Sign Out</button>
+
   <!-- Output Chart -->
   <br><br>
   <table id="table">
@@ -119,8 +121,8 @@
   }
 
   function updateChart(data) {
-    document.getElementById("a1").innerHTML = data[0].FirstName;
-    document.getElementById("a2").innerHTML = data[0].Weight;
+    document.getElementById("a1").innerHTML = data.FirstName;
+    document.getElementById("a2").innerHTML = data.Weight;
     document.getElementById("aa").innerHTML = JSON.stringify(data);
   }
 
@@ -152,8 +154,15 @@
     } else {
       // No user is signed in.
       console.log("not signed in");
-      // <!--TODO redirect to sign in page-->
       window.location.replace('http://localhost:8080/auth');
     }
   });
+
+  function signOut() {
+    firebase.auth().signOut().then(function () {
+      // Sign-out successful.
+    }).catch(function (error) {
+      // An error happened.
+    });
+  }
 </script>

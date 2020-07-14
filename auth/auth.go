@@ -20,12 +20,6 @@ var client *auth.Client       //firebase app instance
 
 // TODO setup listen address and other variables through env
 
-// Auth holds the JSON response from this service
-type Auth struct {
-	IsValid bool
-	UID     string
-}
-
 // GetUIDHandler validates session token and returns UID
 func GetUIDHandler(w http.ResponseWriter, r *http.Request) {
 	//extract session token from URL
@@ -48,6 +42,11 @@ func GetUIDHandler(w http.ResponseWriter, r *http.Request) {
 		UID = token.UID
 	}
 
+	// Auth holds the JSON response from this service
+	type Auth struct {
+		IsValid bool
+		UID     string
+	}
 	//create auth struct
 	auth := Auth{IsValid, UID}
 

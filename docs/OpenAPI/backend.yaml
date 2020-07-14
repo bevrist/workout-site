@@ -73,7 +73,7 @@ paths:
         required: true
   /apiVersion:
     get:
-      summary: Your GET endpoint
+      summary: Get API Version
       tags: []
       responses:
         '200':

@@ -2,73 +2,79 @@ package main
 
 import (
 	"encoding/json"
-	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 // Global Variables
-var listenAddress = flag.String("l", ":8090", "Webserver listen address") //holds http server listen address
+var apiVersion string = "1.0" //the api version this service implements
 
-// Declaring Struct for user information. This will be pulled from the database I think.
-type Client struct {
-	FirstName    string `json:"FirstName"`
-	LastName     string `json:"LastName"`
-	Weight       int    `json:"Weight"`
-	WaistCirc    int    `json:"WaistCirc"`
-	HeightInches int    `json:"HeightInches"`
-	LeanBodyMass int    `json:"LeanBodyMass"`
+// TODO setup listen address and other variables through env
+
+//UserInfo holds user information
+type UserInfo struct {
+	FirstName    string
+	LastName     string
+	Weight       int
+	WaistCirc    int
+	HeightInches int
+	LeanBodyMass int
 }
 
-type ClientList []Client
+//GetUserInfoHandler returns json object of user data
+func GetUserInfoHandler(w http.ResponseWriter, r *http.Request) {
+	// //extract UID from URL
+	// vars := mux.Vars(r)
+	// UID := vars["UID"]
 
-// Clients handles user input requests and responses from database
-func Clients(w http.ResponseWriter, r *http.Request) {
-	//handling POST data upload
-	if r.Method == "POST" {
-		// unmarshal the body of POST request as a Client struct
-		reqBody, err := ioutil.ReadAll(r.Body)
-		if err != nil {
-			log.Fatal(err)
-		}
-		var client Client
-		err = json.Unmarshal(reqBody, &client)
-		if err != nil {
-			log.Fatal(err)
-		}
+	//FIXME remove
+	response := UserInfo{FirstName: "Anthony", LastName: "Hanna", Weight: 202, WaistCirc: 29, HeightInches: 68, LeanBodyMass: 159}
 
-		//TODO move data in client struct into backend database
+	//TODO load user data from database by their UID
 
-		//respond to POST with server status
-		fmt.Fprintf(w, "SUCCESS")
+	//respond with JSON object
+	json.NewEncoder(w).Encode(response)
+}
 
-		//print received data to output //FIXME remove
-		out, _ := json.Marshal(client)
-		log.Printf("%v\n", string(out))
-	} else if r.Method == "GET" { //respond to GET requests
-		clients := ClientList{
-			Client{FirstName: "Anthony", LastName: "Hanna", Weight: 215, WaistCirc: 33, HeightInches: 75, LeanBodyMass: 180},
-			Client{FirstName: "Ray", LastName: "Hanna", Weight: 202, WaistCirc: 29, HeightInches: 68, LeanBodyMass: 159},
-		}
+//UpdateUserInfoHandler updates user info from POST data
+func UpdateUserInfoHandler(w http.ResponseWriter, r *http.Request) {
+	// // extract UID from URL
+	// vars := mux.Vars(r)
+	// UID := vars["UID"]
 
-		//respond with JSON object
-		json.NewEncoder(w).Encode(clients)
-
-		//TODO Make a template function to local and populate the html file
-		//TODO load data from a database
+	// unmarshal the body of POST request as a Client struct
+	reqBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Fatal(err)
 	}
+	var userInfo UserInfo
+	err = json.Unmarshal(reqBody, &userInfo)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	//TODO move data in client struct into backend database
+
+	//respond to POST and redirect to previous page
+	fmt.Fprintf(w, "<!DOCTYPE html>SUCCESS <script>window.history.back();</script>")
+
+	//print received data to output //FIXME remove
+	out, _ := json.Marshal(userInfo)
+	log.Printf("%v\n", string(out))
 }
 
 func main() {
-	//parse command line flags (declared with global variables)
-	flag.Parse()
-
-	//start http server
-	http.HandleFunc("/", Clients)
-	log.Printf("Backend listening at address " + *listenAddress)
-	if err := http.ListenAndServe(*listenAddress, nil); err != nil {
-		log.Fatal(err)
-	}
+	//specify routes and start http server
+	r := mux.NewRouter()
+	r.HandleFunc("/apiVersion", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "{\"apiVersion\":"+apiVersion+"}") })
+	r.HandleFunc("/userInfo/{UID}", GetUserInfoHandler).Methods(http.MethodGet, http.MethodHead)
+	r.HandleFunc("/userInfo/{UID}", UpdateUserInfoHandler).Methods(http.MethodPost)
+	r.HandleFunc("/_healthz", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "ok") })
+	var handler http.Handler = r
+	log.Printf("Auth listening at address :8090")
+	log.Fatal(http.ListenAndServe(":8090", handler))
 }
