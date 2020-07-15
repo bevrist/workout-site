@@ -1,6 +1,8 @@
 package main
 
 import (
+	structs "../structures"
+
 	"encoding/json"
 	"fmt"
 	"log"
@@ -42,13 +44,8 @@ func GetUIDHandler(w http.ResponseWriter, r *http.Request) {
 		UID = token.UID
 	}
 
-	// Auth holds the JSON response from this service
-	type Auth struct {
-		IsValid bool
-		UID     string
-	}
 	//create auth struct
-	auth := Auth{IsValid, UID}
+	auth := structs.Auth{IsValid, UID}
 
 	//marshal auth struct and respond to request
 	out, err := json.Marshal(auth)

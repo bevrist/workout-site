@@ -1,6 +1,8 @@
 package main
 
 import (
+	structs "../structures"
+
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -18,20 +20,20 @@ var apiVersion string = "1.0" //the api version this service implements
 // TODO setup listen address and other variables (backend, auth) through env
 
 //Auth contains authentication data
-type Auth struct {
-	IsValid bool
-	UID     string
-}
+// type Auth struct {
+// 	IsValid bool
+// 	UID     string
+// }
 
 //getUID gets user id from Session Token (auth service)
-func getUID(sessionToken string) (Auth, error) {
+func getUID(sessionToken string) (structs.Auth, error) {
 	resp, err := http.Get("http://localhost:8070/getUID/" + sessionToken) //FIXME sub host with variable AUTH
 	if err != nil {
-		return Auth{false, ""}, err
+		return structs.Auth{false, ""}, err
 	}
 	//extract auth data from response body
 	respBody, _ := ioutil.ReadAll(resp.Body)
-	var auth Auth
+	var auth structs.Auth
 	json.Unmarshal(respBody, &auth)
 	return auth, nil
 }
@@ -101,18 +103,8 @@ func SubmitFormHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//format form data in JSON
-	//UserInfo holds user information
-	type UserInfo struct {
-		FirstName    string
-		LastName     string
-		Weight       int
-		WaistCirc    int
-		HeightInches int
-		LeanBodyMass int
-	}
-	//create UserInfo struct
-	userInfo := UserInfo{"Test", "User", weight, waist, height, 10}
+	//format form data in JSON UserInfo format
+	userInfo := structs.UserInfo{"Test", "User", weight, waist, height, 10}
 	userInfoJSON, err := json.Marshal(userInfo)
 	if err != nil {
 		log.Fatal(err)

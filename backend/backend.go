@@ -1,6 +1,9 @@
 package main
 
 import (
+	structs "../structures"
+
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -8,6 +11,15 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	_ "github.com/lib/pq"
+)
+
+const (
+	host     = "anthonyhanna.com"
+	port     = 5432
+	user     = "theuser"
+	password = "cyber@jb122"
+	dbname   = "workoutsite"
 )
 
 // Global Variables
@@ -15,15 +27,7 @@ var apiVersion string = "1.0" //the api version this service implements
 
 // TODO setup listen address and other variables through env
 
-//UserInfo holds user information
-type UserInfo struct {
-	FirstName    string
-	LastName     string
-	Weight       int
-	WaistCirc    int
-	HeightInches int
-	LeanBodyMass int
-}
+var db *sql.DB
 
 //GetUserInfoHandler returns json object of user data
 func GetUserInfoHandler(w http.ResponseWriter, r *http.Request) {
@@ -32,12 +36,24 @@ func GetUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 	// UID := vars["UID"]
 
 	//FIXME remove
-	response := UserInfo{FirstName: "Anthony", LastName: "Hanna", Weight: 202, WaistCirc: 29, HeightInches: 68, LeanBodyMass: 159}
+	//response := UserInfo{FirstName: "Anthony", LastName: "Hanna", Weight: 202, WaistCirc: 29, HeightInches: 68, LeanBodyMass: 159}
 
-	//TODO load user data from database by their UID
+	//load user data from database by their UID
+	sqlStatement := `SELECT id, first_name FROM client WHERE uid=$1;`
+	var id string
+	var firstName string
+	row := *db.QueryRow(sqlStatement, "test")
+	switch err := row.Scan(&id, &firstName); err {
+	case sql.ErrNoRows:
+		fmt.Println("No rows were returned!")
+	case nil:
+		fmt.Println(id + firstName)
+	default:
+		log.Fatal(err)
+	}
 
 	//respond with JSON object
-	json.NewEncoder(w).Encode(response)
+	//json.NewEncoder(w).Encode(response)
 }
 
 //UpdateUserInfoHandler updates user info from POST data
@@ -51,7 +67,7 @@ func UpdateUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	var userInfo UserInfo
+	var userInfo structs.UserInfo
 	err = json.Unmarshal(reqBody, &userInfo)
 	if err != nil {
 		log.Fatal(err)
@@ -68,6 +84,24 @@ func UpdateUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+
+	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
+		"password=%s dbname=%s sslmode=disable",
+		host, port, user, password, dbname)
+
+	var err error
+	db, err = sql.Open("postgres", psqlInfo)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	err = db.Ping()
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println("Successfully connected to DB")
+
 	//specify routes and start http server
 	r := mux.NewRouter()
 	r.HandleFunc("/apiVersion", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "{\"apiVersion\":"+apiVersion+"}") })
