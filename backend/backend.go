@@ -1,7 +1,7 @@
 package main
 
 import (
-	structs "../structures"
+	structs "../common"
 
 	"database/sql"
 	"encoding/json"
