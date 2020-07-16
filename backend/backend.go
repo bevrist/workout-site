@@ -31,36 +31,35 @@ var db *sql.DB
 
 //GetUserInfoHandler returns json object of user data
 func GetUserInfoHandler(w http.ResponseWriter, r *http.Request) {
-	// //extract UID from URL
-	// vars := mux.Vars(r)
-	// UID := vars["UID"]
-
-	//FIXME remove
-	//response := UserInfo{FirstName: "Anthony", LastName: "Hanna", Weight: 202, WaistCirc: 29, HeightInches: 68, LeanBodyMass: 159}
+	//extract UID from URL
+	vars := mux.Vars(r)
+	UID := vars["UID"]
 
 	//load user data from database by their UID
-	sqlStatement := `SELECT id, first_name FROM client WHERE uid=$1;`
-	var id string
-	var firstName string
-	row := *db.QueryRow(sqlStatement, "test")
-	switch err := row.Scan(&id, &firstName); err {
+	sqlStatement := `SELECT first_name, last_name, weight, waistcirc, heightinches, leanbodymass FROM client WHERE uid=$1;`
+	var firstName, lastName string
+	var weight, waistCirc, heightInches, leanBodyMass int
+
+	row := *db.QueryRow(sqlStatement, UID)
+	switch err := row.Scan(&firstName, &lastName, &weight, &waistCirc, &heightInches, &leanBodyMass); err {
 	case sql.ErrNoRows:
 		fmt.Println("No rows were returned!")
 	case nil:
-		fmt.Println(id + firstName)
+		//shit worked
 	default:
 		log.Fatal(err)
 	}
 
 	//respond with JSON object
-	//json.NewEncoder(w).Encode(response)
+	response := structs.UserInfo{FirstName: firstName, LastName: lastName, Weight: weight, WaistCirc: waistCirc, HeightInches: heightInches, LeanBodyMass: leanBodyMass}
+	json.NewEncoder(w).Encode(response)
 }
 
 //UpdateUserInfoHandler updates user info from POST data
 func UpdateUserInfoHandler(w http.ResponseWriter, r *http.Request) {
-	// // extract UID from URL
-	// vars := mux.Vars(r)
-	// UID := vars["UID"]
+	// extract UID from URL
+	vars := mux.Vars(r)
+	UID := vars["UID"]
 
 	// unmarshal the body of POST request as a Client struct
 	reqBody, err := ioutil.ReadAll(r.Body)
@@ -73,7 +72,19 @@ func UpdateUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	//TODO move data in client struct into backend database
+	//TODO write commentz
+	sqlStatement := `SELECT uid FROM client WHERE uid=$1;`
+	var uid string
+
+	row := *db.QueryRow(sqlStatement, UID)
+	switch err := row.Scan(&uid); err {
+	case sql.ErrNoRows:
+		//MAKE NEW USER (sql insert)
+	case nil:
+		//UPDATE USER INFO (sql update)
+	default:
+		log.Fatal(err)
+	}
 
 	//respond to POST and redirect to previous page
 	fmt.Fprintf(w, "<!DOCTYPE html>SUCCESS <script>window.history.back();</script>")
@@ -84,7 +95,6 @@ func UpdateUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
 		"password=%s dbname=%s sslmode=disable",
 		host, port, user, password, dbname)
