@@ -39,32 +39,26 @@ paths:
       responses:
         '202':
           description: Accepted
-      parameters:
-        - schema:
-            type: string
-          in: query
-          name: FirstName
-        - schema:
-            type: string
-          in: query
-          name: LastName
-        - schema:
-            type: number
-          in: query
-          name: Weight
-        - schema:
-            type: number
-          in: query
-          name: WaistCirc
-        - schema:
-            type: number
-          in: query
-          name: HeightInches
-        - schema:
-            type: number
-          in: query
-          name: LeanBodyMass
+      parameters: []
       description: Update information related to user ID
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                FirstName:
+                  type: string
+                LastName:
+                  type: string
+                Weight:
+                  type: integer
+                WaistCirc:
+                  type: integer
+                HeightInches:
+                  type: integer
+                LeanBodyMass:
+                  type: integer
     parameters:
       - schema:
           type: string
