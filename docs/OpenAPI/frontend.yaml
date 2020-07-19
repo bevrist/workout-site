@@ -71,7 +71,7 @@ paths:
           description: The session token of the currently logged in user
   /apiVersion:
     get:
-      summary: API Version
+      summary: Get API Version
       tags: []
       responses:
         '200':

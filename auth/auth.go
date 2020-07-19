@@ -10,6 +10,7 @@ import (
 
 	firebase "firebase.google.com/go"
 	"firebase.google.com/go/auth"
+
 	"github.com/gorilla/mux"
 	"golang.org/x/net/context"
 
@@ -22,26 +23,41 @@ var client *auth.Client       //firebase app instance
 
 // TODO setup listen address and other variables through env
 
+//helper function for actually retrieving UID
+func getUID(sessionToken string) string {
+	// hardcoded reply for testing purposes
+	if sessionToken == "test" {
+		return "testUID"
+	} else if sessionToken == "testfail" {
+		return ""
+	}
+
+	//validate session token and return UID, failure will return empty string
+	token, err := client.VerifyIDTokenAndCheckRevoked(context.Background(), sessionToken)
+	if err != nil {
+		if err.Error() == "ID token has been revoked" {
+			// Token is revoked. Inform the user to re-authenticate or signOut() the user.
+			return ""
+		} else {
+			// Token is invalid
+			return ""
+		}
+	} else {
+		return token.UID
+	}
+}
+
 // GetUIDHandler validates session token and returns UID
 func GetUIDHandler(w http.ResponseWriter, r *http.Request) {
 	//extract session token from URL
 	vars := mux.Vars(r)
 	sessionToken := vars["SessionToken"]
 
-	//validate session token and get UID
-	var IsValid bool = true
-	var UID string = ""
-	token, err := client.VerifyIDTokenAndCheckRevoked(context.Background(), sessionToken)
-	if err != nil {
-		if err.Error() == "ID token has been revoked" {
-			// Token is revoked. Inform the user to reauthenticate or signOut() the user.
-			IsValid = false
-		} else {
-			// Token is invalid
-			IsValid = false
-		}
-	} else {
-		UID = token.UID
+	//validate sessionToken and get UID
+	UID := getUID(sessionToken)
+	IsValid := true
+	if UID == "" {
+		IsValid = false
 	}
 
 	//create auth struct
