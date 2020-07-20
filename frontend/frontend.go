@@ -128,7 +128,7 @@ func main() {
 	authAddress = os.Getenv("AUTH_ADDRESS")
 	//set default environment variables
 	if listenAddress == "" {
-		listenAddress = "localhost:8080"
+		listenAddress = "0.0.0.0:8080"
 	}
 	if backendAddress == "" {
 		backendAddress = "localhost:8090"

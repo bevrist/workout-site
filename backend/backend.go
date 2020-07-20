@@ -128,6 +128,6 @@ func main() {
 	r.HandleFunc("/userInfo/{UID}", UpdateUserInfoHandler).Methods(http.MethodPost)
 	r.HandleFunc("/_healthz", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "ok") })
 	var handler http.Handler = r
-	log.Printf("Auth listening at address " + listenAddress)
+	log.Printf("Backend listening at address " + listenAddress)
 	log.Fatal(http.ListenAndServe(listenAddress, handler))
 }
