@@ -1,6 +1,8 @@
 package main
 
 import (
+	"os"
+
 	structs "../common"
 
 	"bytes"
@@ -16,20 +18,14 @@ import (
 
 // Global Variables
 var apiVersion string = "1.0" //the api version this service implements
-
-// TODO setup listen address and other variables (backend, auth) through env
-
-//Auth contains authentication data
-// type Auth struct {
-// 	IsValid bool
-// 	UID     string
-// }
+// env
+var listenAddress, backendAddress, authAddress string
 
 //getUID gets user id from Session Token (auth service)
 func getUID(sessionToken string) (structs.Auth, error) {
-	resp, err := http.Get("http://localhost:8070/getUID/" + sessionToken) //FIXME sub host with variable AUTH
+	resp, err := http.Get("http://" + authAddress + "/getUID/" + sessionToken)
 	if err != nil {
-		return structs.Auth{false, ""}, err
+		return structs.Auth{IsValid: false, UID: ""}, err
 	}
 	//extract auth data from response body
 	respBody, _ := ioutil.ReadAll(resp.Body)
@@ -63,7 +59,7 @@ func GetUserDataHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//request user data from backend
-	backResp, err := http.Get("http://localhost:8090/userInfo/" + auth.UID) //FIXME sub host with variable BACKEND
+	backResp, err := http.Get("http://" + backendAddress + "/userInfo/" + auth.UID)
 	if err != nil {
 		http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
 		log.Println("ERROR - Backend: " + err.Error())
@@ -87,6 +83,7 @@ func SubmitFormHandler(w http.ResponseWriter, r *http.Request) {
 	weight, _ := strconv.Atoi(r.FormValue("weight"))
 	height, _ := strconv.Atoi(r.FormValue("height"))
 	waist, _ := strconv.Atoi(r.FormValue("waist"))
+	//FIXME complete this form
 	sessionToken := r.FormValue("Session-Token")
 
 	// get UID from session token (auth service)
@@ -104,14 +101,14 @@ func SubmitFormHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//format form data in JSON UserInfo format
-	userInfo := structs.UserInfo{"Test", "User", weight, waist, height, 10}
+	userInfo := structs.UserInfo{FirstName: "Test", LastName: "User", Weight: weight, WaistCirc: waist, HeightInches: height, LeanBodyMass: 10} //FIXME complete this form submission
 	userInfoJSON, err := json.Marshal(userInfo)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	//post user data to backend
-	backResp, err := http.Post("http://localhost:8090/userInfo/"+auth.UID, "application/json", bytes.NewBuffer(userInfoJSON)) //FIXME sub host with variable BACKEND
+	backResp, err := http.Post("http://"+backendAddress+"/userInfo/"+auth.UID, "application/json", bytes.NewBuffer(userInfoJSON))
 	if err != nil {
 		http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
 		log.Println("ERROR - Backend: " + err.Error())
@@ -121,10 +118,24 @@ func SubmitFormHandler(w http.ResponseWriter, r *http.Request) {
 	//return backend response
 	backBody, _ := ioutil.ReadAll(backResp.Body)
 	fmt.Fprintf(w, string(backBody))
-	log.Println("POST:" + string(userInfoJSON)) //FIXME: remove
 }
 
 func main() {
+	//populate environment variables
+	listenAddress = os.Getenv("FRONTEND_LISTEN_ADDRESS")
+	backendAddress = os.Getenv("BACKEND_ADDRESS")
+	authAddress = os.Getenv("AUTH_ADDRESS")
+	//set default environment vriables
+	if listenAddress == "" {
+		listenAddress = "0.0.0.0:8080"
+	}
+	if backendAddress == "" {
+		backendAddress = "localhost:8090"
+	}
+	if authAddress == "" {
+		authAddress = "localhost:8070"
+	}
+
 	//specify routes and start http server
 	r := mux.NewRouter()
 	r.HandleFunc("/apiVersion", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "{\"apiVersion\":"+apiVersion+"}") })
@@ -133,6 +144,6 @@ func main() {
 	r.HandleFunc("/_healthz", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "ok") })
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./www/")))
 	var handlers http.Handler = r
-	log.Printf("Frontend listening at address :8080")
-	log.Fatal(http.ListenAndServe(":8080", handlers))
+	log.Printf("Frontend listening at address " + listenAddress)
+	log.Fatal(http.ListenAndServe(listenAddress, handlers))
 }

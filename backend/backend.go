@@ -1,6 +1,8 @@
 package main
 
 import (
+	"os"
+
 	structs "../common"
 
 	"database/sql"
@@ -20,12 +22,12 @@ const (
 	user     = "theuser"
 	password = "cyber@jb122"
 	dbname   = "workoutsite"
-)
+) //FIXME move this to either env vars or config file
 
 // Global Variables
 var apiVersion string = "1.0" //the api version this service implements
-
-// TODO setup listen address and other variables through env
+// env
+var listenAddress string //listen address of this service
 
 var db *sql.DB
 
@@ -95,6 +97,13 @@ func UpdateUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	//populate environment variables
+	listenAddress = os.Getenv("BACKEND_LISTEN_ADDRESS")
+	//set default environment vriables
+	if listenAddress == "" {
+		listenAddress = "0.0.0.0:8090"
+	}
+
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
 		"password=%s dbname=%s sslmode=disable",
 		host, port, user, password, dbname)
@@ -119,6 +128,6 @@ func main() {
 	r.HandleFunc("/userInfo/{UID}", UpdateUserInfoHandler).Methods(http.MethodPost)
 	r.HandleFunc("/_healthz", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "ok") })
 	var handler http.Handler = r
-	log.Printf("Auth listening at address :8090")
-	log.Fatal(http.ListenAndServe(":8090", handler))
+	log.Printf("Auth listening at address " + listenAddress)
+	log.Fatal(http.ListenAndServe(listenAddress, handler))
 }

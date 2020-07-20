@@ -1,27 +1,26 @@
 package main
 
 import (
-	structs "../common"
-
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	firebase "firebase.google.com/go"
 	"firebase.google.com/go/auth"
-
 	"github.com/gorilla/mux"
-	"golang.org/x/net/context"
-
 	"google.golang.org/api/option"
+
+	structs "../common"
 )
 
 // Global Variables
 var apiVersion string = "1.0" //the api version this service implements
 var client *auth.Client       //firebase app instance
-
-// TODO setup listen address and other variables through env
+// env
+var listenAddress string //listen address of this service
 
 //helper function for actually retrieving UID
 func getUID(sessionToken string) string {
@@ -38,13 +37,11 @@ func getUID(sessionToken string) string {
 		if err.Error() == "ID token has been revoked" {
 			// Token is revoked. Inform the user to re-authenticate or signOut() the user.
 			return ""
-		} else {
-			// Token is invalid
-			return ""
 		}
-	} else {
-		return token.UID
+		// Token is invalid
+		return ""
 	}
+	return token.UID
 }
 
 // GetUIDHandler validates session token and returns UID
@@ -54,14 +51,14 @@ func GetUIDHandler(w http.ResponseWriter, r *http.Request) {
 	sessionToken := vars["SessionToken"]
 
 	//validate sessionToken and get UID
-	UID := getUID(sessionToken)
-	IsValid := true
-	if UID == "" {
-		IsValid = false
+	uid := getUID(sessionToken)
+	isValid := true
+	if uid == "" {
+		isValid = false
 	}
 
 	//create auth struct
-	auth := structs.Auth{IsValid, UID}
+	auth := structs.Auth{IsValid: isValid, UID: uid}
 
 	//marshal auth struct and respond to request
 	out, err := json.Marshal(auth)
@@ -73,6 +70,13 @@ func GetUIDHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	//populate environment variables
+	listenAddress = os.Getenv("AUTH_LISTEN_ADDRESS")
+	//set default environment vriables
+	if listenAddress == "" {
+		listenAddress = "0.0.0.0:8070"
+	}
+
 	//initialize firebase app connection
 	opt := option.WithCredentialsFile("./workout-app-8b023-firebase-adminsdk-jh1ev-bbfc733122.json") //load credentials file
 	app, err := firebase.NewApp(context.Background(), nil, opt)
@@ -90,6 +94,6 @@ func main() {
 	r.HandleFunc("/getUID/{SessionToken}", GetUIDHandler).Methods(http.MethodGet, http.MethodHead)
 	r.HandleFunc("/_healthz", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "ok") })
 	var handler http.Handler = r
-	log.Printf("Auth listening at address :8070")
-	log.Fatal(http.ListenAndServe(":8070", handler))
+	log.Printf("Auth listening at address " + listenAddress)
+	log.Fatal(http.ListenAndServe(listenAddress, handler))
 }
