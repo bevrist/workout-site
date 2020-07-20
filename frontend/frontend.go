@@ -1,17 +1,16 @@
 package main
 
 import (
-	"os"
-
-	structs "../common"
-
 	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
+
+	structs "../common"
 
 	"github.com/gorilla/mux"
 )

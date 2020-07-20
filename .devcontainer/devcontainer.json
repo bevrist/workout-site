@@ -18,7 +18,8 @@
 		"mhutchie.git-graph",
 		"eamodio.gitlens",
 		"ryu1kn.partial-diff",
-		"gruntfuggly.todo-tree"
+		"gruntfuggly.todo-tree",
+		"redhat.vscode-yaml",
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.

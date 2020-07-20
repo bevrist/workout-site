@@ -3,12 +3,13 @@ WORKDIR /app
 COPY ./auth .
 COPY ./common ../common
 RUN go get -d -v ./...
+# RUN go get -v firebase.google.com/go firebase.google.com/go/auth github.com/gorilla/mux google.golang.org/api/option
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o auth .
 
 FROM alpine:latest
 RUN apk --no-cache add ca-certificates
 WORKDIR /root/
 COPY --from=0 /app .
-ENTRYPOINT ["./auth"]
+CMD ["./auth"]
 
 EXPOSE 8070
