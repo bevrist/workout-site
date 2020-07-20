@@ -1,9 +1,9 @@
 FROM golang:latest
 WORKDIR /app
+# RUN go get -v github.com/gorilla/mux
 COPY ./frontend .
 COPY ./common ../common
 RUN go get -d -v ./...
-# RUN go get -v github.com/gorilla/mux
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o frontend .
 
 
