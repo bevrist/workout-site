@@ -55,7 +55,17 @@ paths:
               schema:
                 type: object
                 properties:
-                  TODO:
+                  FirstName:
+                    type: string
+                  LastName:
+                    type: string
+                  Weight:
+                    type: string
+                  WaistCirc:
+                    type: string
+                  HeightInches:
+                    type: string
+                  LeanBodyMass:
                     type: string
         '401':
           description: Unauthorized

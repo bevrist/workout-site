@@ -116,6 +116,8 @@
       response.json().then(function (data) {
         updateChart(data);
         // console.log(data)
+        //<!--TODO redirect to profile page when FirstName == "" -->
+        // window.location.replace('http://localhost:8080/profile');
       });
     });
   }

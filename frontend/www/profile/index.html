@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+    <h2>Profile Page</h2>
+
+    <!-- Input Form -->
+    <form action="/submitForm" method="POST">
+        <label for="firstName">First Name:</label><br>
+        <input type="string" id="firstName" name="FirstName" placeholder="" required><br>
+        <label for="lastName">Last Name:</label><br>
+        <input type="string" id="lastName" name="LastName" placeholder="" required><br>
+        <input name="Session-Token" id="Form-Session-Token" type="hidden" value="nill">
+        <br><br>
+        <input type="submit" value="Submit">
+    </form>
+
+    <br><button onclick="signOut()">Sign Out</button>
+</body>
+
+</html>
+
+<!-- firebase files -->
+<script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-analytics.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-firestore.js"></script>
+
+<script>
+    //runs when firebase auth status updates
+    function requestUserData(session_token) {
+        //update hidden form element
+        document.getElementById("Form-Session-Token").value = session_token;
+
+        //get json object of chart data
+        fetch("http://localhost:8080/getUserData", {
+            headers: {
+                'Session-Token': session_token,
+            }
+        }).then(function (response) {
+            response.json().then(function (data) {
+                // console.log(data)
+                // <!-- TODO: extract first name and last name and other fields and populate profile page -->
+            });
+        });
+    }
+
+
+    // Your web app's Firebase configuration
+    var firebaseConfig = {
+        apiKey: "AIzaSyBPjt5odWGOGfibWvV6R8KpXg06DovhoGc",
+        authDomain: "workout-app-8b023.firebaseapp.com",
+        databaseURL: "https://workout-app-8b023.firebaseio.com",
+        projectId: "workout-app-8b023",
+        storageBucket: "workout-app-8b023.appspot.com",
+        messagingSenderId: "367406151070",
+        appId: "1:367406151070:web:96633b967a09b3a5b3528f",
+        measurementId: "G-V1Z7ZFZ3M2"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
+
+    //check if user is logged in when user object updates
+    firebase.auth().onAuthStateChanged(function (user) {
+        if (user) {
+            // User is signed in.
+            console.log(user);
+            console.log("User UID: " + user.uid);
+            console.log("User Token: " + user._lat);
+            requestUserData(user._lat);
+        } else {
+            // No user is signed in.
+            console.log("not signed in");
+            window.location.replace('http://localhost:8080/auth');
+        }
+    });
+
+    function signOut() {
+        firebase.auth().signOut().then(function () {
+            // Sign-out successful.
+        }).catch(function (error) {
+            // An error happened.
+        });
+    }
+</script>
