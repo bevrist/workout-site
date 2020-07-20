@@ -107,6 +107,8 @@ func SubmitFormHandler(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
+	log.Println(string(userInfoJSON))
+
 	//post user data to backend
 	backResp, err := http.Post("http://"+backendAddress+"/userInfo/"+auth.UID, "application/json", bytes.NewBuffer(userInfoJSON))
 	if err != nil {
@@ -125,9 +127,9 @@ func main() {
 	listenAddress = os.Getenv("FRONTEND_LISTEN_ADDRESS")
 	backendAddress = os.Getenv("BACKEND_ADDRESS")
 	authAddress = os.Getenv("AUTH_ADDRESS")
-	//set default environment vriables
+	//set default environment variables
 	if listenAddress == "" {
-		listenAddress = "0.0.0.0:8080"
+		listenAddress = "localhost:8080"
 	}
 	if backendAddress == "" {
 		backendAddress = "localhost:8090"
@@ -135,6 +137,8 @@ func main() {
 	if authAddress == "" {
 		authAddress = "localhost:8070"
 	}
+	log.Println("Backend address: " + backendAddress)
+	log.Println("Auth address: " + authAddress)
 
 	//specify routes and start http server
 	r := mux.NewRouter()
@@ -144,6 +148,6 @@ func main() {
 	r.HandleFunc("/_healthz", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "ok") })
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./www/")))
 	var handlers http.Handler = r
-	log.Printf("Frontend listening at address " + listenAddress)
+	log.Println("Frontend listening at address " + listenAddress)
 	log.Fatal(http.ListenAndServe(listenAddress, handlers))
 }
