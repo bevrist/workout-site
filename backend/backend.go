@@ -74,16 +74,25 @@ func UpdateUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	//TODO write commentz
+	//Check if UID exists in DB
 	sqlStatement := `SELECT uid FROM client WHERE uid=$1;`
 	var uid string
-
 	row := *db.QueryRow(sqlStatement, UID)
 	switch err := row.Scan(&uid); err {
 	case sql.ErrNoRows:
-		//MAKE NEW USER (sql insert)
+		//if UID not found: MAKE NEW USER (sql insert)
+		sqlInsertStatement := `INSERT INTO client ("uid", "first_name", "last_name", "weight", "waistcirc", "heightinches", "leanbodymass") VALUES ($1, $2, $3, $4, $5, $6, $7);`
+		_, err := db.Exec(sqlInsertStatement, &UID, &userInfo.FirstName, &userInfo.LastName, &userInfo.Weight, &userInfo.WaistCirc, &userInfo.HeightInches, &userInfo.LeanBodyMass)
+		if err != nil {
+			log.Fatal(err)
+		}
 	case nil:
-		//UPDATE USER INFO (sql update)
+		//if UID found: UPDATE USER INFO (sql update)
+		sqlInsertStatement := `UPDATE client SET "first_name" = $1, "last_name" = $2, "weight" = $3, "waistcirc" = $4, "heightinches" = $5, "leanbodymass" = $6 WHERE uid=$7;`
+		_, err := db.Exec(sqlInsertStatement, &userInfo.FirstName, &userInfo.LastName, &userInfo.Weight, &userInfo.WaistCirc, &userInfo.HeightInches, &userInfo.LeanBodyMass, &UID)
+		if err != nil {
+			log.Fatal(err)
+		}
 	default:
 		log.Fatal(err)
 	}
@@ -99,7 +108,7 @@ func UpdateUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	//populate environment variables
 	listenAddress = os.Getenv("BACKEND_LISTEN_ADDRESS")
-	//set default environment vriables
+	//set default environment variables
 	if listenAddress == "" {
 		listenAddress = "0.0.0.0:8090"
 	}
