@@ -74,22 +74,24 @@ func UpdateUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
+	//TODO: check if any user info in userInfo struct is nil and populate with existing user info
+
 	//Check if UID exists in DB
 	sqlStatement := `SELECT uid FROM client WHERE uid=$1;`
 	var uid string
 	row := *db.QueryRow(sqlStatement, UID)
-	switch err := row.Scan(&uid); err {
+	switch err := row.Scan(uid); err {
 	case sql.ErrNoRows:
 		//if UID not found: MAKE NEW USER (sql insert)
 		sqlInsertStatement := `INSERT INTO client ("uid", "first_name", "last_name", "weight", "waistcirc", "heightinches", "leanbodymass") VALUES ($1, $2, $3, $4, $5, $6, $7);`
-		_, err := db.Exec(sqlInsertStatement, &UID, &userInfo.FirstName, &userInfo.LastName, &userInfo.Weight, &userInfo.WaistCirc, &userInfo.HeightInches, &userInfo.LeanBodyMass)
+		_, err := db.Exec(sqlInsertStatement, UID, userInfo.FirstName, userInfo.LastName, userInfo.Weight, userInfo.WaistCirc, userInfo.HeightInches, userInfo.LeanBodyMass)
 		if err != nil {
 			log.Fatal(err)
 		}
 	case nil:
 		//if UID found: UPDATE USER INFO (sql update)
 		sqlInsertStatement := `UPDATE client SET "first_name" = $1, "last_name" = $2, "weight" = $3, "waistcirc" = $4, "heightinches" = $5, "leanbodymass" = $6 WHERE uid=$7;`
-		_, err := db.Exec(sqlInsertStatement, &userInfo.FirstName, &userInfo.LastName, &userInfo.Weight, &userInfo.WaistCirc, &userInfo.HeightInches, &userInfo.LeanBodyMass, &UID)
+		_, err := db.Exec(sqlInsertStatement, userInfo.FirstName, userInfo.LastName, userInfo.Weight, userInfo.WaistCirc, userInfo.HeightInches, userInfo.LeanBodyMass, UID)
 		if err != nil {
 			log.Fatal(err)
 		}
