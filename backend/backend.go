@@ -42,7 +42,7 @@ func GetUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 	var firstName, lastName string
 	var weight, waistCirc, heightInches, leanBodyMass int
 
-	row := *db.QueryRow(sqlStatement, UID)
+	row := db.QueryRow(sqlStatement, UID)
 	switch err := row.Scan(&firstName, &lastName, &weight, &waistCirc, &heightInches, &leanBodyMass); err {
 	case sql.ErrNoRows:
 		fmt.Println("No rows were returned!")
@@ -79,7 +79,7 @@ func UpdateUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 	//Check if UID exists in DB
 	sqlStatement := `SELECT uid FROM client WHERE uid=$1;`
 	var uid string
-	row := *db.QueryRow(sqlStatement, UID)
+	row := db.QueryRow(sqlStatement, UID)
 	switch err := row.Scan(uid); err {
 	case sql.ErrNoRows:
 		//if UID not found: MAKE NEW USER (sql insert)
