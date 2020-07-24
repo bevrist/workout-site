@@ -49,7 +49,7 @@ func GetUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 	case nil:
 		//shit worked
 	default:
-		log.fatal("GetUserInfoHandler: " + err.Error())
+		log.Fatal("GetUserInfoHandler: " + err.Error())
 	}
 
 	//respond with JSON object
@@ -101,6 +101,7 @@ func UpdateUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 
 	//respond to POST and redirect to previous page
 	fmt.Fprintf(w, "<!DOCTYPE html>SUCCESS <script>window.history.back();</script>")
+	//FIXME: change this to respond with 200 success code
 
 	//print received data to output //FIXME remove
 	out, _ := json.Marshal(userInfo)

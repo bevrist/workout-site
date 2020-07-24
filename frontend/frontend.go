@@ -78,11 +78,16 @@ func SubmitFormHandler(w http.ResponseWriter, r *http.Request) {
 		log.Printf("ParseForm() err: %v", err)
 		return
 	}
+
+	var userInfo structs.UserInfo
 	//extract form data
-	weight, _ := strconv.Atoi(r.FormValue("weight"))
-	height, _ := strconv.Atoi(r.FormValue("height"))
-	waist, _ := strconv.Atoi(r.FormValue("waist"))
-	//FIXME complete this form
+	userInfo.FirstName = r.FormValue("firstName")
+	userInfo.LastName = r.FormValue("lastName")
+	userInfo.Weight, _ = strconv.Atoi(r.FormValue("weight"))
+	userInfo.WaistCirc, _ = strconv.Atoi(r.FormValue("waist"))
+	userInfo.HeightInches, _ = strconv.Atoi(r.FormValue("height"))
+	userInfo.LeanBodyMass, _ = strconv.Atoi(r.FormValue("bodyMass"))
+
 	sessionToken := r.FormValue("Session-Token")
 
 	// get UID from session token (auth service)
@@ -100,13 +105,12 @@ func SubmitFormHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//format form data in JSON UserInfo format
-	userInfo := structs.UserInfo{FirstName: "Test", LastName: "User", Weight: weight, WaistCirc: waist, HeightInches: height, LeanBodyMass: 10} //FIXME complete this form submission
 	userInfoJSON, err := json.Marshal(userInfo)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	log.Println(string(userInfoJSON))
+	log.Println(string(userInfoJSON)) //FIXME: remove
 
 	//post user data to backend
 	backResp, err := http.Post("http://"+backendAddress+"/userInfo/"+auth.UID, "application/json", bytes.NewBuffer(userInfoJSON))
