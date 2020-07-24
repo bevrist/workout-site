@@ -12,6 +12,7 @@ services:
       - 8090:8090
     environment:
       BACKEND_LISTEN_ADDRESS: 0.0.0.0:8090
+    restart: on-failure
 
   auth:
     build:
@@ -21,6 +22,7 @@ services:
       - 8070:8070
     environment:
       AUTH_LISTEN_ADDRESS: 0.0.0.0:8070
+    restart: on-failure
 
   frontend:
     build:
@@ -28,11 +30,9 @@ services:
       dockerfile: ./frontend/Dockerfile
     ports:
       - 8080:8080
-    links:
-      - backend
-      - auth
     environment:
       FRONTEND_WEBSITE_ADDRESS: localhost:8080
       FRONTEND_LISTEN_ADDRESS: 0.0.0.0:8080
-      BACKEND_ADDRESS: backend:8090
-      AUTH_ADDRESS: auth:8070
+      BACKEND_ADDRESS: host.docker.internal:8090
+      AUTH_ADDRESS: host.docker.internal:8070
+    restart: on-failure

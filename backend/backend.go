@@ -49,7 +49,7 @@ func GetUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 	case nil:
 		//shit worked
 	default:
-		log.Fatal(err)
+		log.fatal("GetUserInfoHandler: " + err.Error())
 	}
 
 	//respond with JSON object
@@ -66,12 +66,12 @@ func UpdateUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 	// unmarshal the body of POST request as a Client struct
 	reqBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("UpdateUserInfoHandler: " + err.Error())
 	}
 	var userInfo structs.UserInfo
 	err = json.Unmarshal(reqBody, &userInfo)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("UpdateUserInfoHandler: " + err.Error())
 	}
 
 	//TODO: check if any user info in userInfo struct is nil and populate with existing user info
@@ -80,23 +80,23 @@ func UpdateUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 	sqlStatement := `SELECT uid FROM client WHERE uid=$1;`
 	var uid string
 	row := db.QueryRow(sqlStatement, UID)
-	switch err := row.Scan(uid); err {
+	switch err := row.Scan(&uid); err {
 	case sql.ErrNoRows:
 		//if UID not found: MAKE NEW USER (sql insert)
 		sqlInsertStatement := `INSERT INTO client ("uid", "first_name", "last_name", "weight", "waistcirc", "heightinches", "leanbodymass") VALUES ($1, $2, $3, $4, $5, $6, $7);`
 		_, err := db.Exec(sqlInsertStatement, UID, userInfo.FirstName, userInfo.LastName, userInfo.Weight, userInfo.WaistCirc, userInfo.HeightInches, userInfo.LeanBodyMass)
 		if err != nil {
-			log.Fatal(err)
+			log.Fatal("UpdateUserInfoHandler: " + err.Error())
 		}
 	case nil:
 		//if UID found: UPDATE USER INFO (sql update)
 		sqlInsertStatement := `UPDATE client SET "first_name" = $1, "last_name" = $2, "weight" = $3, "waistcirc" = $4, "heightinches" = $5, "leanbodymass" = $6 WHERE uid=$7;`
 		_, err := db.Exec(sqlInsertStatement, userInfo.FirstName, userInfo.LastName, userInfo.Weight, userInfo.WaistCirc, userInfo.HeightInches, userInfo.LeanBodyMass, UID)
 		if err != nil {
-			log.Fatal(err)
+			log.Fatal("UpdateUserInfoHandler: " + err.Error())
 		}
 	default:
-		log.Fatal(err)
+		log.Fatal("UpdateUserInfoHandler: " + err.Error())
 	}
 
 	//respond to POST and redirect to previous page
@@ -122,13 +122,13 @@ func main() {
 	var err error
 	db, err = sql.Open("postgres", psqlInfo)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("main: " + err.Error())
 	}
 	defer db.Close()
 
 	err = db.Ping()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("main: " + err.Error())
 	}
 	log.Println("Successfully connected to DB")
 
