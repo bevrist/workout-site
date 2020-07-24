@@ -90,7 +90,8 @@ func UpdateUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	case nil:
 		//if UID found: UPDATE USER INFO (sql update)
-		sqlInsertStatement := `UPDATE client SET "first_name" = $1, "last_name" = $2, "weight" = $3, "waistcirc" = $4, "heightinches" = $5, "leanbodymass" = $6 WHERE uid=$7;`
+		sqlInsertStatement := `UPDATE client SET  "first_name" = COALESCE(NULLIF($2,''), first_name) , "last_name" = COALESCE(NULLIF($3,''), last_name), "weight" = COALESCE(NULLIF($4,0), weight), 
+		"waistcirc" = COALESCE(NULLIF($5,0), waistcirc), "heightinches" = COALESCE(NULLIF($6,0), heightinches), "leanbodymass" = COALESCE(NULLIF($7,0), leanbodymass) WHERE uid=$1;`
 		_, err := db.Exec(sqlInsertStatement, userInfo.FirstName, userInfo.LastName, userInfo.Weight, userInfo.WaistCirc, userInfo.HeightInches, userInfo.LeanBodyMass, UID)
 		if err != nil {
 			log.Fatal("UpdateUserInfoHandler: " + err.Error())
