@@ -24,6 +24,16 @@ const (
 	dbname   = "workoutsite"
 ) //FIXME move this to either env vars or config file
 
+// TODO add carbs fat and protein /w ratio
+type Calculations struct {
+	LowDay    float64
+	NormalDay float64
+	HighDay   float64
+	//FatRatio     int
+	//CarbRatio    int
+	//ProteinRatio int
+}
+
 // Global Variables
 var apiVersion string = "1.0" //the api version this service implements
 // env
@@ -38,12 +48,12 @@ func GetUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 	UID := vars["UID"]
 
 	//load user data from database by their UID
-	sqlStatement := `SELECT first_name, last_name, weight, waistcirc, heightinches, leanbodymass FROM client WHERE uid=$1;`
+	sqlStatement := `SELECT first_name, last_name, weight, waistcirc, heightinches, leanbodymass, age FROM client WHERE uid=$1;`
 	var firstName, lastName string
-	var weight, waistCirc, heightInches, leanBodyMass int
+	var weight, waistCirc, heightInches, leanBodyMass, age int
 
 	row := db.QueryRow(sqlStatement, UID)
-	switch err := row.Scan(&firstName, &lastName, &weight, &waistCirc, &heightInches, &leanBodyMass); err {
+	switch err := row.Scan(&firstName, &lastName, &weight, &waistCirc, &heightInches, &leanBodyMass, &age); err {
 	case sql.ErrNoRows:
 		fmt.Println("No rows were returned!")
 	case nil:
@@ -52,9 +62,18 @@ func GetUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 		log.Fatal("GetUserInfoHandler: " + err.Error())
 	}
 
+	// TODO Change float math to round
+	bmr := 66 + (6.3 * float64(weight)) + (12.9 * float64(heightInches)) - (6.8 * float64(age))
+	lowday := bmr * 1.2
+	normalday := bmr * 1.375
+	highday := bmr * 1.55
+	log.Println(bmr, lowday, normalday, highday)
 	//respond with JSON object
-	response := structs.UserInfo{FirstName: firstName, LastName: lastName, Weight: weight, WaistCirc: waistCirc, HeightInches: heightInches, LeanBodyMass: leanBodyMass}
+	response := structs.UserInfo{FirstName: firstName, LastName: lastName, Weight: weight, WaistCirc: waistCirc, HeightInches: heightInches, LeanBodyMass: leanBodyMass, Age: age}
+	calc := Calculations{LowDay: lowday, NormalDay: normalday, HighDay: highday}
+
 	json.NewEncoder(w).Encode(response)
+	json.NewEncoder(w).Encode(calc)
 }
 
 //UpdateUserInfoHandler updates user info from POST data
@@ -83,16 +102,17 @@ func UpdateUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 	switch err := row.Scan(&uid); err {
 	case sql.ErrNoRows:
 		//if UID not found: MAKE NEW USER (sql insert)
-		sqlInsertStatement := `INSERT INTO client ("uid", "first_name", "last_name", "weight", "waistcirc", "heightinches", "leanbodymass") VALUES ($1, $2, $3, $4, $5, $6, $7);`
-		_, err := db.Exec(sqlInsertStatement, UID, userInfo.FirstName, userInfo.LastName, userInfo.Weight, userInfo.WaistCirc, userInfo.HeightInches, userInfo.LeanBodyMass)
+		sqlInsertStatement := `INSERT INTO client ("uid", "first_name", "last_name", "weight", "waistcirc", "heightinches", "leanbodymass", "age") VALUES ($1, $2, $3, $4, $5, $6, $7, $8);`
+		_, err := db.Exec(sqlInsertStatement, UID, userInfo.FirstName, userInfo.LastName, userInfo.Weight, userInfo.WaistCirc, userInfo.HeightInches, userInfo.LeanBodyMass, userInfo.Age)
 		if err != nil {
 			log.Fatal("UpdateUserInfoHandler: " + err.Error())
 		}
 	case nil:
 		//if UID found: UPDATE USER INFO (sql update)
 		sqlInsertStatement := `UPDATE client SET  "first_name" = COALESCE(NULLIF($2,''), first_name) , "last_name" = COALESCE(NULLIF($3,''), last_name), "weight" = COALESCE(NULLIF($4,0), weight), 
-		"waistcirc" = COALESCE(NULLIF($5,0), waistcirc), "heightinches" = COALESCE(NULLIF($6,0), heightinches), "leanbodymass" = COALESCE(NULLIF($7,0), leanbodymass) WHERE uid=$1;`
-		_, err := db.Exec(sqlInsertStatement, userInfo.FirstName, userInfo.LastName, userInfo.Weight, userInfo.WaistCirc, userInfo.HeightInches, userInfo.LeanBodyMass, UID)
+		"waistcirc" = COALESCE(NULLIF($5,0), waistcirc), "heightinches" = COALESCE(NULLIF($6,0), heightinches), "leanbodymass" = COALESCE(NULLIF($7,0), leanbodymass),
+		 "age" = COALESCE(NULLIF($8,0), age) WHERE uid=$1;`
+		_, err := db.Exec(sqlInsertStatement, UID, userInfo.FirstName, userInfo.LastName, userInfo.Weight, userInfo.WaistCirc, userInfo.HeightInches, userInfo.LeanBodyMass, userInfo.Age)
 		if err != nil {
 			log.Fatal("UpdateUserInfoHandler: " + err.Error())
 		}
