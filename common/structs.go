@@ -14,4 +14,7 @@ type UserInfo struct {
 	WaistCirc    int
 	HeightInches int
 	LeanBodyMass int
+	Age          int
 }
+
+// TODO add Gender to struct and sql statements
