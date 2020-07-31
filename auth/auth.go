@@ -36,9 +36,11 @@ func getUID(sessionToken string) string {
 	if err != nil {
 		if err.Error() == "ID token has been revoked" {
 			// Token is revoked. Inform the user to re-authenticate or signOut() the user.
+			log.Println("Token revoked: " + sessionToken)
 			return ""
 		}
 		// Token is invalid
+		log.Println("Token Invalid: " + sessionToken)
 		return ""
 	}
 	return token.UID

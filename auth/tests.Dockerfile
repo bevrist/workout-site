@@ -1,16 +1,11 @@
 FROM golang:latest
 
 RUN go get -v firebase.google.com/go firebase.google.com/go/auth github.com/gorilla/mux google.golang.org/api/option
-WORKDIR /app
+WORKDIR /auth
 COPY ./auth .
 COPY ./common ../common
 # RUN go get -d -v ./...
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o auth .
-
-FROM alpine:latest
-RUN apk --no-cache add ca-certificates
-WORKDIR /root/
-COPY --from=0 /app .
-CMD ["./auth"]
+RUN echo "go run ./auth.go & sleep 1; go test" > start.sh; chmod 777 start.sh
+CMD ["/bin/bash", "./start.sh"]
 
 EXPOSE 8070

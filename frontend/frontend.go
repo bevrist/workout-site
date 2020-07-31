@@ -120,7 +120,7 @@ func SubmitFormHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//return backend response
+	//return backend Response 	//TODO: make this check backend response code and return based off
 	backBody, _ := ioutil.ReadAll(backResp.Body)
 	fmt.Fprintf(w, string(backBody))
 }

@@ -20,6 +20,7 @@
 		"ryu1kn.partial-diff",
 		"gruntfuggly.todo-tree",
 		"redhat.vscode-yaml",
+		"streetsidesoftware.code-spell-checker",
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
