@@ -1,6 +1,7 @@
 package main
 
 import (
+	"math"
 	"os"
 
 	structs "../common"
@@ -26,12 +27,27 @@ const (
 
 // TODO add carbs fat and protein /w ratio
 type Calculations struct {
-	LowDay    float64
-	NormalDay float64
-	HighDay   float64
-	//FatRatio     int
-	//CarbRatio    int
-	//ProteinRatio int
+	LowDay         float64
+	NormalDay      float64
+	HighDay        float64
+	NFatRatio      float64
+	NCarbRatio     float64
+	NProteinRatio  float64
+	HFatRatio      float64
+	HCarbRatio     float64
+	HProteinRatio  float64
+	LFatRatio      float64
+	LCarbRatio     float64
+	LProteinRatio  float64
+	NFatAmount     float64
+	NCarbAmount    float64
+	NProteinAmount float64
+	HFatAmount     float64
+	HCarbAmount    float64
+	HProteinAmount float64
+	LFatAmount     float64
+	LCarbAmount    float64
+	LProteinAmount float64
 }
 
 // Global Variables
@@ -64,13 +80,38 @@ func GetUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 
 	// TODO Change float math to round
 	bmr := 66 + (6.3 * float64(weight)) + (12.9 * float64(heightInches)) - (6.8 * float64(age))
-	lowday := bmr * 1.2
-	normalday := bmr * 1.375
-	highday := bmr * 1.55
-	log.Println(bmr, lowday, normalday, highday)
+	lowday := math.Round(bmr * 1.2)
+	normalday := math.Round(bmr * 1.375)
+	highday := math.Round(bmr * 1.55)
+
+	NFatRatio := .25
+	NCarbRatio := .37
+	NProteinRatio := .38
+	HFatRatio := .3
+	HCarbRatio := .5
+	HProteinRatio := .2
+	LFatRatio := .41
+	LCarbRatio := .32
+	LProteinRatio := .27
+
+	NFatAmount := math.Round((normalday * NFatRatio) / 9)
+	NCarbAmount := math.Round((normalday * NCarbRatio) / 4)
+	NProteinAmount := math.Round((normalday * NProteinRatio) / 4)
+	HFatAmount := math.Round((highday * HFatRatio) / 9)
+	HCarbAmount := math.Round((highday * HCarbRatio) / 4)
+	HProteinAmount := math.Round((highday * HProteinRatio) / 4)
+	LFatAmount := math.Round((lowday * LFatRatio) / 9)
+	LCarbAmount := math.Round((lowday * LCarbRatio) / 4)
+	LProteinAmount := math.Round((lowday * LProteinRatio) / 4)
+
+	//log.Println(bmr, lowday, normalday, highday, NFatRatio, NCarbRatio, NProteinRatio, HFatRatio, HCarbRatio, HProteinRatio, LFatRatio, LCarbRatio, LProteinRatio,
+	//NFatAmount, NCarbAmount, NProteinAmount, HFatAmount, HCarbAmount, HProteinAmount, LFatAmount, LCarbAmount, LProteinAmount)
 	//respond with JSON object
 	response := structs.UserInfo{FirstName: firstName, LastName: lastName, Weight: weight, WaistCirc: waistCirc, HeightInches: heightInches, LeanBodyMass: leanBodyMass, Age: age}
-	calc := Calculations{LowDay: lowday, NormalDay: normalday, HighDay: highday}
+	calc := Calculations{LowDay: lowday, NormalDay: normalday, HighDay: highday, NFatRatio: NFatRatio, NCarbRatio: NCarbRatio, NProteinRatio: NProteinRatio, HFatRatio: HFatRatio, HCarbRatio: HCarbRatio,
+		HProteinRatio: HProteinRatio, LFatRatio: LFatRatio, LCarbRatio: LCarbRatio, LProteinRatio: LProteinRatio,
+		NFatAmount: NFatAmount, NCarbAmount: NCarbAmount, NProteinAmount: NProteinAmount, HFatAmount: HFatAmount, HCarbAmount: HCarbAmount, HProteinAmount: HProteinAmount,
+		LFatAmount: LFatAmount, LCarbAmount: LCarbAmount, LProteinAmount: LProteinAmount}
 
 	json.NewEncoder(w).Encode(response)
 	json.NewEncoder(w).Encode(calc)
