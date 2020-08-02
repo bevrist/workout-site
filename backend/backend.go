@@ -64,12 +64,12 @@ func GetUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 	UID := vars["UID"]
 
 	//load user data from database by their UID
-	sqlStatement := `SELECT first_name, last_name, weight, waistcirc, heightinches, leanbodymass, age FROM client WHERE uid=$1;`
-	var firstName, lastName string
+	sqlStatement := `SELECT first_name, last_name, weight, waistcirc, heightinches, leanbodymass, age, gender FROM client WHERE uid=$1;`
+	var firstName, lastName, gender string
 	var weight, waistCirc, heightInches, leanBodyMass, age int
 
 	row := db.QueryRow(sqlStatement, UID)
-	switch err := row.Scan(&firstName, &lastName, &weight, &waistCirc, &heightInches, &leanBodyMass, &age); err {
+	switch err := row.Scan(&firstName, &lastName, &weight, &waistCirc, &heightInches, &leanBodyMass, &age, &gender); err {
 	case sql.ErrNoRows:
 		fmt.Println("No rows were returned!")
 	case nil:
@@ -78,8 +78,14 @@ func GetUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 		log.Fatal("GetUserInfoHandler: " + err.Error())
 	}
 
+	var bmr float64
 	// TODO Change float math to round
-	bmr := 66 + (6.3 * float64(weight)) + (12.9 * float64(heightInches)) - (6.8 * float64(age))
+	if gender == "male" {
+		bmr = 66 + (6.3 * float64(weight)) + (12.9 * float64(heightInches)) - (6.8 * float64(age))
+	} else {
+		bmr = 655 + (4.3 * float64(weight)) + (4.7 * float64(heightInches)) - (4.7 * float64(age))
+	}
+
 	lowday := math.Round(bmr * 1.2)
 	normalday := math.Round(bmr * 1.375)
 	highday := math.Round(bmr * 1.55)
@@ -107,7 +113,8 @@ func GetUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 	//log.Println(bmr, lowday, normalday, highday, NFatRatio, NCarbRatio, NProteinRatio, HFatRatio, HCarbRatio, HProteinRatio, LFatRatio, LCarbRatio, LProteinRatio,
 	//NFatAmount, NCarbAmount, NProteinAmount, HFatAmount, HCarbAmount, HProteinAmount, LFatAmount, LCarbAmount, LProteinAmount)
 	//respond with JSON object
-	response := structs.UserInfo{FirstName: firstName, LastName: lastName, Weight: weight, WaistCirc: waistCirc, HeightInches: heightInches, LeanBodyMass: leanBodyMass, Age: age}
+	response := structs.UserInfo{FirstName: firstName, LastName: lastName, Weight: weight, WaistCirc: waistCirc, HeightInches: heightInches, LeanBodyMass: leanBodyMass, Age: age, Gender: gender}
+
 	calc := Calculations{LowDay: lowday, NormalDay: normalday, HighDay: highday, NFatRatio: NFatRatio, NCarbRatio: NCarbRatio, NProteinRatio: NProteinRatio, HFatRatio: HFatRatio, HCarbRatio: HCarbRatio,
 		HProteinRatio: HProteinRatio, LFatRatio: LFatRatio, LCarbRatio: LCarbRatio, LProteinRatio: LProteinRatio,
 		NFatAmount: NFatAmount, NCarbAmount: NCarbAmount, NProteinAmount: NProteinAmount, HFatAmount: HFatAmount, HCarbAmount: HCarbAmount, HProteinAmount: HProteinAmount,
@@ -143,8 +150,8 @@ func UpdateUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 	switch err := row.Scan(&uid); err {
 	case sql.ErrNoRows:
 		//if UID not found: MAKE NEW USER (sql insert)
-		sqlInsertStatement := `INSERT INTO client ("uid", "first_name", "last_name", "weight", "waistcirc", "heightinches", "leanbodymass", "age") VALUES ($1, $2, $3, $4, $5, $6, $7, $8);`
-		_, err := db.Exec(sqlInsertStatement, UID, userInfo.FirstName, userInfo.LastName, userInfo.Weight, userInfo.WaistCirc, userInfo.HeightInches, userInfo.LeanBodyMass, userInfo.Age)
+		sqlInsertStatement := `INSERT INTO client ("uid", "first_name", "last_name", "weight", "waistcirc", "heightinches", "leanbodymass", "age", "gender" ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);`
+		_, err := db.Exec(sqlInsertStatement, UID, userInfo.FirstName, userInfo.LastName, userInfo.Weight, userInfo.WaistCirc, userInfo.HeightInches, userInfo.LeanBodyMass, userInfo.Age, userInfo.Gender)
 		if err != nil {
 			log.Fatal("UpdateUserInfoHandler: " + err.Error())
 		}
@@ -152,8 +159,8 @@ func UpdateUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 		//if UID found: UPDATE USER INFO (sql update)
 		sqlInsertStatement := `UPDATE client SET  "first_name" = COALESCE(NULLIF($2,''), first_name) , "last_name" = COALESCE(NULLIF($3,''), last_name), "weight" = COALESCE(NULLIF($4,0), weight), 
 		"waistcirc" = COALESCE(NULLIF($5,0), waistcirc), "heightinches" = COALESCE(NULLIF($6,0), heightinches), "leanbodymass" = COALESCE(NULLIF($7,0), leanbodymass),
-		 "age" = COALESCE(NULLIF($8,0), age) WHERE uid=$1;`
-		_, err := db.Exec(sqlInsertStatement, UID, userInfo.FirstName, userInfo.LastName, userInfo.Weight, userInfo.WaistCirc, userInfo.HeightInches, userInfo.LeanBodyMass, userInfo.Age)
+		 "age" = COALESCE(NULLIF($8,0), age, "gender" = COALESCE(NULLIF($9,''), gender) WHERE uid=$1;`
+		_, err := db.Exec(sqlInsertStatement, UID, userInfo.FirstName, userInfo.LastName, userInfo.Weight, userInfo.WaistCirc, userInfo.HeightInches, userInfo.LeanBodyMass, userInfo.Age, userInfo.Gender)
 		if err != nil {
 			log.Fatal("UpdateUserInfoHandler: " + err.Error())
 		}
