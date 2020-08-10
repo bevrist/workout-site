@@ -78,8 +78,33 @@ func GetUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 		log.Fatal("GetUserInfoHandler: " + err.Error())
 	}
 
+	response := structs.UserInfo{FirstName: firstName, LastName: lastName, Weight: weight, WaistCirc: waistCirc, HeightInches: heightInches, LeanBodyMass: leanBodyMass, Age: age, Gender: gender}
+
+	json.NewEncoder(w).Encode(response)
+
+}
+
+func CalculateUserInfoHandler(w http.ResponseWriter, r *http.Request) {
+	//extract UID from URL
+	vars := mux.Vars(r)
+	UID := vars["UID"]
+
+	//load user data from database by their UID
+	sqlStatement := `SELECT first_name, last_name, weight, waistcirc, heightinches, leanbodymass, age, gender FROM client WHERE uid=$1;`
+	var firstName, lastName, gender string
+	var weight, waistCirc, heightInches, leanBodyMass, age int
+
+	row := db.QueryRow(sqlStatement, UID)
+	switch err := row.Scan(&firstName, &lastName, &weight, &waistCirc, &heightInches, &leanBodyMass, &age, &gender); err {
+	case sql.ErrNoRows:
+		fmt.Println("No rows were returned!")
+	case nil:
+		//shit worked
+	default:
+		log.Fatal("GetUserInfoHandler: " + err.Error())
+	}
+
 	var bmr float64
-	// TODO Change float math to round
 	if gender == "male" {
 		bmr = 66 + (6.3 * float64(weight)) + (12.9 * float64(heightInches)) - (6.8 * float64(age))
 	} else {
@@ -113,14 +138,12 @@ func GetUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 	//log.Println(bmr, lowday, normalday, highday, NFatRatio, NCarbRatio, NProteinRatio, HFatRatio, HCarbRatio, HProteinRatio, LFatRatio, LCarbRatio, LProteinRatio,
 	//NFatAmount, NCarbAmount, NProteinAmount, HFatAmount, HCarbAmount, HProteinAmount, LFatAmount, LCarbAmount, LProteinAmount)
 	//respond with JSON object
-	response := structs.UserInfo{FirstName: firstName, LastName: lastName, Weight: weight, WaistCirc: waistCirc, HeightInches: heightInches, LeanBodyMass: leanBodyMass, Age: age, Gender: gender}
 
 	calc := Calculations{LowDay: lowday, NormalDay: normalday, HighDay: highday, NFatRatio: NFatRatio, NCarbRatio: NCarbRatio, NProteinRatio: NProteinRatio, HFatRatio: HFatRatio, HCarbRatio: HCarbRatio,
 		HProteinRatio: HProteinRatio, LFatRatio: LFatRatio, LCarbRatio: LCarbRatio, LProteinRatio: LProteinRatio,
 		NFatAmount: NFatAmount, NCarbAmount: NCarbAmount, NProteinAmount: NProteinAmount, HFatAmount: HFatAmount, HCarbAmount: HCarbAmount, HProteinAmount: HProteinAmount,
 		LFatAmount: LFatAmount, LCarbAmount: LCarbAmount, LProteinAmount: LProteinAmount}
 
-	json.NewEncoder(w).Encode(response)
 	json.NewEncoder(w).Encode(calc)
 }
 
@@ -206,6 +229,7 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/apiVersion", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "{\"apiVersion\":"+apiVersion+"}") })
 	r.HandleFunc("/userInfo/{UID}", GetUserInfoHandler).Methods(http.MethodGet, http.MethodHead)
+	r.HandleFunc("/userInfo/{UID}/base", CalculateUserInfoHandler).Methods(http.MethodGet, http.MethodHead)
 	r.HandleFunc("/userInfo/{UID}", UpdateUserInfoHandler).Methods(http.MethodPost)
 	r.HandleFunc("/_healthz", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "ok") })
 	var handler http.Handler = r
