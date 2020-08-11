@@ -8,18 +8,18 @@ info:
 servers:
   - url: 'http://localhost:8080'
 paths:
-  /submitForm:
+  /submitUserProfile:
     post:
       summary: Submit Form
-      operationId: post-submitForm
+      operationId: post-submitUserProfile
       responses:
         '202':
           description: Accepted
         '401':
           description: Unauthorized
         '428':
-          description: 'Precondition Required: Session-Token   Missing'
-      description: Receives input from user
+          description: Precondition Required
+      description: Receives profile input from user
       parameters: []
       requestBody:
         content:
@@ -35,15 +35,22 @@ paths:
                 LastName:
                   type: string
                 Weight:
-                  type: string
+                  type: number
                 WaistCirc:
-                  type: string
+                  type: number
                 HeightInches:
+                  type: number
+                LeanBodyMass:
+                  type: number
+                Age:
+                  type: number
+                Gender:
                   type: string
               required:
                 - Session-Token
         description: ''
-  /getUserData:
+    parameters: []
+  /getUserProfile:
     get:
       summary: Get User Data
       tags: []
@@ -60,25 +67,41 @@ paths:
                   LastName:
                     type: string
                   Weight:
-                    type: string
+                    type: number
                   WaistCirc:
-                    type: string
+                    type: number
                   HeightInches:
-                    type: string
+                    type: number
                   LeanBodyMass:
+                    type: number
+                  Age:
+                    type: number
+                  Gender:
                     type: string
+              examples:
+                example:
+                  value:
+                    FirstName: Anthony
+                    LastName: Hannah
+                    Weight: 215
+                    WaistCirc: 11
+                    HeightInches: 72
+                    LeanBodyMass: 15
+                    Age: 27
+                    Gender: female
         '401':
           description: Unauthorized
         '428':
           description: Precondition Required
-      operationId: get-getUserData
-      description: Returns calculations and other user data
+      operationId: get-getUserProfile
+      description: Returns user profile data
       parameters:
         - schema:
             type: string
           in: header
           name: Session-Token
           description: The session token of the currently logged in user
+    parameters: []
   /apiVersion:
     get:
       summary: Get API Version
@@ -95,5 +118,56 @@ paths:
                     type: number
       operationId: get-apiVersion
       description: Returns the symantec version number of the api
+    parameters: []
+  /getUserBaseline:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  TODO finish schema:
+                    type: string
+              examples:
+                example:
+                  value:
+                    LowDay: 2599
+                    NormalDay: 2978
+                    HighDay: 3357
+                    NFatRatio: 0.25
+                    NCarbRatio: 0.37
+                    NProteinRatio: 0.38
+                    HFatRatio: 0.3
+                    HCarbRatio: 0.5
+                    HProteinRatio: 0.2
+                    LFatRatio: 0.41
+                    LCarbRatio: 0.32
+                    LProteinRatio: 0.27
+                    NFatAmount: 83
+                    NCarbAmount: 275
+                    NProteinAmount: 283
+                    HFatAmount: 112
+                    HCarbAmount: 420
+                    HProteinAmount: 168
+                    LFatAmount: 118
+                    LCarbAmount: 208
+                    LProteinAmount: 175
+        '401':
+          description: Unauthorized
+        '428':
+          description: Precondition Required
+      operationId: get-getUserBaseline
+      description: Returns user baseline data
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Session-Token
+          description: The session token of the currently logged in user
 components:
   schemas: {}

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Workout-site</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/Login-Form-Clean.css">
+    <link rel="stylesheet" href="../assets/css/Navigation-Clean.css">
+    <link rel="stylesheet" href="../assets/css/Navigation-with-Button.css">
+    <link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-light navbar-expand-md navigation-clean">
+        <div class="container"><a class="navbar-brand" href="#">Workout-App</a><em>Baseline</em><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+            <div
+                class="collapse navbar-collapse" id="navcol-1">
+                <ul class="nav navbar-nav ml-auto">
+                    <li class="nav-item" role="presentation"><a class="nav-link active" href="#">Baseline</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" href="#">Weekly Tracking</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" href="#">Profile</a></li>
+                    <li class="nav-item" role="presentation"><button class="btn btn-primary action-button" id="SignOutBtn" type="button">Sign Out</button></li>
+                </ul>
+        </div>
+        </div>
+    </nav>
+    <section></section>
+    <div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4" style="padding: 0px;padding-top: 10px;padding-right: 3px;padding-bottom: 3px;">
+                    <h2 style="padding-left: 10px;">Normal Day</h2>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Grams</th>
+                                    <th>Ratio</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Protein</td>
+                                    <td id="NProteinAmount"></td>
+                                    <td id="NProteinRatio">%</td>
+                                </tr>
+                                <tr>
+                                    <td>Carbs</td>
+                                    <td id="NCarbAmount"></td>
+                                    <td id="NCarbRatio">%</td>
+                                </tr>
+                                <tr>
+                                    <td>Fat</td>
+                                    <td id="NFatAmount"></td>
+                                    <td id="NFatRatio">%</td>
+                                </tr>
+                                <tr>
+                                    <td>Calories</td>
+                                    <td id="NormalDay"></td>
+                                    <td id="NormalDay-Ratio">%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-md-4" style="padding: 0px;padding-top: 10px;padding-right: 3px;padding-bottom: 3px;">
+                    <h2 style="padding-left: 10px;">High Day</h2>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Grams</th>
+                                    <th>Ratio</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Protein</td>
+                                    <td id="HProteinAmount"></td>
+                                    <td id="HProteinRatio">%</td>
+                                </tr>
+                                <tr>
+                                    <td>Carbs</td>
+                                    <td id="HCarbAmount"></td>
+                                    <td id="HCarbRatio">%</td>
+                                </tr>
+                                <tr>
+                                    <td>Fat</td>
+                                    <td id="HFatAmount"></td>
+                                    <td id="HFatRatio">%</td>
+                                </tr>
+                                <tr>
+                                    <td>Calories</td>
+                                    <td id="HighDay"></td>
+                                    <td id="high-calories-percent">%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-md-4" style="padding: 0px;padding-top: 10px;padding-right: 3px;padding-bottom: 3px;">
+                    <h2 style="padding-left: 10px;">Low Day</h2>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Grams</th>
+                                    <th>Ratio</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Protein</td>
+                                    <td id="LProteinAmount"></td>
+                                    <td id="LProteinRatio">%</td>
+                                </tr>
+                                <tr>
+                                    <td>Carbs</td>
+                                    <td id="LCarbAmount"></td>
+                                    <td id="LCarbRatio">%</td>
+                                </tr>
+                                <tr>
+                                    <td>Fat</td>
+                                    <td id="LFatAmount"></td>
+                                    <td id="LFatRatio">%</td>
+                                </tr>
+                                <tr>
+                                    <td>Calories</td>
+                                    <td id="LowDay"></td>
+                                    <td id="low-calories-percent">%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-auth.js"></script>
+    <script src="../assets/js/firebase-common.js"></script>
+    <script src="../assets/js/baseline.js"></script>
+</body>
+
+</html>

@@ -15,6 +15,8 @@ import (
 	"github.com/gorilla/mux"
 )
 
+//TODO: modify to handle new backend endpoints and update OpenAPI
+
 // Global Variables
 var apiVersion string = "1.0" //the api version this service implements
 // env
@@ -33,8 +35,10 @@ func getUID(sessionToken string) (structs.Auth, error) {
 	return auth, nil
 }
 
-// GetUserDataHandler returns user data
-func GetUserDataHandler(w http.ResponseWriter, r *http.Request) {
+// GetUserProfileHandler returns user data
+func GetUserProfileHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, `{"FirstName":"Anthony","LastName":"Hannah","Weight":215,"WaistCirc":11,"HeightInches":72,"LeanBodyMass":15,"Age":27,"Gender":"female"}`)//FIXME
+	return //FIXME
 	// validate session token
 	sessionToken := r.Header.Get("Session-Token")
 	if sessionToken == "" {
@@ -70,8 +74,17 @@ func GetUserDataHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, string(backBody))
 }
 
-// SubmitFormHandler posts user information to backend
-func SubmitFormHandler(w http.ResponseWriter, r *http.Request) {
+//TODO finnish GetUserBaselineHandler
+// GetUserBaselineHandler returns user data
+func GetUserBaselineHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, `{"LowDay":2599,"NormalDay":2978,"HighDay":3357,"NFatRatio":0.25,"NCarbRatio":0.37,"NProteinRatio":0.38,"HFatRatio":0.3,"HCarbRatio":0.5,"HProteinRatio":0.2,"LFatRatio":0.41,"LCarbRatio":0.32,"LProteinRatio":0.27,"NFatAmount":83,"NCarbAmount":275,"NProteinAmount":283,"HFatAmount":112,"HCarbAmount":420,"HProteinAmount":168,"LFatAmount":118,"LCarbAmount":208,"LProteinAmount":175}
+	`)//FIXME
+	return //FIXME
+	//TODO finnish GetUserBaselineHandler
+}
+
+// SubmitProfileHandler posts user information to backend
+func SubmitProfileHandler(w http.ResponseWriter, r *http.Request) {
 	// parse form data
 	if err := r.ParseForm(); err != nil {
 		http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
@@ -84,11 +97,22 @@ func SubmitFormHandler(w http.ResponseWriter, r *http.Request) {
 	userInfo.FirstName = r.FormValue("firstName")
 	userInfo.LastName = r.FormValue("lastName")
 	userInfo.Weight, _ = strconv.Atoi(r.FormValue("weight"))
-	userInfo.WaistCirc, _ = strconv.Atoi(r.FormValue("waist"))
-	userInfo.HeightInches, _ = strconv.Atoi(r.FormValue("height"))
-	userInfo.LeanBodyMass, _ = strconv.Atoi(r.FormValue("bodyMass"))
+	userInfo.WaistCirc, _ = strconv.Atoi(r.FormValue("waistCirc"))
+	userInfo.HeightInches, _ = strconv.Atoi(r.FormValue("heightInches"))
+	userInfo.LeanBodyMass, _ = strconv.Atoi(r.FormValue("leanBodyMass"))
+	userInfo.Age, _ = strconv.Atoi(r.FormValue("age"))
+	userInfo.Gender= r.FormValue("gender")
 
 	sessionToken := r.FormValue("Session-Token")
+	log.Println("session: "+sessionToken)
+
+	//format form data in JSON UserInfo format
+	userInfoJSON, err := json.Marshal(userInfo)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log.Println(string(userInfoJSON)) //FIXME: remove
 
 	// get UID from session token (auth service)
 	auth, err := getUID(sessionToken)
@@ -103,14 +127,6 @@ func SubmitFormHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("401 unauthorized.")
 		return
 	}
-
-	//format form data in JSON UserInfo format
-	userInfoJSON, err := json.Marshal(userInfo)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	log.Println(string(userInfoJSON)) //FIXME: remove
 
 	//post user data to backend
 	backResp, err := http.Post("http://"+backendAddress+"/userInfo/"+auth.UID, "application/json", bytes.NewBuffer(userInfoJSON))
@@ -146,8 +162,9 @@ func main() {
 	//specify routes and start http server
 	r := mux.NewRouter()
 	r.HandleFunc("/apiVersion", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "{\"apiVersion\":"+apiVersion+"}") })
-	r.HandleFunc("/getUserData", GetUserDataHandler).Methods(http.MethodGet, http.MethodHead)
-	r.HandleFunc("/submitForm", SubmitFormHandler).Methods(http.MethodPost)
+	r.HandleFunc("/getUserProfile", GetUserProfileHandler).Methods(http.MethodGet, http.MethodHead)
+	r.HandleFunc("/getUserBaseline", GetUserBaselineHandler).Methods(http.MethodGet, http.MethodHead)
+	r.HandleFunc("/submitProfile", SubmitProfileHandler).Methods(http.MethodPost)
 	r.HandleFunc("/_healthz", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "ok") })
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./www/")))
 	var handlers http.Handler = r

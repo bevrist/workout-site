@@ -30,6 +30,15 @@ paths:
                     type: string
                 required:
                   - IsValid
+              examples:
+                example-success:
+                  value:
+                    IsValid: true
+                    UID: testUID
+                example-failure:
+                  value:
+                    IsValid: false
+                    UID: ''
       operationId: get-UID
       description: Get the UID associated with a valid session token
   /apiVersion:
@@ -48,6 +57,7 @@ paths:
                     type: number
                 required:
                   - apiVersion
+              examples: {}
       operationId: get-apiVersion
       description: Returns the symantec version number of the api
 components:
