@@ -189,6 +189,7 @@ func main() {
 	}
 	log.Println("Backend address: " + backendAddress)
 	log.Println("Auth address: " + authAddress)
+	log.Println("Frontend Website URL: " + os.Getenv("FRONTEND_WEBSITE_URL"))
 
 	//specify routes and start http server
 	r := mux.NewRouter()

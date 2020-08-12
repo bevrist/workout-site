@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Workout-site</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/Login-Form-Clean.css">
+    <link rel="stylesheet" href="../assets/css/Navigation-Clean.css">
+    <link rel="stylesheet" href="../assets/css/Navigation-with-Button.css">
+    <link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-light navbar-expand-md navigation-clean">
+        <div class="container"><a class="navbar-brand" href="#">Workout-App</a><em>Weekly Tracking</em><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+            <div
+                class="collapse navbar-collapse" id="navcol-1">
+                <ul class="nav navbar-nav ml-auto">
+                    <li class="nav-item" role="presentation"><a class="nav-link" href="#">Baseline</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link active" href="#">Weekly Tracking</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" href="#">Profile</a></li>
+                    <li class="nav-item" role="presentation"><button class="btn btn-primary action-button" id="SignOutBtn" type="button">Sign Out</button></li>
+                </ul>
+        </div>
+        </div>
+    </nav>
+    <div class="container" style="padding-bottom: 24px;">
+        <form action="http://localhost:8080/submitUserProfile" method="post"><input class="form-control" type="hidden" id="Form-Session-Token">
+            <div class="form-row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <p style="margin: 0px;margin-left: 5px;">Some Data</p><input class="form-control" type="text" id="firstName" placeholder="First Name" name="firstName" required="" minlength="2" pattern="^[a-zA-Z ]+"></div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <p style="margin: 0px;margin-left: 5px;">Other Data</p><input class="form-control" type="text" id="lastName" placeholder="Last Name" name="lastName" minlength="1" required="" pattern="^[a-zA-Z ]+"></div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <p style="margin: 0px;margin-left: 5px;">a</p><input class="form-control" type="number" id="weight" placeholder="150" name="weight" min="10" max="500" required=""></div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <p style="margin: 0px;margin-left: 5px;">b</p><input class="form-control" type="number" id="heightInches" placeholder="70" name="heightInches" min="10" max="90" required=""></div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <p style="margin: 0px;margin-left: 5px;">c</p><input class="form-control" type="number" id="waistCirc" placeholder="150" name="waistCirc" min="1" max="100" required=""></div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <p style="margin: 0px;margin-left: 5px;">d</p><input class="form-control" type="number" id="leanBodyMass" placeholder="150" name="leanBodyMass" min="1" max="500" required=""></div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <p style="margin: 0px;margin-left: 5px;">e</p><input class="form-control" type="number" id="age" placeholder="35" name="age" min="1" max="100" required=""></div>
+                </div>
+            </div><button class="btn btn-primary" type="submit">Save</button></form>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-auth.js"></script>
+    <script src="../assets/js/firebase-common.js"></script>
+    <script src="../assets/js/weekly-tracking.js"></script>
+</body>
+
+</html>

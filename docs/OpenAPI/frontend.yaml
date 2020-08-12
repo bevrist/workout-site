@@ -101,6 +101,7 @@ paths:
           in: header
           name: Session-Token
           description: The session token of the currently logged in user
+          required: true
     parameters: []
   /apiVersion:
     get:
@@ -169,5 +170,61 @@ paths:
           in: header
           name: Session-Token
           description: The session token of the currently logged in user
+          required: true
+  '/userWeeklyTracking/{week-num}':
+    parameters:
+      - schema:
+          type: string
+        name: week-num
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  'TODO: finish weekly tracking schema':
+                    type: string
+              examples:
+                example: {}
+        '401':
+          description: Unauthorized
+        '428':
+          description: Precondition Required
+      operationId: get-userWeeklyTracking
+      description: 'TODO: finish userWeeklyTracking-get'
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Session-Token
+          description: The session token of the currently logged in user
+          required: true
+    post:
+      summary: ''
+      operationId: post-userWeeklyTracking
+      responses:
+        '200':
+          description: OK
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Session-Token:
+                  type: string
+                  description: The session token of the currently logged in user
+                '':
+                  type: string
+              required:
+                - Session-Token
+        description: 'TODO: finish userWeeklyTracking-post'
 components:
   schemas: {}

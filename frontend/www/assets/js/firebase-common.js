@@ -17,7 +17,7 @@ firebase.analytics();
 firebase.auth().onAuthStateChanged(function (user) {
   if (user) {
     // User is signed in.
-    document.cookie = "Session-Token="+user._lat+"; SameSite=Strict;";
+    document.cookie = "Session-Token=" + user._lat + "; SameSite=Strict;";
   } else {
     // No user is signed in.
     // check for cookie "Session-Token" and invalidate if exists
@@ -33,12 +33,12 @@ firebase.auth().onAuthStateChanged(function (user) {
 // if #SignOutBtn present, check that user is signed in and redirect to homepage if not
 if (document.getElementById("SignOutBtn") != null) {
   if (getCookie("Session-Token") == null) {
-    console.log("Not Signed In");
+    console.log("Not Signed In, redirecting");
     // window.location.replace('http://localhost:5500/'); //FIXME
   }
 }
 
-// firebase signOut button
+// enable signOut button
 document.getElementById("SignOutBtn").setAttribute("onclick", "signOut()");
 function signOut() {
   console.log("Signing out...")
@@ -53,19 +53,22 @@ function signOut() {
   });
 }
 
+//==================================================
+// Helper Functions
+
 // helper function to get value of named cookie
 function getCookie(name) {
   // Split cookie string and get all individual name=value pairs in an array
   var cookieArr = document.cookie.split(";");
   // Loop through the array elements
-  for(var i = 0; i < cookieArr.length; i++) {
-      var cookiePair = cookieArr[i].split("=");
-      /* Removing whitespace at the beginning of the cookie name
-      and compare it with the given string */
-      if(name == cookiePair[0].trim()) {
-          // Decode the cookie value and return
-          return decodeURIComponent(cookiePair[1]);
-      }
+  for (var i = 0; i < cookieArr.length; i++) {
+    var cookiePair = cookieArr[i].split("=");
+    /* Removing whitespace at the beginning of the cookie name
+    and compare it with the given string */
+    if (name == cookiePair[0].trim()) {
+      // Decode the cookie value and return
+      return decodeURIComponent(cookiePair[1]);
+    }
   }
   return null;  // Return null if not found
 }

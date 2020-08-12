@@ -9,18 +9,13 @@ fetch("http://localhost:8080/getUserBaseline", {
   });
 });
 
-
-//! TODO: delete this and make updateCharts handle redirect on empty data
-// check if user name is blank, redirect to profile page if so (first time user)
-function checkForBlankUsername(userBaselineData) {
-  if (userBaselineData.FirstName == null) {
-    console.log("FirstName blank, redirecting to profile...")
-    // window.location.replace('http://localhost:5500/profile');  //FIXME
-  }
-}
-
 // updates baseline charts with user data
 function updateCharts(userBaselineData) {
+  // redirect to profile page on empty data
+  if (userBaselineData.NormalDay == null) {
+    console.log("data blank, redirecting to profile...")
+    // window.location.replace('http://localhost:5500/profile');  //FIXME
+  }
   //Normal Day
   document.getElementById("NProteinAmount").innerHTML = userBaselineData.NProteinAmount;
   document.getElementById("NProteinRatio").innerHTML = userBaselineData.NProteinRatio;
