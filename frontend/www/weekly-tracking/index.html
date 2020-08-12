@@ -26,8 +26,9 @@
         </div>
         </div>
     </nav>
-    <div class="container" style="padding-bottom: 24px;">
-        <form action="http://localhost:8080/submitUserProfile" method="post"><input class="form-control" type="hidden" id="Form-Session-Token">
+    <div class="container" id="myContainer" style="padding-bottom: 24px;">
+        <form id="myForm" action="http://localhost:8080/submitUserProfile" method="post"><a id="formLink" name="formAnchor"></a>
+            <h4 id="myHeading">Week 1</h4><input class="form-control" type="hidden" id="Form-Session-Token">
             <div class="form-row">
                 <div class="col-md-4">
                     <div class="form-group">
@@ -37,29 +38,10 @@
                     <div class="form-group">
                         <p style="margin: 0px;margin-left: 5px;">Other Data</p><input class="form-control" type="text" id="lastName" placeholder="Last Name" name="lastName" minlength="1" required="" pattern="^[a-zA-Z ]+"></div>
                 </div>
+                <div class="col">
+                    <p id="hiddenButtonBuffer" class="d-none d-md-block" style="margin: 0px;margin-left: 5px;">&nbsp;</p><button class="btn btn-primary" type="submit">Save</button></div>
             </div>
-            <div class="form-row">
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <p style="margin: 0px;margin-left: 5px;">a</p><input class="form-control" type="number" id="weight" placeholder="150" name="weight" min="10" max="500" required=""></div>
-                </div>
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <p style="margin: 0px;margin-left: 5px;">b</p><input class="form-control" type="number" id="heightInches" placeholder="70" name="heightInches" min="10" max="90" required=""></div>
-                </div>
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <p style="margin: 0px;margin-left: 5px;">c</p><input class="form-control" type="number" id="waistCirc" placeholder="150" name="waistCirc" min="1" max="100" required=""></div>
-                </div>
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <p style="margin: 0px;margin-left: 5px;">d</p><input class="form-control" type="number" id="leanBodyMass" placeholder="150" name="leanBodyMass" min="1" max="500" required=""></div>
-                </div>
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <p style="margin: 0px;margin-left: 5px;">e</p><input class="form-control" type="number" id="age" placeholder="35" name="age" min="1" max="100" required=""></div>
-                </div>
-            </div><button class="btn btn-primary" type="submit">Save</button></form>
+        </form>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
