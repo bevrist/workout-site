@@ -23,7 +23,7 @@ firebase.auth().onAuthStateChanged(function (user) {
     // check for cookie "Session-Token" and invalidate if exists
     if (getCookie("Session-Token") != null) {
       document.cookie = "Session-Token=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-      console.log("Cookie Invalidated")
+      console.log("Cookie Invalidated, redirecting to homepage...")
       //TODO: create & redirect to "signed out" page to explain user signed out
       // window.location.replace('http://localhost:5500/'); //FIXME
     }
@@ -33,7 +33,7 @@ firebase.auth().onAuthStateChanged(function (user) {
 // if #SignOutBtn present, check that user is signed in and redirect to homepage if not
 if (document.getElementById("SignOutBtn") != null) {
   if (getCookie("Session-Token") == null) {
-    console.log("Not Signed In, redirecting");
+    console.log("Not Signed In, redirecting to homepage...");
     // window.location.replace('http://localhost:5500/'); //FIXME
   }
 }
@@ -46,6 +46,7 @@ function signOut() {
     // Sign-out successful.
     // Invalidate "Session-Token" cookie
     document.cookie = "Session-Token=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+    console.log("Signed out, redirecting to homepage...")
     // window.location.replace('http://localhost:5500/'); //FIXME
   }).catch(function (error) {
     console.log("Sign out error occurred")

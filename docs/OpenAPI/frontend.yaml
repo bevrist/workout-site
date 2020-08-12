@@ -10,7 +10,7 @@ servers:
 paths:
   /submitUserProfile:
     post:
-      summary: Submit Form
+      summary: Submit User Profile
       operationId: post-submitUserProfile
       responses:
         '202':
@@ -52,7 +52,7 @@ paths:
     parameters: []
   /getUserProfile:
     get:
-      summary: Get User Data
+      summary: Get User Profile
       tags: []
       responses:
         '200':
@@ -122,7 +122,7 @@ paths:
     parameters: []
   /getUserBaseline:
     get:
-      summary: Your GET endpoint
+      summary: Get User Baseline
       tags: []
       responses:
         '200':
@@ -179,7 +179,7 @@ paths:
         in: path
         required: true
     get:
-      summary: Your GET endpoint
+      summary: Get User Weekly Tracking
       tags: []
       responses:
         '200':
@@ -207,7 +207,7 @@ paths:
           description: The session token of the currently logged in user
           required: true
     post:
-      summary: ''
+      summary: Post User Weekly Tracking
       operationId: post-userWeeklyTracking
       responses:
         '200':

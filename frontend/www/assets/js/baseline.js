@@ -1,18 +1,18 @@
 //get UserBaseline json object, call other functions on complete
-fetch("http://localhost:8080/getUserBaseline", {
-  headers: {
-    'Session-Token': getCookie("Session-Token"),
-  }
-}).then(function (response) {
-  response.json().then(function (data) {
-    updateCharts(data);
-  });
-});
+// fetch("http://localhost:8080/getUserBaseline", {
+//   headers: {
+//     'Session-Token': getCookie("Session-Token"),
+//   }
+// }).then(function (response) {
+//   response.json().then(function (data) {
+//     updateCharts(data);
+//   });
+// });
 
 // updates baseline charts with user data
 function updateCharts(userBaselineData) {
   // redirect to profile page on empty data
-  if (userBaselineData.NormalDay == null) {
+  if (userBaselineData.NormalDay == 0) {
     console.log("data blank, redirecting to profile...")
     // window.location.replace('http://localhost:5500/profile');  //FIXME
   }
@@ -56,6 +56,7 @@ function hi(name) {
   }).then(function (response) {
     response.json().then(function (data) {
       updateCharts(data);
+      console.log(data);
     });
   });
 }

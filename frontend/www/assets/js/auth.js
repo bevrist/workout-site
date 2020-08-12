@@ -22,10 +22,12 @@ firebase.auth().getRedirectResult().then(function (result) {
       }
       else {
         //else redirect to baseline page
+        console.log("user profile data found, redirecting to baseline...")
         // window.location.replace('http://localhost:5500/baseline'); //FIXME
       }
     });
   });
+  console.log("redirecting to baseline... I DONT KNOW WHY THIS SHOULDNT HAPPEN")
   // window.location.replace('http://localhost:5500/baseline'); //FIXME remove?
 
 }).catch(function (error) {
