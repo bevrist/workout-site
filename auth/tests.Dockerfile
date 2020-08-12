@@ -8,4 +8,4 @@ COPY ./common ../common
 RUN echo "go run ./auth.go & sleep 1; go test" > start.sh; chmod 777 start.sh
 CMD ["/bin/bash", "./start.sh"]
 
-EXPOSE 8070
+ENV AUTH_LISTEN_ADDRESS=0.0.0.0:80

@@ -24,7 +24,7 @@ var listenAddress string //listen address of this service
 
 //helper function for actually retrieving UID
 func getUID(sessionToken string) string {
-	// hardcoded reply for testing purposes
+	//TEST hardcoded reply for testing purposes
 	if sessionToken == "test" {
 		return "testUID"
 	} else if sessionToken == "testfail" {
@@ -74,7 +74,7 @@ func GetUIDHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	//populate environment variables
 	listenAddress = os.Getenv("AUTH_LISTEN_ADDRESS")
-	//set default environment vriables
+	//set default environment variables
 	if listenAddress == "" {
 		listenAddress = "0.0.0.0:8070"
 	}
@@ -92,7 +92,7 @@ func main() {
 
 	//specify routes and start http server
 	r := mux.NewRouter()
-	r.HandleFunc("/apiVersion", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "{\"apiVersion\":"+apiVersion+"}") })
+	r.HandleFunc("/apiVersion", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, `{"apiVersion":`+apiVersion+"}") })
 	r.HandleFunc("/getUID/{SessionToken}", GetUIDHandler).Methods(http.MethodGet, http.MethodHead)
 	r.HandleFunc("/_healthz", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "ok") })
 	var handler http.Handler = r

@@ -13,4 +13,5 @@ WORKDIR /root/
 COPY --from=0 /app .
 CMD ["./auth"]
 
+ENV AUTH_LISTEN_ADDRESS=0.0.0.0:80
 EXPOSE 8070

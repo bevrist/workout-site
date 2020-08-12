@@ -15,8 +15,6 @@ import (
 	"github.com/gorilla/mux"
 )
 
-//TODO: modify to handle new backend endpoints and update OpenAPI
-
 // Global Variables
 var apiVersion string = "1.0" //the api version this service implements
 // env
@@ -37,8 +35,10 @@ func getUID(sessionToken string) (structs.Auth, error) {
 
 // GetUserProfileHandler returns user data
 func GetUserProfileHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, `{"FirstName":"Anthony","LastName":"Hannah","Weight":215,"WaistCirc":11,"HeightInches":72,"LeanBodyMass":15,"Age":27,"Gender":"female"}`)//FIXME
-	return //FIXME
+	fmt.Fprintf(w, `{"FirstName":"Anthony","LastName":"Hannah","Weight":215,"WaistCirc":11,"HeightInches":72,"LeanBodyMass":15,"Age":27,"Gender":"female"}`) //FIXME
+	return
+	//FIXME
+
 	// validate session token
 	sessionToken := r.Header.Get("Session-Token")
 	if sessionToken == "" {
@@ -74,13 +74,46 @@ func GetUserProfileHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, string(backBody))
 }
 
-//TODO finnish GetUserBaselineHandler
 // GetUserBaselineHandler returns user data
 func GetUserBaselineHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, `{"LowDay":2599,"NormalDay":2978,"HighDay":3357,"NFatRatio":0.25,"NCarbRatio":0.37,"NProteinRatio":0.38,"HFatRatio":0.3,"HCarbRatio":0.5,"HProteinRatio":0.2,"LFatRatio":0.41,"LCarbRatio":0.32,"LProteinRatio":0.27,"NFatAmount":83,"NCarbAmount":275,"NProteinAmount":283,"HFatAmount":112,"HCarbAmount":420,"HProteinAmount":168,"LFatAmount":118,"LCarbAmount":208,"LProteinAmount":175}
-	`)//FIXME
-	return //FIXME
-	//TODO finnish GetUserBaselineHandler
+	`) //FIXME
+	return
+	//FIXME
+
+	// validate session token
+	sessionToken := r.Header.Get("Session-Token")
+	if sessionToken == "" {
+		http.Error(w, "428 Precondition Required - Session-Token header Missing.", http.StatusPreconditionRequired)
+		log.Println("Token Missing")
+		return
+	}
+
+	// get UID from session token (auth service)
+	auth, err := getUID(sessionToken)
+	if err != nil {
+		http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
+		log.Println("ERROR - Auth: " + err.Error())
+		return
+	}
+	// respond with 401 if Auth response says token is invalid
+	if auth.IsValid == false {
+		http.Error(w, "401 unauthorized.", http.StatusUnauthorized)
+		log.Println("401 unauthorized.")
+		return
+	}
+
+	//request user data from backend
+	backResp, err := http.Get("http://" + backendAddress + "/userInfo/" + auth.UID + "/base")
+	if err != nil {
+		http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
+		log.Println("ERROR - Backend: " + err.Error())
+		return
+	}
+
+	//return backend response
+	backBody, _ := ioutil.ReadAll(backResp.Body)
+	fmt.Fprintf(w, string(backBody))
 }
 
 // SubmitProfileHandler posts user information to backend
@@ -101,18 +134,16 @@ func SubmitProfileHandler(w http.ResponseWriter, r *http.Request) {
 	userInfo.HeightInches, _ = strconv.Atoi(r.FormValue("heightInches"))
 	userInfo.LeanBodyMass, _ = strconv.Atoi(r.FormValue("leanBodyMass"))
 	userInfo.Age, _ = strconv.Atoi(r.FormValue("age"))
-	userInfo.Gender= r.FormValue("gender")
+	userInfo.Gender = r.FormValue("gender")
 
 	sessionToken := r.FormValue("Session-Token")
-	log.Println("session: "+sessionToken)
+	log.Println("session: " + sessionToken)
 
 	//format form data in JSON UserInfo format
 	userInfoJSON, err := json.Marshal(userInfo)
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	log.Println(string(userInfoJSON)) //FIXME: remove
 
 	// get UID from session token (auth service)
 	auth, err := getUID(sessionToken)
@@ -136,7 +167,7 @@ func SubmitProfileHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//return backend Response 	//TODO: make this check backend response code and return based off
+	//return backend Response 	//TODO: make this check backend response code and return based off (update backend first)
 	backBody, _ := ioutil.ReadAll(backResp.Body)
 	fmt.Fprintf(w, string(backBody))
 }
