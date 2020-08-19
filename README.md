@@ -4,7 +4,9 @@
 > Run all commands from root folder of project  
 
 ## Docker Compose
-to run with docker compose, simply run `docker-compose up --build`
+to run with docker compose, simply run `docker-compose up --build`  
+to run debug version, run `DEBUG=true docker-compose up --build`  
+
 
 ## Individual Containers
 Auth: `docker build -t auth -f ./auth/Dockerfile .`  

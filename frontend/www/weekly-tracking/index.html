@@ -6,10 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>Workout-site</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../assets/css/Login-Form-Clean.css">
-    <link rel="stylesheet" href="../assets/css/Navigation-Clean.css">
     <link rel="stylesheet" href="../assets/css/Navigation-with-Button.css">
-    <link rel="stylesheet" href="../assets/css/styles.css">
 </head>
 
 <body>
@@ -18,28 +15,72 @@
             <div
                 class="collapse navbar-collapse" id="navcol-1">
                 <ul class="nav navbar-nav ml-auto">
-                    <li class="nav-item" role="presentation"><a class="nav-link" href="#">Baseline</a></li>
-                    <li class="nav-item" role="presentation"><a class="nav-link active" href="#">Weekly Tracking</a></li>
-                    <li class="nav-item" role="presentation"><a class="nav-link" href="#">Profile</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" href="http://localhost:5500/baseline">Baseline</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link active" href="http://localhost:5500/weekly-tracking">Weekly Tracking</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" href="http://localhost:5500/profile">Profile</a></li>
                     <li class="nav-item" role="presentation"><button class="btn btn-primary action-button" id="SignOutBtn" type="button">Sign Out</button></li>
                 </ul>
         </div>
         </div>
     </nav>
+    <div class="container">
+        <form action="http://localhost:8080/submitUserProfile" method="post"><input class="form-control" type="hidden" id="Form-Session-Token-StartDate" name="Form-Session-Token">
+            <div class="form-row" style="padding-bottom: 15px;padding-top: 15px;">
+                <div class="col-auto"><input class="form-control" id="StartDate" type="date" style="padding: 0px;width: 145px;" name="StartDate"></div>
+                <div class="col"><button class="btn btn-primary" type="submit">Change Start Date</button></div>
+            </div>
+        </form>
+    </div>
     <div class="container" id="myContainer" style="padding-bottom: 24px;">
-        <form id="myForm" action="http://localhost:8080/submitUserProfile" method="post"><a id="formLink" name="formAnchor"></a>
-            <h4 id="myHeading">Week 1</h4><input class="form-control" type="hidden" id="Form-Session-Token">
+        <form id="formWeek-0" action="http://localhost:8080/submitUserProfile" method="post"><a id="formLink-0" name="formAnchor"></a>
+            <h4 id="weekHeading-0">Week 0</h4><input class="form-control" type="hidden" id="Form-Session-Token-0" name="Form-Session-Token">
             <div class="form-row">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <p style="margin: 0px;margin-left: 5px;">Some Data</p><input class="form-control" type="text" id="firstName" placeholder="First Name" name="firstName" required="" minlength="2" pattern="^[a-zA-Z ]+"></div>
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Fat(g)</th>
+                                    <th>Carbs(g)</th>
+                                    <th>Protein(g)</th>
+                                    <th>Calories</th>
+                                    <th>Day</th>
+                                    <th>Weight(lbs)</th>
+                                    <th>Cardio</th>
+                                    <th>Training</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr id="tableRow">
+                                    <td id="date" style="padding: 7px;" rowspan="date1week">00/00/0000</td>
+                                    <td style="padding: 0px;"><input class="form-control" type="number" id="fat" placeholder="0" name="fat"></td>
+                                    <td style="padding: 0px;"><input class="form-control" type="number" id="carbs" placeholder="0" name="carbs"></td>
+                                    <td style="padding: 0px;"><input class="form-control" type="number" id="protein" placeholder="0" name="protein"></td>
+                                    <td style="padding: 0px;"><input class="form-control" type="number" id="calories" placeholder="0" name="calories"></td>
+                                    <td style="padding: 0px;"><select class="form-control" style="width:85px;" name="day" id="day">
+    <option id="dayNorm">norm</option>
+    <option id="dayLow">low</option>
+    <option id="dayHigh">high</option>
+</select></td>
+                                    <td style="padding: 0px;"><input class="form-control" type="number" id="weight" placeholder="0" name="weight"></td>
+                                    <td style="padding: 0px;"><select class="form-control" style="width:83px;" name="cardio" id="cardio">
+    <option id="cardioNone">none</option>
+    <option id="cardioMiss">miss</option>
+    <option id="cardioHit">hit</option>
+</select></td>
+                                    <td style="padding: 0px;"><select class="form-control" style="width:83px;" name="training" id="training">
+    <option id="trainingNo">no</option>
+    <option id="trainingYes">yes</option>
+</select></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="form-row" style="margin: 0px;">
+                        <div class="col" style="padding: 0px 1px;"><button class="btn btn-primary" type="submit">Save</button></div>
+                    </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <p style="margin: 0px;margin-left: 5px;">Other Data</p><input class="form-control" type="text" id="lastName" placeholder="Last Name" name="lastName" minlength="1" required="" pattern="^[a-zA-Z ]+"></div>
-                </div>
-                <div class="col">
-                    <p id="hiddenButtonBuffer" class="d-none d-md-block" style="margin: 0px;margin-left: 5px;">&nbsp;</p><button class="btn btn-primary" type="submit">Save</button></div>
             </div>
         </form>
     </div>

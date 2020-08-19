@@ -1,3 +1,4 @@
+// Frontend provides a webserver for static site files and exposes an API for retrieving and updating application data
 package main
 
 import (

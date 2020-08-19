@@ -1,4 +1,5 @@
 FROM golang:latest
+# RUN apk --no-cache add uglify-js
 WORKDIR /app
 RUN go get -v github.com/gorilla/mux
 COPY ./frontend/frontend.go .
@@ -6,7 +7,7 @@ COPY ./common ../common
 # RUN go get -d -v ./...
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o frontend .
 COPY ./frontend/www/ ./www
-
+# RUN if [[ -z "$DEBUG" ]]; then uglifyjs "all js files"; fi
 
 FROM alpine:latest
 RUN apk --no-cache add ca-certificates

@@ -1,3 +1,4 @@
+// Auth provides an api for handling validation of session tokens and retrieving User ID's (UID)
 package main
 
 import (
