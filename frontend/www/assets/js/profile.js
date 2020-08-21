@@ -23,14 +23,15 @@ function updateForm(userProfileData) {
   document.getElementById("leanBodyMass").value = userProfileData.LeanBodyMass;
   document.getElementById("age").value = userProfileData.Age;
 
-  if (userProfileData.Gender == "male") {
-    document.getElementById("genderMale").selected = "selected"
-  }
-  else if (userProfileData.Gender == "female") {
-    document.getElementById("genderFemale").selected = "selected"
-  }
-  else {
-    document.getElementById("genderNone").selected = "selected"
+  switch (userProfileData.Gender) {
+    case "male":
+      document.getElementById("genderMale").selected = "selected"
+      break;
+    case "female":
+      document.getElementById("genderFemale").selected = "selected"
+      break;
+    default:
+      document.getElementById("genderNone").selected = "selected"
   }
 }
 
