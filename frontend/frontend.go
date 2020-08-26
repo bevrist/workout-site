@@ -77,8 +77,7 @@ func GetUserProfileHandler(w http.ResponseWriter, r *http.Request) {
 
 // GetUserBaselineHandler returns user data
 func GetUserBaselineHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, `{"LowDay":2599,"NormalDay":2978,"HighDay":3357,"NFatRatio":0.25,"NCarbRatio":0.37,"NProteinRatio":0.38,"HFatRatio":0.3,"HCarbRatio":0.5,"HProteinRatio":0.2,"LFatRatio":0.41,"LCarbRatio":0.32,"LProteinRatio":0.27,"NFatAmount":83,"NCarbAmount":275,"NProteinAmount":283,"HFatAmount":112,"HCarbAmount":420,"HProteinAmount":168,"LFatAmount":118,"LCarbAmount":208,"LProteinAmount":175}
-	`) //FIXME
+	fmt.Fprintf(w, `{"LowDay":2599,"NormalDay":2978,"HighDay":3357,"NFatRatio":0.25,"NCarbRatio":0.37,"NProteinRatio":0.38,"HFatRatio":0.3,"HCarbRatio":0.5,"HProteinRatio":0.2,"LFatRatio":0.41,"LCarbRatio":0.32,"LProteinRatio":0.27,"NFatAmount":83,"NCarbAmount":275,"NProteinAmount":283,"HFatAmount":112,"HCarbAmount":420,"HProteinAmount":168,"LFatAmount":118,"LCarbAmount":208,"LProteinAmount":175}`) //FIXME
 	return
 	//FIXME
 
