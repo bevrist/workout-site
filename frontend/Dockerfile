@@ -1,5 +1,5 @@
 FROM golang:latest
-# RUN apk --no-cache add uglify-js
+RUN apt-get update && apt-get install uglifyjs -y
 WORKDIR /app
 RUN go get -v github.com/gorilla/mux
 COPY ./frontend/frontend.go .
@@ -7,7 +7,10 @@ COPY ./common ../common
 # RUN go get -d -v ./...
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o frontend .
 COPY ./frontend/www/ ./www
-# RUN if [[ -z "$DEBUG" ]]; then uglifyjs "all js files"; fi
+# minify all js and css files
+# RUN find ./ -type f -name "*.js" -exec uglifyjs --compress --mangle -o {}.min {} \; -exec rm {} \; -exec mv {}.min {} \;
+# RUN find ./ -type f -name "*.css" -exec uglifycss --compress --mangle -o {}.min {} \; -exec rm {} \; -exec mv {}.min {} \;
+
 
 FROM alpine:latest
 RUN apk --no-cache add ca-certificates

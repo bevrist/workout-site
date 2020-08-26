@@ -5,7 +5,6 @@
 
 ## Docker Compose
 to run with docker compose, simply run `docker-compose up --build`  
-to run debug version, run `DEBUG=true docker-compose up --build`  
 
 
 ## Individual Containers
@@ -21,5 +20,6 @@ Frontend: `docker build -t frontend -f ./frontend/Dockerfile .`
 > you can use `host.docker.internal` in place of localhost to connect between containers on non linux platforms
 
 # Tests:
-Auth: `docker build -t auth-test -f ./auth/tests.Dockerfile .`  
-`docker run --rm -it auth-test`  
+Auth: `docker build -t auth-test -f ./auth/tests.Dockerfile .; docker run --rm -it auth-test`  
+
+Frontend: `docker build -t frontend-test -f ./frontend/tests.Dockerfile .; docker run --rm -it frontend-test`  

@@ -35,5 +35,4 @@ services:
       FRONTEND_LISTEN_ADDRESS: 0.0.0.0:8080
       BACKEND_ADDRESS: host.docker.internal:8090
       AUTH_ADDRESS: host.docker.internal:8070
-      DEBUG: ${DEBUG}
     restart: on-failure
