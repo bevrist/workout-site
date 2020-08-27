@@ -9,8 +9,7 @@ digraph G {
     Backend;
     DB;
     Auth;
-
-    PostgreSQL [label="Back DB", shape=square];
+    PostgreSQL [label="Postgres", shape=square];
 
     subgraph cluster_0 {
         color = white;

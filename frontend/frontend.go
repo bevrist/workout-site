@@ -21,17 +21,32 @@ var apiVersion string = "1.0" //the api version this service implements
 // env
 var listenAddress, backendAddress, authAddress string
 
-//getUID gets user id from Session Token (auth service)
-func getUID(sessionToken string) (structs.Auth, error) {
+//isRequestValid checks user token and handles invalid requests, returns Auth struct
+func isRequestValid(w http.ResponseWriter, sessionToken string, handlerName string) structs.Auth {
+	// validate session token
+	if sessionToken == "" {
+		http.Error(w, "428 Precondition Required - Session-Token header Missing.", http.StatusPreconditionRequired)
+		log.Println("WARN: " + handlerName + " Token Missing")
+		return structs.Auth{IsValid: false, UID: ""}
+	}
+	// get UID from session token (auth service)
 	resp, err := http.Get("http://" + authAddress + "/getUID/" + sessionToken)
 	if err != nil {
-		return structs.Auth{IsValid: false, UID: ""}, err
+		http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
+		log.Println("ERROR: " + handlerName + " - Auth: " + err.Error())
+		return structs.Auth{IsValid: false, UID: ""}
 	}
-	//extract auth data from response body
+	// extract auth data from response body
 	respBody, _ := ioutil.ReadAll(resp.Body)
 	var auth structs.Auth
 	json.Unmarshal(respBody, &auth)
-	return auth, nil
+	// check for valid auth
+	if auth.IsValid == false {
+		http.Error(w, "401 unauthorized.", http.StatusUnauthorized)
+		log.Println("WARN " + handlerName + " - 401 unauthorized.")
+		return structs.Auth{IsValid: false, UID: ""}
+	}
+	return auth
 }
 
 // GetUserProfileHandler returns user data
@@ -40,36 +55,19 @@ func GetUserProfileHandler(w http.ResponseWriter, r *http.Request) {
 	return
 	//FIXME
 
-	// validate session token
+	// validate user request
 	sessionToken := r.Header.Get("Session-Token")
-	if sessionToken == "" {
-		http.Error(w, "428 Precondition Required - Session-Token header Missing.", http.StatusPreconditionRequired)
-		log.Println("Token Missing")
-		return
-	}
-
-	// get UID from session token (auth service)
-	auth, err := getUID(sessionToken)
-	if err != nil {
-		http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
-		log.Println("ERROR - Auth: " + err.Error())
-		return
-	}
-	// respond with 401 if Auth response says token is invalid
+	auth := isRequestValid(w, sessionToken, "GetUserProfileHandler()")
 	if auth.IsValid == false {
-		http.Error(w, "401 unauthorized.", http.StatusUnauthorized)
-		log.Println("401 unauthorized.")
 		return
 	}
-
 	//request user data from backend
 	backResp, err := http.Get("http://" + backendAddress + "/userInfo/" + auth.UID)
 	if err != nil {
 		http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
-		log.Println("ERROR - Backend: " + err.Error())
+		log.Println("ERROR: GetUserProfileHandler() - Backend: " + err.Error())
 		return
 	}
-
 	//return backend response
 	backBody, _ := ioutil.ReadAll(backResp.Body)
 	fmt.Fprintf(w, string(backBody))
@@ -81,36 +79,19 @@ func GetUserBaselineHandler(w http.ResponseWriter, r *http.Request) {
 	return
 	//FIXME
 
-	// validate session token
+	// validate user request
 	sessionToken := r.Header.Get("Session-Token")
-	if sessionToken == "" {
-		http.Error(w, "428 Precondition Required - Session-Token header Missing.", http.StatusPreconditionRequired)
-		log.Println("Token Missing")
-		return
-	}
-
-	// get UID from session token (auth service)
-	auth, err := getUID(sessionToken)
-	if err != nil {
-		http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
-		log.Println("ERROR - Auth: " + err.Error())
-		return
-	}
-	// respond with 401 if Auth response says token is invalid
+	auth := isRequestValid(w, sessionToken, "GetUserBaselineHandler()")
 	if auth.IsValid == false {
-		http.Error(w, "401 unauthorized.", http.StatusUnauthorized)
-		log.Println("401 unauthorized.")
 		return
 	}
-
 	//request user data from backend
 	backResp, err := http.Get("http://" + backendAddress + "/userInfo/" + auth.UID + "/base")
 	if err != nil {
 		http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
-		log.Println("ERROR - Backend: " + err.Error())
+		log.Println("ERROR: GetUserBaselineHandler() - Backend: " + err.Error())
 		return
 	}
-
 	//return backend response
 	backBody, _ := ioutil.ReadAll(backResp.Body)
 	fmt.Fprintf(w, string(backBody))
@@ -121,10 +102,9 @@ func SubmitProfileHandler(w http.ResponseWriter, r *http.Request) {
 	// parse form data
 	if err := r.ParseForm(); err != nil {
 		http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
-		log.Printf("ParseForm() err: %v", err)
+		log.Printf("ERROR: SubmitProfileHandler() - ParseForm() err: %v", err)
 		return
 	}
-
 	var userInfo structs.UserInfo
 	//extract form data
 	userInfo.FirstName = r.FormValue("firstName")
@@ -135,38 +115,24 @@ func SubmitProfileHandler(w http.ResponseWriter, r *http.Request) {
 	userInfo.LeanBodyMass, _ = strconv.Atoi(r.FormValue("leanBodyMass"))
 	userInfo.Age, _ = strconv.Atoi(r.FormValue("age"))
 	userInfo.Gender = r.FormValue("gender")
-
+	// validate user request
 	sessionToken := r.FormValue("Session-Token")
-	log.Println("session: " + sessionToken)
-
+	auth := isRequestValid(w, sessionToken, "SubmitProfileHandler()")
+	if auth.IsValid == false {
+		return
+	}
 	//format form data in JSON UserInfo format
 	userInfoJSON, err := json.Marshal(userInfo)
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	// get UID from session token (auth service)
-	auth, err := getUID(sessionToken)
-	if err != nil {
-		http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
-		log.Println("ERROR - Auth: " + err.Error())
-		return
-	}
-	// respond with 401 if Auth response says token is invalid
-	if auth.IsValid == false {
-		http.Error(w, "401 unauthorized.", http.StatusUnauthorized)
-		log.Println("401 unauthorized.")
-		return
-	}
-
 	//post user data to backend
 	backResp, err := http.Post("http://"+backendAddress+"/userInfo/"+auth.UID, "application/json", bytes.NewBuffer(userInfoJSON))
 	if err != nil {
 		http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
-		log.Println("ERROR - Backend: " + err.Error())
+		log.Println("ERROR: SubmitProfileHandler() - Backend: " + err.Error())
 		return
 	}
-
 	//return backend Response 	//TODO: make this check backend response code and return based off (update backend first)
 	backBody, _ := ioutil.ReadAll(backResp.Body)
 	fmt.Fprintf(w, string(backBody))
