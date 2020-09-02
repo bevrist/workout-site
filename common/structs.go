@@ -17,3 +17,32 @@ type UserInfo struct {
 	Age          int
 	Gender       string
 }
+
+//Client holds user information in the same format as the Mongo database
+type Client struct {
+	UID string
+	FirstName string
+	LastName string
+	Weight int
+	WaistCirc int
+	HeightInches int
+	LeanBodyMass int
+	Age int
+	Gender string
+	Week []Week
+}
+
+type Week struct {
+	Day []Day
+}
+
+type Day struct {
+	Fat int
+	Carbs int
+	Protein	int
+	TotalCalories int
+	DayCalorie int
+	Weight int
+	Cardio string
+	WeightTraining string
+}

@@ -1,7 +1,5 @@
 # TODO
 
-- have docker minify js on run
-
 ## frontend
 - modify frontend endpoints
     - consolidate submitUserProfile & getUserProfile
