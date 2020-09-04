@@ -59,27 +59,74 @@ func GetUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 //UpdateUserInfoHandler updates user info from POST data
 func UpdateUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 	// extract UID from URL
-	// vars := mux.Vars(r)
-	// UID := vars["UID"]
+	vars := mux.Vars(r)
+	UID := vars["UID"]
 
 	// unmarshal the body of POST request as a Client struct
 	reqBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		log.Fatal("UpdateUserInfoHandler: " + err.Error())
 	}
-	var userInfo structs.UserInfo
-	err = json.Unmarshal(reqBody, &userInfo)
+	var client structs.Client
+	err = json.Unmarshal(reqBody, &client)
 	if err != nil {
 		log.Fatal("UpdateUserInfoHandler: " + err.Error())
 	}
+	client.UID = UID
 
-	//TODO update info in db
-	//if user doesnt exist, create
-	//update user with data
+	//TODO: check if any user info in userInfo struct is nil and populate with existing user info
 
-	//print received data to output //FIXME remove
-	out, _ := json.Marshal(userInfo)
-	log.Printf("%v\n", string(out))
+	//Check if UID exists in DB
+	// Command to filter Document according to UID
+	filter := bson.M{"uid": UID}
+
+	// Query Documents that match uid from filter
+	filterCursor, err := clientsCollection.Find(ctx, filter)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Create splice to hold the data that was queried from the Find Command
+	var finduid []structs.Client
+
+	//Present ALL cases that match the filter and store them in client
+	if err = filterCursor.All(ctx, &finduid); err != nil {
+		log.Fatal(err)
+	}
+
+	//if no weekly user data exists, populate with baseline data
+	if len(finduid) == 0 {
+		log.Println("new doc created!")
+		_, err := clientsCollection.InsertOne(ctx, bson.M{"uid": UID})
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		//update filter with new doc with matching UID
+		filterCursor, err = clientsCollection.Find(ctx, filter)
+		if err != nil {
+			log.Fatal(err)
+		}
+		var finduid []structs.Client
+		if err = filterCursor.All(ctx, &finduid); err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	// myBson, _ := bson.Marshal(&client)
+	//yoBson := bson.D{
+	//{Key: "$set", Value: client}}
+	//}
+	// := bson.M{"$set": bson.M{client}}
+	//log.Println(a)
+	// log.Println(string(a))
+	//bson.MarshalAppend
+	// clientsCollection.InsertOne(ctx, myBson)
+	//options.Update().SetUpsert(true)
+	result, _ := clientsCollection.UpdateOne(ctx, filter, bson.D{{Key: "$set", Value: client}})
+	log.Println(result)
+	// json.NewEncoder(response).Encode(result)
+	fmt.Fprint(w, "ok")
 }
 
 func main() {
@@ -91,7 +138,7 @@ func main() {
 		listenAddress = "0.0.0.0:8050"
 	}
 	if databaseAddress == "" {
-		databaseAddress = "localhost:27017"
+		databaseAddress = "34.94.73.0:27017"
 	}
 
 	uri = "mongodb://adminz:cheeksbutt@" + databaseAddress + "/workoutsite/?authSource=admin"

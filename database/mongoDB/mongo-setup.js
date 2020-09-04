@@ -12,7 +12,7 @@ db.clients.insert({
   "gender": "male",
   "week": [
     {
-      "Day": [            // Week one
+      "day": [            // Week one
         {
           "fat": 10,
           "carbs": 10,
