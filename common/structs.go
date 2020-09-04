@@ -20,29 +20,25 @@ type UserInfo struct {
 
 //Client holds user information in the same format as the Mongo database
 type Client struct {
-	UID string
-	FirstName string
-	LastName string
-	Weight int
-	WaistCirc int
+	UID          string
+	FirstName    string `bson:"first_name"`
+	LastName     string `bson:"last_name"`
+	Weight       int
+	WaistCirc    float64
 	HeightInches int
 	LeanBodyMass int
-	Age int
-	Gender string
-	Week []Week
-}
-
-type Week struct {
-	Day []Day
-}
-
-type Day struct {
-	Fat int
-	Carbs int
-	Protein	int
-	TotalCalories int
-	DayCalorie int
-	Weight int
-	Cardio string
-	WeightTraining string
+	Age          int
+	Gender       string
+	Week         []struct {
+		Day []struct {
+			Fat            int
+			Carbs          int
+			Protein        int
+			TotalCalories  int    `bson:"total_calories"`
+			DayCalorie     string `bson:"day_calorie"`
+			Weight         int
+			Cardio         string
+			WeightTraining string `bson:"weight_training"`
+		}
+	}
 }

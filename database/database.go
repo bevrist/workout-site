@@ -34,21 +34,21 @@ var client *mongo.Client
 var workoutsitedb *mongo.Database
 var clientsCollection *mongo.Collection
 
-//GetUserInfoHandler returns json object of user data
+//GetUserInfoHandler returns json object of user data, or null if UID does not exist
 func GetUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 	//extract UID from URL
 	vars := mux.Vars(r)
 	UID := vars["UID"]
 
+	// find document with matching UID
 	filter := bson.M{"uid": UID}
-
 	filterCursor, err := clientsCollection.Find(ctx, filter)
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	// store found document in client struct
 	var client []structs.Client
-
 	if err = filterCursor.All(ctx, &client); err != nil {
 		log.Fatal(err)
 	}
@@ -59,8 +59,8 @@ func GetUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 //UpdateUserInfoHandler updates user info from POST data
 func UpdateUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 	// extract UID from URL
-	vars := mux.Vars(r)
-	UID := vars["UID"]
+	// vars := mux.Vars(r)
+	// UID := vars["UID"]
 
 	// unmarshal the body of POST request as a Client struct
 	reqBody, err := ioutil.ReadAll(r.Body)
@@ -74,8 +74,8 @@ func UpdateUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//TODO update info in db
-		//if user doesnt exist, create
-		//update user with data
+	//if user doesnt exist, create
+	//update user with data
 
 	//print received data to output //FIXME remove
 	out, _ := json.Marshal(userInfo)
@@ -104,18 +104,18 @@ func main() {
 
 	client, err = mongo.Connect(ctx, options.Client().ApplyURI(uri))
 	if err != nil {
-		panic(err)
+		log.Fatal("ERROR: Creating MongoDB connection failed: " + err.Error())
 	}
 
 	defer func() {
 		if err = client.Disconnect(ctx); err != nil {
-			panic(err)
+			log.Fatal("ERROR: Disconnect from MongoDB failed: " + err.Error())
 		}
 	}()
 
 	// Ping the primary
 	if err := client.Ping(ctx, readpref.Primary()); err != nil {
-		panic(err)
+		log.Fatal("ERROR: Connection to MongoDB failed: " + err.Error())
 	}
 	log.Printf("Connected to Database at: " + databaseAddress)
 

@@ -1,5 +1,8 @@
 # TODO
 
+## auth
+- find way to pass credentials using env vars
+
 ## frontend
 - modify frontend endpoints
     - consolidate submitUserProfile & getUserProfile
@@ -20,7 +23,4 @@
 ## all
 - add better error messages
     - add error ID to all error messages and ensure error is forwarded to user
-- add prometheus logging
-
-## database
-- add testUID user
+- add prometheus logging?

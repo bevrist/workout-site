@@ -13,10 +13,10 @@ func TestApiVersion(t *testing.T) {
 		t.Fail()
 	}
 	// Check the response body is what we expect.
-	expected := `{"apiVersion":1.0}`
+	EXPECTED := `{"apiVersion":1.0}`
 	respBody, _ := ioutil.ReadAll(req.Body)
-	if string(respBody) != expected {
-		t.Errorf("Auth returned unexpected body: got %v \nwant %v", string(respBody), expected)
+	if string(respBody) != EXPECTED {
+		t.Errorf("Auth returned unexpected body: got %v \nwant %v", string(respBody), EXPECTED)
 		t.Fail()
 	}
 }
@@ -28,10 +28,10 @@ func TestGetUID(t *testing.T) {
 		t.Fail()
 	}
 	// Check the response body is what we expect.
-	expected := `{"IsValid":true,"UID":"testUID"}`
+	EXPECTED := `{"IsValid":true,"UID":"testUID"}`
 	respBody, _ := ioutil.ReadAll(req.Body)
-	if string(respBody) != expected {
-		t.Errorf("Auth returned unexpected body: got %v \nwant %v", string(respBody), expected)
+	if string(respBody) != EXPECTED {
+		t.Errorf("Auth returned unexpected body: got %v \nwant %v", string(respBody), EXPECTED)
 		t.Fail()
 	}
 }
@@ -43,10 +43,10 @@ func TestGetUIDFail(t *testing.T) {
 		t.Fail()
 	}
 	// Check the response body is what we expect.
-	expected := `{"IsValid":false,"UID":""}`
+	EXPECTED := `{"IsValid":false,"UID":""}`
 	respBody, _ := ioutil.ReadAll(req.Body)
-	if string(respBody) != expected {
-		t.Errorf("Auth returned unexpected body: got %v \nwant %v", string(respBody), expected)
+	if string(respBody) != EXPECTED {
+		t.Errorf("Auth returned unexpected body: got %v \nwant %v", string(respBody), EXPECTED)
 		t.Fail()
 	}
 }
