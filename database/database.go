@@ -2,6 +2,11 @@ package main
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"log"
+	"net/http"
 	"os"
 	"strconv"
 	"time"
@@ -11,12 +16,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
-
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
-	"log"
-	"net/http"
 
 	"github.com/gorilla/mux"
 )
@@ -55,8 +54,13 @@ func GetUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 	UID := vars["UID"]
 	//get user collection from database
 	client := getUserCollection(UID)
+	//return "null" if getUserCollection is empty
+	if len(client) == 0 {
+		fmt.Fprintf(w, "null")
+		return
+	}
 	//return data to request
-	json.NewEncoder(w).Encode(client)
+	json.NewEncoder(w).Encode(client[0])
 }
 
 //updateUserDocument helper function which uploads Client struct to database
@@ -86,6 +90,11 @@ func UpdateUserProfileHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	client.UID = UID
 
+	//ensure client week array has correct capacity, fill with null week objects if necessary
+	for len(client.Week) < 24 {
+		client.Week = append(client.Week, structs.Week{})
+	}
+
 	//update profile information in server
 	updateUserDocument(client)
 
@@ -101,12 +110,12 @@ func UpdateUserBaselineHandler(w http.ResponseWriter, r *http.Request) {
 	// unmarshal the body of POST request as a Week struct
 	reqBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		log.Fatal("ERROR: UpdateUserProfileHandler: " + err.Error())
+		log.Fatal("ERROR: UpdateUserBaselineHandler: " + err.Error())
 	}
 	var clientWeek structs.Week
 	err = json.Unmarshal(reqBody, &clientWeek)
 	if err != nil {
-		log.Fatal("ERROR: UpdateUserProfileHandler: " + err.Error())
+		log.Fatal("ERROR: UpdateUserBaselineHandler: " + err.Error())
 	}
 	//get existing user data from db
 	userData := getUserCollection(UID)
@@ -115,6 +124,12 @@ func UpdateUserBaselineHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "update failed, UID does not exist.", http.StatusNotAcceptable)
 		return
 	}
+
+	//ensure client week array has correct capacity, fill with null week objects if necessary
+	for len(userData[0].Week) < 24 {
+		userData[0].Week = append(userData[0].Week, structs.Week{})
+	}
+
 	//update specific week in existing user data from database
 	userData[0].Week[weekToUpdate] = clientWeek
 	//update user information in server
@@ -175,5 +190,5 @@ func main() {
 	r.HandleFunc("/_healthz", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "ok") })
 	var handler http.Handler = r
 	log.Println("Backend listening at address " + listenAddress)
-	log.Fatal(http.ListenAndServe(listenAddress, handler))
+	log.Fatal("fail: ", http.ListenAndServe(listenAddress, handler))
 }
