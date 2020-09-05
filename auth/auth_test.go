@@ -3,6 +3,7 @@ package main
 import (
 	"io/ioutil"
 	"net/http"
+	"strings"
 	"testing"
 )
 
@@ -30,7 +31,7 @@ func TestGetUID(t *testing.T) {
 	// Check the response body is what we expect.
 	EXPECTED := `{"IsValid":true,"UID":"testUID"}`
 	respBody, _ := ioutil.ReadAll(req.Body)
-	if string(respBody) != EXPECTED {
+	if strings.TrimSpace(string(respBody)) != strings.TrimSpace(EXPECTED) {
 		t.Errorf("Auth returned unexpected body: got %v \nwant %v", string(respBody), EXPECTED)
 		t.Fail()
 	}
@@ -45,7 +46,7 @@ func TestGetUIDFail(t *testing.T) {
 	// Check the response body is what we expect.
 	EXPECTED := `{"IsValid":false,"UID":""}`
 	respBody, _ := ioutil.ReadAll(req.Body)
-	if string(respBody) != EXPECTED {
+	if strings.TrimSpace(string(respBody)) != strings.TrimSpace(EXPECTED) {
 		t.Errorf("Auth returned unexpected body: got %v \nwant %v", string(respBody), EXPECTED)
 		t.Fail()
 	}

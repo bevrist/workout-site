@@ -3,6 +3,9 @@
 ## auth
 - find way to pass credentials using env vars
 
+## daatabase
+- change reasonable post errors to non-fatal
+
 ## frontend
 - modify frontend endpoints
     - consolidate submitUserProfile & getUserProfile
