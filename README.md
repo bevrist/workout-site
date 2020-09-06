@@ -21,11 +21,15 @@ to run with docker compose, simply run `docker-compose up --build`
 ---
 
 # Tests:
+### Run all Integration Tests with `run_integration_tests.sh`  
+---
+## Individual Tests:
 **mongoDB:** `docker build -t mongodb-test -f ./database/mongoDB/Dockerfile . && docker run --rm -it -e MONGO_INITDB_ROOT_USERNAME=adminz -e MONGO_INITDB_ROOT_PASSWORD=cheeksbutt -p 27017:27017 mongodb-test`
 
-**Mongo-Express Debug:** `docker run -p 8081:8081 -e ME_CONFIG_MONGODB_ADMINUSERNAME=adminz -e ME_CONFIG_MONGODB_ADMINPASSWORD=cheeksbutt -e ME_CONFIG_MONGODB_SERVER=localhost mongo-express`
+**Mongo-Express Debug Container:** `docker run -p 8081:8081 -e ME_CONFIG_MONGODB_ADMINUSERNAME=adminz -e ME_CONFIG_MONGODB_ADMINPASSWORD=cheeksbutt -e ME_CONFIG_MONGODB_SERVER=localhost mongo-express`
 
 **Database:** `docker build -t database-test -f ./database/tests.Dockerfile . && docker run --rm -it -e DATABASE_ADDRESS=localhost:27017 database-test`  
+> Depends on mongoDB
 
 **Auth:** `docker build -t auth-test -f ./auth/tests.Dockerfile . && docker run --rm -it auth-test`  
 

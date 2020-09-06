@@ -42,7 +42,9 @@ func getUserCollection(UID string) []structs.Client {
 	// store found document in client struct
 	var client []structs.Client
 	if err = filterCursor.All(ctx, &client); err != nil {
-		log.Fatal("ERROR: getUserCollection: " + err.Error())
+		log.Println("ERROR: getUserCollection: " + err.Error())
+		var emptyClient []structs.Client
+		return emptyClient
 	}
 	return client
 }
@@ -64,13 +66,15 @@ func GetUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 //updateUserDocument helper function which uploads Client struct to database
-func updateUserDocument(client structs.Client) {
+func updateUserDocument(client structs.Client) bool {
 	opts := options.Update().SetUpsert(true) //update or insert document
 	filter := bson.M{"uid": client.UID}      //filter according to UID
 	_, err := clientsCollection.UpdateOne(context.TODO(), filter, bson.D{{Key: "$set", Value: client}}, opts)
 	if err != nil {
-		log.Fatal("ERROR: updateUserDocument: " + err.Error())
+		log.Println("ERROR: updateUserDocument: " + err.Error())
+		return false
 	}
+	return true
 }
 
 //UpdateUserProfileHandler updates user profile info from a Client object
@@ -86,12 +90,19 @@ func UpdateUserProfileHandler(w http.ResponseWriter, r *http.Request) {
 	var client structs.Client
 	err = json.Unmarshal(reqBody, &client)
 	if err != nil {
-		log.Fatal("ERROR: UpdateUserProfileHandler: " + err.Error())
+		log.Println("ERROR: UpdateUserProfileHandler: " + err.Error())
+		http.Error(w, "400 - invalid syntax.", http.StatusBadRequest)
+		return
 	}
 	client.UID = UID
 
 	//update profile information in server
-	updateUserDocument(client)
+	success := updateUserDocument(client)
+	if success == false {
+		log.Println("ERROR: UpdateUserProfileHandler: Upload to DB failed")
+		http.Error(w, "500 - Upload to DB Failed", http.StatusInternalServerError)
+		return
+	}
 
 	fmt.Fprint(w, "ok")
 }
@@ -110,7 +121,9 @@ func UpdateUserBaselineHandler(w http.ResponseWriter, r *http.Request) {
 	var clientWeek structs.Week
 	err = json.Unmarshal(reqBody, &clientWeek)
 	if err != nil {
-		log.Fatal("ERROR: UpdateUserBaselineHandler: " + err.Error())
+		log.Println("ERROR: UpdateUserBaselineHandler: " + err.Error())
+		http.Error(w, "400 - invalid syntax.", http.StatusBadRequest)
+		return
 	}
 	//get existing user data from db
 	userData := getUserCollection(UID)
@@ -128,7 +141,12 @@ func UpdateUserBaselineHandler(w http.ResponseWriter, r *http.Request) {
 	//update specific week in existing user data from database
 	userData[0].Week[weekToUpdate] = clientWeek
 	//update user information in server
-	updateUserDocument(userData[0])
+	success := updateUserDocument(userData[0])
+	if success == false {
+		log.Println("ERROR: UpdateUserBaselineHandler: Upload to DB failed")
+		http.Error(w, "500 - Upload to DB Failed", http.StatusInternalServerError)
+		return
+	}
 
 	fmt.Fprint(w, "ok")
 }

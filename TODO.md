@@ -2,6 +2,7 @@
 
 ## Database
 - make errors not crash app
+- update unit tests to marshal output to json instead of direct string compare
 
 ## auth
 - find way to pass credentials using env vars
