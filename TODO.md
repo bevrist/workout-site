@@ -1,9 +1,12 @@
 # TODO
 
+## Docs
+- update OpenAPI docs with database information
+
 ## auth
 - find way to pass credentials using env vars
 
-## daatabase
+## database
 - change reasonable post errors to non-fatal
 
 ## frontend

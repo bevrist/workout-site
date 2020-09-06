@@ -7,17 +7,17 @@ digraph G {
     Firebase [shape=Msquare];
     Frontend;
     Backend;
-    DB;
+    Database;
     Auth;
-    PostgreSQL [label="Postgres", shape=square];
+    MongoDB [shape=square];
 
     subgraph cluster_0 {
         color = white;
         label = "";
         Client -> Firebase, Frontend;
         Frontend -> Backend, Auth;
-        Backend -> DB;
-        DB -> PostgreSQL[minlen=0.5];
+        Backend -> Database;
+        Database -> MongoDB[minlen=0.5];
         Auth -> Firebase;
     }
 }

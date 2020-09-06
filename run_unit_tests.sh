@@ -14,11 +14,10 @@ wait
 
 # --- run all unit tests ---
 echo running tests...
-# mongoDB test container (in background)
-docker run --rm -d -e MONGO_INITDB_ROOT_USERNAME=adminz -e MONGO_INITDB_ROOT_PASSWORD=cheeksbutt -p 27017:27017 mongodb-test
-sleep 1
 # database unit test
+docker run --rm -d -e MONGO_INITDB_ROOT_USERNAME=adminz -e MONGO_INITDB_ROOT_PASSWORD=cheeksbutt -p 27017:27017 mongodb-test && sleep 1
 docker run --rm -it -e DATABASE_ADDRESS=host.docker.internal:27017 database-test
+docker stop $(docker ps | grep mongodb-test | cut -f 1 -d " ") &>/dev/null
 # auth unit test
 docker run --rm -it auth-test
 # frontend unit test

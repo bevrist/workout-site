@@ -69,7 +69,6 @@ func GetUIDHandler(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 	fmt.Fprintf(w, string(out))
-	log.Println(string(out))
 }
 
 func main() {

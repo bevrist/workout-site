@@ -90,11 +90,6 @@ func UpdateUserProfileHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	client.UID = UID
 
-	//ensure client week array has correct capacity, fill with null week objects if necessary
-	for len(client.Week) < 24 {
-		client.Week = append(client.Week, structs.Week{})
-	}
-
 	//update profile information in server
 	updateUserDocument(client)
 
@@ -189,6 +184,6 @@ func main() {
 	r.HandleFunc("/userBaseline/{week}/{UID}", UpdateUserBaselineHandler).Methods(http.MethodPost)
 	r.HandleFunc("/_healthz", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "ok") })
 	var handler http.Handler = r
-	log.Println("Backend listening at address " + listenAddress)
+	log.Println("Database listening at address " + listenAddress)
 	log.Fatal("fail: ", http.ListenAndServe(listenAddress, handler))
 }
