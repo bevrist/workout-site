@@ -1,0 +1,512 @@
+openapi: 3.0.0
+info:
+  title: database
+  version: '1.0'
+  contact:
+    name: Brett Evrist
+    email: brett@brettevrist.net
+  description: ''
+servers:
+  - url: 'http://localhost:8050'
+paths:
+  /apiVersion:
+    get:
+      summary: Get API Version
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  apiVersion:
+                    type: number
+      operationId: get-apiVersion
+      description: Returns the symantec version number of the api
+  '/userInfo/{UID}':
+    parameters:
+      - schema:
+          type: string
+        name: UID
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags: []
+      operationId: get-userInfo
+      description: Returns user data from database
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  UID:
+                    type: string
+                  FirstName:
+                    type: string
+                  LastName:
+                    type: string
+                  Weight:
+                    type: number
+                  WaistCirc:
+                    type: number
+                  HeightInches:
+                    type: number
+                  LeanBodyMass:
+                    type: number
+                  Age:
+                    type: number
+                  Gender:
+                    type: string
+                  Week:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        Day:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              Fat:
+                                type: number
+                              Carbs:
+                                type: number
+                              Protein:
+                                type: number
+                              TotalCalories:
+                                type: number
+                              DayCalorie:
+                                type: string
+                              Weight:
+                                type: number
+                              Cardio:
+                                type: string
+                              WeightTraining:
+                                type: string
+              examples:
+                example:
+                  value:
+                    UID: testUID
+                    FirstName: Anthony
+                    LastName: Hanna
+                    Weight: 215
+                    WaistCirc: 35.5
+                    HeightInches: 75
+                    LeanBodyMass: 15
+                    Age: 20
+                    Gender: male
+                    Week:
+                      - Day:
+                          - Fat: 10
+                            Carbs: 10
+                            Protein: 10
+                            TotalCalories: 30
+                            DayCalorie: normal
+                            Weight: 123
+                            Cardio: missed
+                            WeightTraining: 'yes'
+                          - Fat: 20
+                            Carbs: 20
+                            Protein: 20
+                            TotalCalories: 32
+                            DayCalorie: normal
+                            Weight: 123
+                            Cardio: missed
+                            WeightTraining: 'no'
+                          - Fat: 30
+                            Carbs: 30
+                            Protein: 30
+                            TotalCalories: 33
+                            DayCalorie: high
+                            Weight: 123
+                            Cardio: missed
+                            WeightTraining: 'yes'
+                          - Fat: 40
+                            Carbs: 40
+                            Protein: 40
+                            TotalCalories: 34
+                            DayCalorie: normal
+                            Weight: 123
+                            Cardio: missed
+                            WeightTraining: 'yes'
+                          - Fat: 10
+                            Carbs: 10
+                            Protein: 10
+                            TotalCalories: 30
+                            DayCalorie: normal
+                            Weight: 123
+                            Cardio: missed
+                            WeightTraining: 'yes'
+                          - Fat: 10
+                            Carbs: 10
+                            Protein: 10
+                            TotalCalories: 30
+                            DayCalorie: normal
+                            Weight: 123
+                            Cardio: missed
+                            WeightTraining: 'yes'
+                          - Fat: 100
+                            Carbs: 100
+                            Protein: 100
+                            TotalCalories: 300
+                            DayCalorie: normal
+                            Weight: 321
+                            Cardio: missed
+                            WeightTraining: 'no'
+                      - Day:
+                          - Fat: 11
+                            Carbs: 11
+                            Protein: 11
+                            TotalCalories: 31
+                            DayCalorie: normal
+                            Weight: 222
+                            Cardio: missed
+                            WeightTraining: 'yes'
+                          - Fat: 10
+                            Carbs: 10
+                            Protein: 10
+                            TotalCalories: 30
+                            DayCalorie: normal
+                            Weight: 123
+                            Cardio: missed
+                            WeightTraining: 'no'
+                      - Day:
+                          - Fat: 110
+                            Carbs: 110
+                            Protein: 110
+                            TotalCalories: 310
+                            DayCalorie: normal
+                            Weight: 123
+                            Cardio: missed
+                            WeightTraining: 'yes'
+                          - Fat: 10
+                            Carbs: 10
+                            Protein: 10
+                            TotalCalories: 30
+                            DayCalorie: normal
+                            Weight: 123
+                            Cardio: missed
+                            WeightTraining: 'yes'
+    post:
+      summary: ''
+      operationId: post-userInfo
+      description: 'Updates user data on database, either entire user data or omitting Week array'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                UID:
+                  type: string
+                FirstName:
+                  type: string
+                LastName:
+                  type: string
+                Weight:
+                  type: number
+                WaistCirc:
+                  type: number
+                HeightInches:
+                  type: number
+                LeanBodyMass:
+                  type: number
+                Age:
+                  type: number
+                Gender:
+                  type: string
+                Week:
+                  type: array
+                  description: Can Be Omitted
+                  items:
+                    type: object
+                    properties:
+                      Day:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            Fat:
+                              type: number
+                            Carbs:
+                              type: number
+                            Protein:
+                              type: number
+                            TotalCalories:
+                              type: number
+                            DayCalorie:
+                              type: string
+                            Weight:
+                              type: number
+                            Cardio:
+                              type: string
+                            WeightTraining:
+                              type: string
+            examples:
+              example:
+                value:
+                  UID: testUID
+                  FirstName: Test
+                  LastName: User
+                  Weight: 111
+                  WaistCirc: 111.1
+                  HeightInches: 111
+                  LeanBodyMass: 111
+                  Age: 111
+                  Gender: female
+              example-full:
+                value:
+                  UID: testUID
+                  FirstName: Test
+                  LastName: User
+                  Weight: 111
+                  WaistCirc: 111.1
+                  HeightInches: 111
+                  LeanBodyMass: 111
+                  Age: 111
+                  Gender: female
+                  Week:
+                    - Day:
+                        - Fat: 10
+                          Carbs: 10
+                          Protein: 10
+                          TotalCalories: 30
+                          DayCalorie: normal
+                          Weight: 123
+                          Cardio: missed
+                          WeightTraining: 'yes'
+                        - Fat: 20
+                          Carbs: 20
+                          Protein: 20
+                          TotalCalories: 32
+                          DayCalorie: normal
+                          Weight: 123
+                          Cardio: missed
+                          WeightTraining: 'no'
+                        - Fat: 30
+                          Carbs: 30
+                          Protein: 30
+                          TotalCalories: 33
+                          DayCalorie: high
+                          Weight: 123
+                          Cardio: missed
+                          WeightTraining: 'yes'
+                        - Fat: 40
+                          Carbs: 40
+                          Protein: 40
+                          TotalCalories: 34
+                          DayCalorie: normal
+                          Weight: 123
+                          Cardio: missed
+                          WeightTraining: 'yes'
+                        - Fat: 10
+                          Carbs: 10
+                          Protein: 10
+                          TotalCalories: 30
+                          DayCalorie: normal
+                          Weight: 123
+                          Cardio: missed
+                          WeightTraining: 'yes'
+                        - Fat: 10
+                          Carbs: 10
+                          Protein: 10
+                          TotalCalories: 30
+                          DayCalorie: normal
+                          Weight: 123
+                          Cardio: missed
+                          WeightTraining: 'yes'
+                        - Fat: 100
+                          Carbs: 100
+                          Protein: 100
+                          TotalCalories: 300
+                          DayCalorie: normal
+                          Weight: 321
+                          Cardio: missed
+                          WeightTraining: 'no'
+        description: ''
+      responses:
+        '200':
+          description: OK
+  '/userBaseline/{week}/{UID}':
+    parameters:
+      - schema:
+          type: integer
+          exclusiveMinimum: false
+          minimum: 0
+          maximum: 23
+        name: week
+        in: path
+        required: true
+        description: Starts at 0
+      - schema:
+          type: string
+        name: UID
+        in: path
+        required: true
+    post:
+      summary: ''
+      operationId: post-userBaseline
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                example:
+                  value:
+                    Day:
+                      - Fat: 321
+                        Carbs: 321
+                        Protein: 321
+                        TotalCalories: 321
+                        DayCalorie: high
+                        Weight: 312
+                        Cardio: missed
+                        WeightTraining: 'no'
+                      - Fat: 20
+                        Carbs: 20
+                        Protein: 20
+                        TotalCalories: 32
+                        DayCalorie: normal
+                        Weight: 123
+                        Cardio: missed
+                        WeightTraining: 'no'
+                      - Fat: 30
+                        Carbs: 30
+                        Protein: 30
+                        TotalCalories: 33
+                        DayCalorie: high
+                        Weight: 123
+                        Cardio: missed
+                        WeightTraining: 'yes'
+                      - Fat: 40
+                        Carbs: 40
+                        Protein: 40
+                        TotalCalories: 34
+                        DayCalorie: normal
+                        Weight: 123
+                        Cardio: missed
+                        WeightTraining: 'yes'
+                      - Fat: 10
+                        Carbs: 10
+                        Protein: 10
+                        TotalCalories: 30
+                        DayCalorie: normal
+                        Weight: 123
+                        Cardio: missed
+                        WeightTraining: 'yes'
+                      - Fat: 10
+                        Carbs: 10
+                        Protein: 10
+                        TotalCalories: 30
+                        DayCalorie: normal
+                        Weight: 123
+                        Cardio: missed
+                        WeightTraining: 'yes'
+                      - Fat: 888
+                        Carbs: 888
+                        Protein: 888
+                        TotalCalories: 888
+                        DayCalorie: high
+                        Weight: 888
+                        Cardio: missed
+                        WeightTraining: testSuccess
+      description: Used to upload a week object on the user profile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Day:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      Fat:
+                        type: number
+                      Carbs:
+                        type: number
+                      Protein:
+                        type: number
+                      TotalCalories:
+                        type: number
+                      DayCalorie:
+                        type: string
+                      Weight:
+                        type: number
+                      Cardio:
+                        type: string
+                      WeightTraining:
+                        type: string
+            examples:
+              example:
+                value:
+                  Day:
+                    - Fat: 777
+                      Carbs: 777
+                      Protein: 777
+                      TotalCalories: 999
+                      DayCalorie: normal
+                      Weight: 999
+                      Cardio: missed
+                      WeightTraining: 'yes'
+                    - Fat: 20
+                      Carbs: 20
+                      Protein: 20
+                      TotalCalories: 32
+                      DayCalorie: normal
+                      Weight: 123
+                      Cardio: missed
+                      WeightTraining: 'no'
+                    - Fat: 30
+                      Carbs: 30
+                      Protein: 30
+                      TotalCalories: 33
+                      DayCalorie: high
+                      Weight: 123
+                      Cardio: missed
+                      WeightTraining: 'yes'
+                    - Fat: 40
+                      Carbs: 40
+                      Protein: 40
+                      TotalCalories: 34
+                      DayCalorie: normal
+                      Weight: 123
+                      Cardio: missed
+                      WeightTraining: 'yes'
+                    - Fat: 10
+                      Carbs: 10
+                      Protein: 10
+                      TotalCalories: 30
+                      DayCalorie: normal
+                      Weight: 123
+                      Cardio: missed
+                      WeightTraining: 'yes'
+                    - Fat: 10
+                      Carbs: 10
+                      Protein: 10
+                      TotalCalories: 30
+                      DayCalorie: normal
+                      Weight: 123
+                      Cardio: missed
+                      WeightTraining: 'yes'
+                    - Fat: 123
+                      Carbs: 123
+                      Protein: 123
+                      TotalCalories: 123
+                      DayCalorie: low
+                      Weight: 123
+                      Cardio: missed
+                      WeightTraining: 'yes'
+        description: ''
+components:
+  schemas: {}

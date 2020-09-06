@@ -1,7 +1,7 @@
 # TODO
 
-## Docs
-- update OpenAPI docs with database information
+## Database
+- make errors not crash app
 
 ## auth
 - find way to pass credentials using env vars
