@@ -163,7 +163,7 @@ func main() {
 	r.HandleFunc("/getUserProfile", GetUserProfileHandler).Methods(http.MethodGet, http.MethodHead)
 	r.HandleFunc("/getUserBaseline", GetUserBaselineHandler).Methods(http.MethodGet, http.MethodHead)
 	r.HandleFunc("/submitProfile", SubmitProfileHandler).Methods(http.MethodPost)
-	r.HandleFunc("/_healthz", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "ok") })
+	r.HandleFunc("/healthz", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "ok") })
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./www/")))
 	var handlers http.Handler = r
 	log.Println("Frontend listening at address " + listenAddress)

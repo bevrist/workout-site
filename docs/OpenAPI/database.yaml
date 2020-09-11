@@ -2,17 +2,16 @@ openapi: 3.0.0
 info:
   title: database
   version: '1.0'
-  contact:
-    name: Brett Evrist
-    email: brett@brettevrist.net
-  description: ''
+  description: Exposes database through API and handles all direct contact with database
+  contact: {}
 servers:
   - url: 'http://localhost:8050'
 paths:
   /apiVersion:
     get:
       summary: Get API Version
-      tags: []
+      tags:
+        - workout-app
       responses:
         '200':
           description: OK
@@ -32,9 +31,11 @@ paths:
         name: UID
         in: path
         required: true
+        description: Identifier of user in database
     get:
-      summary: Your GET endpoint
-      tags: []
+      summary: Get User Info
+      tags:
+        - workout-app
       operationId: get-userInfo
       description: Returns user data from database
       responses:
@@ -194,7 +195,7 @@ paths:
                             Cardio: missed
                             WeightTraining: 'yes'
     post:
-      summary: ''
+      summary: Update User Info
       operationId: post-userInfo
       description: 'Updates user data on database, either entire user data or omitting Week array'
       requestBody:
@@ -333,6 +334,8 @@ paths:
       responses:
         '200':
           description: OK
+      tags:
+        - workout-app
   '/userBaseline/{week}/{UID}':
     parameters:
       - schema:
@@ -343,14 +346,15 @@ paths:
         name: week
         in: path
         required: true
-        description: Starts at 0
+        description: 'Week to update, Starts at 0'
       - schema:
           type: string
         name: UID
         in: path
         required: true
+        description: Identifier of user in database
     post:
-      summary: ''
+      summary: Get User Baseline
       operationId: post-userBaseline
       responses:
         '200':
@@ -508,5 +512,9 @@ paths:
                       Cardio: missed
                       WeightTraining: 'yes'
         description: ''
+      tags:
+        - workout-app
 components:
   schemas: {}
+tags:
+  - name: workout-app

@@ -200,7 +200,7 @@ func main() {
 	r.HandleFunc("/userInfo/{UID}", GetUserInfoHandler).Methods(http.MethodGet, http.MethodHead)
 	r.HandleFunc("/userInfo/{UID}", UpdateUserProfileHandler).Methods(http.MethodPost)
 	r.HandleFunc("/userBaseline/{week}/{UID}", UpdateUserBaselineHandler).Methods(http.MethodPost)
-	r.HandleFunc("/_healthz", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "ok") })
+	r.HandleFunc("/healthz", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "ok") })
 	var handler http.Handler = r
 	log.Println("Database listening at address " + listenAddress)
 	log.Fatal("fail: ", http.ListenAndServe(listenAddress, handler))

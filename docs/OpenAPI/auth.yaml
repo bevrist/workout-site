@@ -3,6 +3,7 @@ info:
   title: auth
   version: '1.0'
   description: Handles user authetication and session tokens
+  contact: {}
 servers:
   - url: 'http://localhost:8070'
 paths:
@@ -13,9 +14,11 @@ paths:
         name: SessionToken
         in: path
         required: true
+        description: User Session-Token from client device/browser
     get:
       summary: Get UID
-      tags: []
+      tags:
+        - workout-app
       responses:
         '200':
           description: OK
@@ -44,7 +47,8 @@ paths:
   /apiVersion:
     get:
       summary: Get API Version
-      tags: []
+      tags:
+        - workout-app
       responses:
         '200':
           description: OK
@@ -62,3 +66,5 @@ paths:
       description: Returns the symantec version number of the api
 components:
   schemas: {}
+tags:
+  - name: workout-app

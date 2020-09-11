@@ -2,9 +2,8 @@ openapi: 3.0.0
 info:
   title: frontend
   version: '1.0'
-  contact:
-    name: Brett Evrist
-    email: brett@brettevrist.net
+  contact: {}
+  description: Exposes application API and hosts website
 servers:
   - url: 'http://localhost:8080'
 paths:
@@ -49,11 +48,14 @@ paths:
               required:
                 - Session-Token
         description: ''
+      tags:
+        - workout-app
     parameters: []
   /getUserProfile:
     get:
       summary: Get User Profile
-      tags: []
+      tags:
+        - workout-app
       responses:
         '200':
           description: OK
@@ -106,7 +108,8 @@ paths:
   /apiVersion:
     get:
       summary: Get API Version
-      tags: []
+      tags:
+        - workout-app
       responses:
         '200':
           description: OK
@@ -123,7 +126,8 @@ paths:
   /getUserBaseline:
     get:
       summary: Get User Baseline
-      tags: []
+      tags:
+        - workout-app
       responses:
         '200':
           description: OK
@@ -180,7 +184,8 @@ paths:
         required: true
     get:
       summary: Get User Weekly Tracking
-      tags: []
+      tags:
+        - workout-app
       responses:
         '200':
           description: OK
@@ -191,8 +196,6 @@ paths:
                 properties:
                   'TODO: finish weekly tracking schema':
                     type: string
-              examples:
-                example: {}
         '401':
           description: Unauthorized
         '428':
@@ -221,10 +224,12 @@ paths:
                 Session-Token:
                   type: string
                   description: The session token of the currently logged in user
-                '':
-                  type: string
               required:
                 - Session-Token
         description: 'TODO: finish userWeeklyTracking-post'
+      tags:
+        - workout-app
 components:
   schemas: {}
+tags:
+  - name: workout-app

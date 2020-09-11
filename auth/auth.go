@@ -83,18 +83,18 @@ func main() {
 	opt := option.WithCredentialsFile("./workout-app-8b023-firebase-adminsdk-jh1ev-bbfc733122.json") //load credentials file
 	app, err := firebase.NewApp(context.Background(), nil, opt)
 	if err != nil {
-		log.Fatalf("error initializing app: %v\n", err)
+		log.Fatalf("error initializing firebase app: %v\n", err)
 	}
 	client, err = app.Auth(context.Background())
 	if err != nil {
-		log.Fatalf("error getting Auth client: %v\n", err)
+		log.Fatalf("error getting firebase Auth client: %v\n", err)
 	}
 
 	//specify routes and start http server
 	r := mux.NewRouter()
 	r.HandleFunc("/apiVersion", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, `{"apiVersion":`+apiVersion+"}") })
 	r.HandleFunc("/getUID/{SessionToken}", GetUIDHandler).Methods(http.MethodGet, http.MethodHead)
-	r.HandleFunc("/_healthz", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "ok") })
+	r.HandleFunc("/healthz", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "ok") })
 	var handler http.Handler = r
 	log.Printf("Auth listening at address " + listenAddress)
 	log.Fatal(http.ListenAndServe(listenAddress, handler))

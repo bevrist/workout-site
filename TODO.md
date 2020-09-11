@@ -1,5 +1,9 @@
 # TODO
 
+- break frontend website into frontend-web, make frontend only a REST API
+- Update Docker-compose.yml with database
+- verify all startup failures result in container termination 
+
 ## Database
 - make errors not crash app
 - update unit tests to marshal output to json instead of direct string compare
@@ -11,6 +15,7 @@
 - change reasonable post errors to non-fatal
 
 ## frontend
+- refactor from structs.UserInfo to structs.Client
 - modify frontend endpoints
     - consolidate submitUserProfile & getUserProfile
 - write tests for frontend
@@ -31,3 +36,4 @@
 - add better error messages
     - add error ID to all error messages and ensure error is forwarded to user
 - add prometheus logging?
+- grafana monitoring

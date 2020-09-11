@@ -3,13 +3,15 @@ info:
   title: backend
   version: '1.0'
   description: Processes user data
+  contact: {}
 servers:
   - url: 'http://localhost:8090'
 paths:
   '/userInfo/{UID}':
     get:
       summary: Get User Info
-      tags: []
+      tags:
+        - workout-app
       responses:
         '200':
           description: OK
@@ -35,10 +37,10 @@ paths:
                   value:
                     FirstName: Anthony
                     LastName: Hannah
-                    Weight: 215
-                    WaistCirc: 0
-                    HeightInches: 72
-                    LeanBodyMass: 15
+                    Weight: '215'
+                    WaistCirc: '0'
+                    HeightInches: '72'
+                    LeanBodyMass: '15'
                     Age: 27
                     Gender: male
       operationId: get-userInfo
@@ -70,16 +72,20 @@ paths:
                   type: integer
                 LeanBodyMass:
                   type: integer
+      tags:
+        - workout-app
     parameters:
       - schema:
           type: string
         name: UID
         in: path
         required: true
+        description: Identifier of user in database
   /apiVersion:
     get:
       summary: Get API Version
-      tags: []
+      tags:
+        - workout-app
       responses:
         '200':
           description: OK
@@ -99,9 +105,11 @@ paths:
         name: UID
         in: path
         required: true
+        description: Identifier of user in database
     get:
       summary: Your GET endpoint
-      tags: []
+      tags:
+        - workout-app
       responses:
         '200':
           description: OK
@@ -180,3 +188,5 @@ paths:
       description: Get user baseline information
 components:
   schemas: {}
+tags:
+  - name: workout-app
