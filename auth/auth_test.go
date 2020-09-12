@@ -1,10 +1,12 @@
 package main
 
 import (
+	"encoding/json"
 	"io/ioutil"
 	"net/http"
-	"strings"
 	"testing"
+
+	structs "../common"
 )
 
 func TestApiVersion(t *testing.T) {
@@ -28,11 +30,15 @@ func TestGetUID(t *testing.T) {
 		t.Errorf("Connection failed: %v", err)
 		t.Fail()
 	}
-	// Check the response body is what we expect.
-	EXPECTED := `{"IsValid":true,"UID":"testUID"}`
-	respBody, _ := ioutil.ReadAll(req.Body)
-	if strings.TrimSpace(string(respBody)) != strings.TrimSpace(EXPECTED) {
-		t.Errorf("Auth returned unexpected body: got %v \nwant %v", string(respBody), EXPECTED)
+	//unmarshal response into struct
+	reqBody, _ := ioutil.ReadAll(req.Body)
+	var reqAuth, expectedAuth structs.Auth
+	json.Unmarshal(reqBody, &reqAuth)
+	//compare received struct with expected struct
+	EXPECTED := []byte(`{"IsValid":true, "UID":"testUID"}`)
+	json.Unmarshal(EXPECTED, &expectedAuth)
+	if reqAuth != expectedAuth {
+		t.Errorf("Auth returned unexpected body: \ngot  %+v \nwant %+v", reqAuth, expectedAuth)
 		t.Fail()
 	}
 }
@@ -43,11 +49,15 @@ func TestGetUIDFail(t *testing.T) {
 		t.Errorf("Connection failed: %v", err)
 		t.Fail()
 	}
-	// Check the response body is what we expect.
-	EXPECTED := `{"IsValid":false,"UID":""}`
-	respBody, _ := ioutil.ReadAll(req.Body)
-	if strings.TrimSpace(string(respBody)) != strings.TrimSpace(EXPECTED) {
-		t.Errorf("Auth returned unexpected body: got %v \nwant %v", string(respBody), EXPECTED)
+	//unmarshal response into struct
+	reqBody, _ := ioutil.ReadAll(req.Body)
+	var reqAuth, expectedAuth structs.Auth
+	json.Unmarshal(reqBody, &reqAuth)
+	//compare received struct with expected struct
+	EXPECTED := []byte(`{"IsValid":false,"UID":""}`)
+	json.Unmarshal(EXPECTED, &expectedAuth)
+	if reqAuth != expectedAuth {
+		t.Errorf("Auth returned unexpected body: \ngot  %+v \nwant %+v", reqAuth, expectedAuth)
 		t.Fail()
 	}
 }

@@ -74,13 +74,21 @@ func GetUIDHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	//populate environment variables
 	listenAddress = os.Getenv("AUTH_LISTEN_ADDRESS")
+	firebaseCredentials := os.Getenv("AUTH_FIREBASE_CREDENTIALS")
 	//set default environment variables
 	if listenAddress == "" {
 		listenAddress = "0.0.0.0:8070"
 	}
 
 	//initialize firebase app connection
-	opt := option.WithCredentialsFile("./workout-app-8b023-firebase-adminsdk-jh1ev-bbfc733122.json") //load credentials file
+	var opt option.ClientOption
+	if firebaseCredentials == "" {
+		log.Println("Env AUTH_FIREBASE_CREDENTIALS empty, attempting to load from file...")
+		opt = option.WithCredentialsFile("./workout-app-8b023-firebase-adminsdk-jh1ev-bbfc733122.json") //load credentials file
+	} else {
+		opt = option.WithCredentialsJSON([]byte(firebaseCredentials))
+	}
+
 	app, err := firebase.NewApp(context.Background(), nil, opt)
 	if err != nil {
 		log.Fatalf("error initializing firebase app: %v\n", err)

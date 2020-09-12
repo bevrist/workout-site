@@ -14,6 +14,30 @@ services:
       BACKEND_LISTEN_ADDRESS: 0.0.0.0:8090
     restart: on-failure
 
+  mongoDB:
+    build:
+      context: .
+      dockerfile: ./database/mongoDB/Dockerfile
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: adminz
+      MONGO_INITDB_ROOT_PASSWORD: cheeksbutt
+    restart: on-failure
+
+  database:
+    build:
+      context: .
+      dockerfile: ./database/Dockerfile
+    ports:
+      - 8050:8050
+    environment:
+      DATABASE_LISTEN_ADDRESS: 0.0.0.0:8050
+      DATABASE_ADDRESS: localhost:27017
+      DATABASE_USERNAME: adminz
+      DATABASE_PASSWORD: cheeksbutt
+    restart: on-failure
+
   auth:
     build:
       context: .
