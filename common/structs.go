@@ -20,7 +20,7 @@ type UserInfo struct {
 
 //Client holds user information in the same format as the Mongo database
 type Client struct {
-	UID          string
+	UID          string `json:"UID,omitempty"`
 	FirstName    string `bson:"first_name"`
 	LastName     string `bson:"last_name"`
 	Weight       int

@@ -73,36 +73,36 @@ func GetUserProfileHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, string(backBody))
 }
 
-// GetUserBaselineHandler returns user data
-func GetUserBaselineHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, `{"LowDay":2599,"NormalDay":2978,"HighDay":3357,"NFatRatio":0.25,"NCarbRatio":0.37,"NProteinRatio":0.38,"HFatRatio":0.3,"HCarbRatio":0.5,"HProteinRatio":0.2,"LFatRatio":0.41,"LCarbRatio":0.32,"LProteinRatio":0.27,"NFatAmount":83,"NCarbAmount":275,"NProteinAmount":283,"HFatAmount":112,"HCarbAmount":420,"HProteinAmount":168,"LFatAmount":118,"LCarbAmount":208,"LProteinAmount":175}`) //FIXME
-	return
-	//FIXME
+// // GetUserBaselineHandler returns user data
+// func GetUserBaselineHandler(w http.ResponseWriter, r *http.Request) {
+// 	fmt.Fprintf(w, `{"LowDay":2599,"NormalDay":2978,"HighDay":3357,"NFatRatio":0.25,"NCarbRatio":0.37,"NProteinRatio":0.38,"HFatRatio":0.3,"HCarbRatio":0.5,"HProteinRatio":0.2,"LFatRatio":0.41,"LCarbRatio":0.32,"LProteinRatio":0.27,"NFatAmount":83,"NCarbAmount":275,"NProteinAmount":283,"HFatAmount":112,"HCarbAmount":420,"HProteinAmount":168,"LFatAmount":118,"LCarbAmount":208,"LProteinAmount":175}`) //FIXME
+// 	return
+// 	//FIXME
 
-	// validate user request
-	sessionToken := r.Header.Get("Session-Token")
-	auth := isRequestValid(w, sessionToken, "GetUserBaselineHandler()")
-	if auth.IsValid == false {
-		return
-	}
-	//request user data from backend
-	backResp, err := http.Get("http://" + backendAddress + "/userInfo/" + auth.UID + "/base")
-	if err != nil {
-		http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
-		log.Println("ERROR: GetUserBaselineHandler() - Backend: " + err.Error())
-		return
-	}
-	//return backend response
-	backBody, _ := ioutil.ReadAll(backResp.Body)
-	fmt.Fprintf(w, string(backBody))
-}
+// 	// validate user request
+// 	sessionToken := r.Header.Get("Session-Token")
+// 	auth := isRequestValid(w, sessionToken, "GetUserBaselineHandler()")
+// 	if auth.IsValid == false {
+// 		return
+// 	}
+// 	//request user data from backend
+// 	backResp, err := http.Get("http://" + backendAddress + "/userInfo/" + auth.UID + "/base")
+// 	if err != nil {
+// 		http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
+// 		log.Println("ERROR: GetUserBaselineHandler() - Backend: " + err.Error())
+// 		return
+// 	}
+// 	//return backend response
+// 	backBody, _ := ioutil.ReadAll(backResp.Body)
+// 	fmt.Fprintf(w, string(backBody))
+// }
 
-// SubmitProfileHandler posts user information to backend
-func SubmitProfileHandler(w http.ResponseWriter, r *http.Request) {
+// PostUserProfileHandler posts user information to backend
+func PostUserProfileHandler(w http.ResponseWriter, r *http.Request) {
 	// parse form data
 	if err := r.ParseForm(); err != nil {
 		http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
-		log.Printf("ERROR: SubmitProfileHandler() - ParseForm() err: %v", err)
+		log.Printf("ERROR: PostUserProfileHandler() - ParseForm() err: %v", err)
 		return
 	}
 	var userInfo structs.UserInfo
@@ -117,7 +117,7 @@ func SubmitProfileHandler(w http.ResponseWriter, r *http.Request) {
 	userInfo.Gender = r.FormValue("gender")
 	// validate user request
 	sessionToken := r.FormValue("Session-Token")
-	auth := isRequestValid(w, sessionToken, "SubmitProfileHandler()")
+	auth := isRequestValid(w, sessionToken, "PostUserProfileHandler()")
 	if auth.IsValid == false {
 		return
 	}
@@ -130,7 +130,7 @@ func SubmitProfileHandler(w http.ResponseWriter, r *http.Request) {
 	backResp, err := http.Post("http://"+backendAddress+"/userInfo/"+auth.UID, "application/json", bytes.NewBuffer(userInfoJSON))
 	if err != nil {
 		http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
-		log.Println("ERROR: SubmitProfileHandler() - Backend: " + err.Error())
+		log.Println("ERROR: PostUserProfileHandler() - Backend: " + err.Error())
 		return
 	}
 	//return backend Response 	//TODO: make this check backend response code and return based off (update backend first)
@@ -145,7 +145,7 @@ func main() {
 	authAddress = os.Getenv("AUTH_ADDRESS")
 	//set default environment variables
 	if listenAddress == "" {
-		listenAddress = "0.0.0.0:8080"
+		listenAddress = "0.0.0.0:8888"
 	}
 	if backendAddress == "" {
 		backendAddress = "localhost:8090"
@@ -155,16 +155,17 @@ func main() {
 	}
 	log.Println("Backend address: " + backendAddress)
 	log.Println("Auth address: " + authAddress)
-	log.Println("Frontend Website URL: " + os.Getenv("FRONTEND_WEBSITE_URL"))
 
 	//specify routes and start http server
 	r := mux.NewRouter()
 	r.HandleFunc("/apiVersion", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "{\"apiVersion\":"+apiVersion+"}") })
-	r.HandleFunc("/getUserProfile", GetUserProfileHandler).Methods(http.MethodGet, http.MethodHead)
-	r.HandleFunc("/getUserBaseline", GetUserBaselineHandler).Methods(http.MethodGet, http.MethodHead)
-	r.HandleFunc("/submitProfile", SubmitProfileHandler).Methods(http.MethodPost)
+	r.HandleFunc("/userProfile", GetUserProfileHandler).Methods(http.MethodGet, http.MethodHead)
+	r.HandleFunc("/userProfile", PostUserProfileHandler).Methods(http.MethodPost)
+	//TODO: implement PostUserBaseline
+	r.HandleFunc("/userBaseline", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "TODO") }).Methods(http.MethodPost)
+	//TODO: implement PostUserWeeklyTracking
+	r.HandleFunc("/userWeeklyTracking/{week}", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "TODO") }).Methods(http.MethodPost)
 	r.HandleFunc("/healthz", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "ok") })
-	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./www/")))
 	var handlers http.Handler = r
 	log.Println("Frontend listening at address " + listenAddress)
 	log.Fatal(http.ListenAndServe(listenAddress, handlers))
