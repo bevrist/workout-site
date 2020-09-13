@@ -1,7 +1,6 @@
 # TODO
 
 - break frontend website into frontend-web, make frontend only a REST API
-- Update Docker-compose.yml with database
 - verify all startup failures result in container termination 
 
 ## Database
