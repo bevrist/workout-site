@@ -151,7 +151,6 @@ func UpdateUserBaselineHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "ok")
 }
 
-//TODO COMPLETE THIS
 //UpdateUserRecommendationsHandler updates user profile info from a Recommendation object
 func UpdateUserRecommendationsHandler(w http.ResponseWriter, r *http.Request) {
 	// extract UID and weekToUpdate from URL

@@ -46,22 +46,23 @@ type Day struct {
 	WeightTraining string `bson:"weight_training"`
 }
 type Recommendation struct {
-	HighDayProtein             int
-	HighDayCarb                int
-	HighDayFat                 int
-	HighDayCalories            int
-	NormalDayProtein           int
-	NormalDayCarb              int
-	NormalDayFat               int
-	NormalDayCalories          int
-	LowDayProtein              int
-	LowDayCarb                 int
-	LowDayFat                  int
-	LowDayCalories             int
-	HIITCurrentCardioSession   int
-	HIITChangeCardioSession    int
-	HIITCurrentCardioIntervals int
-	HIITChangeCarioIntervals   int
-	Week                       int
-	ModifiedDate               string
+	HighDayProtein             int      `bson:"highdayprotein,omitempty"`
+	HighDayCarb                int      `bson:"highdaycarb,omitempty"`
+	HighDayFat                 int      `bson:"highdayfat,omitempty"`
+	HighDayCalories            int      `bson:"highdaycalories,omitempty"`
+	NormalDayProtein           int      `bson:"normaldayprotein,omitempty"`
+	NormalDayCarb              int      `bson:"normaldaycarb,omitempty"`
+	NormalDayFat               int      `bson:"normaldayfat,omitempty"`
+	NormalDayCalories          int      `bson:"normaldaycalories,omitempty"`
+	LowDayProtein              int      `bson:"lowdayprotein,omitempty"`
+	LowDayCarb                 int      `bson:"lowdaycarb,omitempty"`
+	LowDayFat                  int      `bson:"lowdayfat,omitempty"`
+	LowDayCalories             int      `bson:"lowdaycalories,omitempty"`
+	HIITCurrentCardioSession   int      `bson:"hiitcurrentcardiosession,omitempty"`
+	HIITChangeCardioSession    int      `bson:"hiitchangecardiosession,omitempty"`
+	HIITCurrentCardioIntervals int      `bson:"hiitcurrentcardiointervals,omitempty"`
+	HIITChangeCarioIntervals   int      `bson:"hiitchangecariointervals,omitempty"`
+	Week                       int      `bson:"week,omitempty"`
+	ModifiedDate               string   `bson:"modifieddate,omitempty"`
+	Nil                        []string `bson:"nil,omitempty"`
 }

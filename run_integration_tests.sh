@@ -1,6 +1,6 @@
 #!/bin/bash
 
-LOCAL_ADDRESS=192.168.86.118
+LOCAL_ADDRESS=host.docker.internal
 
 # stop any running instances of mongodb-test container
 docker stop $(docker ps | grep mongodb-test | cut -f 1 -d " ") &>/dev/null
