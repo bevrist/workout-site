@@ -354,76 +354,12 @@ paths:
         required: true
         description: Identifier of user in database
     post:
-      summary: Get User Baseline
+      summary: Update User Baseline
       operationId: post-userBaseline
       responses:
         '200':
           description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-              examples:
-                example:
-                  value:
-                    Day:
-                      - Fat: 321
-                        Carbs: 321
-                        Protein: 321
-                        TotalCalories: 321
-                        DayCalorie: high
-                        Weight: 312
-                        Cardio: missed
-                        WeightTraining: 'no'
-                      - Fat: 20
-                        Carbs: 20
-                        Protein: 20
-                        TotalCalories: 32
-                        DayCalorie: normal
-                        Weight: 123
-                        Cardio: missed
-                        WeightTraining: 'no'
-                      - Fat: 30
-                        Carbs: 30
-                        Protein: 30
-                        TotalCalories: 33
-                        DayCalorie: high
-                        Weight: 123
-                        Cardio: missed
-                        WeightTraining: 'yes'
-                      - Fat: 40
-                        Carbs: 40
-                        Protein: 40
-                        TotalCalories: 34
-                        DayCalorie: normal
-                        Weight: 123
-                        Cardio: missed
-                        WeightTraining: 'yes'
-                      - Fat: 10
-                        Carbs: 10
-                        Protein: 10
-                        TotalCalories: 30
-                        DayCalorie: normal
-                        Weight: 123
-                        Cardio: missed
-                        WeightTraining: 'yes'
-                      - Fat: 10
-                        Carbs: 10
-                        Protein: 10
-                        TotalCalories: 30
-                        DayCalorie: normal
-                        Weight: 123
-                        Cardio: missed
-                        WeightTraining: 'yes'
-                      - Fat: 888
-                        Carbs: 888
-                        Protein: 888
-                        TotalCalories: 888
-                        DayCalorie: high
-                        Weight: 888
-                        Cardio: missed
-                        WeightTraining: testSuccess
-      description: Used to upload a week object on the user profile
+      description: Updates user weekly data for any week
       requestBody:
         content:
           application/json:
@@ -514,6 +450,97 @@ paths:
         description: ''
       tags:
         - workout-app
+  '/userRecommendation/{week}/{UID}':
+    parameters:
+      - schema:
+          type: integer
+          minimum: 0
+          maximum: 23
+        name: week
+        in: path
+        required: true
+        description: 'Week to update, Starts at 0'
+      - schema:
+          type: string
+        name: UID
+        in: path
+        required: true
+        description: Identifier of user in database
+    post:
+      summary: Update User Recommendation
+      operationId: post-userRecommendation-week-UID
+      responses:
+        '200':
+          description: OK
+      tags:
+        - workout-app
+      description: Update user recommendation for any week
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                HighDayProtein:
+                  type: integer
+                HighDayCarb:
+                  type: integer
+                HighDayFat:
+                  type: integer
+                HighDayCalories:
+                  type: integer
+                NormalDayProtein:
+                  type: integer
+                NormalDayCarb:
+                  type: integer
+                NormalDayFat:
+                  type: integer
+                NormalDayCalories:
+                  type: integer
+                LowDayProtein:
+                  type: integer
+                LowDayCarb:
+                  type: integer
+                LowDayFat:
+                  type: integer
+                LowDayCalories:
+                  type: integer
+                HIITCurrentCardioSession:
+                  type: integer
+                HIITChangeCardioSession:
+                  type: integer
+                HIITCurrentCardioIntervals:
+                  type: integer
+                HIITChangeCarioIntervals:
+                  type: integer
+                Week:
+                  type: integer
+                ModifiedDate:
+                  type: string
+                  description: ISO8601 date e.g. "2020-09-13"
+                  example: '2020-09-13'
+            examples:
+              example:
+                value:
+                  HighDayProtein: 234
+                  HighDayCarb: 123
+                  HighDayFat: 122
+                  HighDayCalories: 243
+                  NormalDayProtein: 143
+                  NormalDayCarb: 244
+                  NormalDayFat: 24
+                  NormalDayCalories: 1120
+                  LowDayProtein: 50
+                  LowDayCarb: 112
+                  LowDayFat: 130
+                  LowDayCalories: 256
+                  HIITCurrentCardioSession: 14
+                  HIITChangeCardioSession: 11
+                  HIITCurrentCardioIntervals: 13
+                  HIITChangeCarioIntervals: 12
+                  Week: 2
+                  ModifiedDate: '2020-90-13'
+        description: ''
 components:
   schemas: {}
 tags:
