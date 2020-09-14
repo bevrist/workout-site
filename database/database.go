@@ -151,6 +151,51 @@ func UpdateUserBaselineHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "ok")
 }
 
+//TODO COMPLETE THIS
+//UpdateUserRecommendationsHandler updates user profile info from a Recommendation object
+func UpdateUserRecommendationsHandler(w http.ResponseWriter, r *http.Request) {
+	// extract UID and weekToUpdate from URL
+	vars := mux.Vars(r)
+	UID := vars["UID"]
+	weekToUpdate, _ := strconv.Atoi(vars["week"])
+	// unmarshal the body of POST request as a Recommendation struct
+	reqBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Fatal("ERROR: UpdateUserRecommendationsHandler: " + err.Error())
+	}
+	var clientRecommendation structs.Recommendation
+	err = json.Unmarshal(reqBody, &clientRecommendation)
+	if err != nil {
+		log.Println("ERROR: UpdateUserRecommendationsHandler: " + err.Error())
+		http.Error(w, "400 - invalid syntax.", http.StatusBadRequest)
+		return
+	}
+	//get existing user data from db
+	userData := getUserCollection(UID)
+	if len(userData) == 0 {
+		log.Println("ERROR: UpdateUserRecommendationsHandler: getUserCollection is empty")
+		http.Error(w, "update failed, UID does not exist.", http.StatusNotAcceptable)
+		return
+	}
+
+	//ensure client Recommendation array has correct capacity, fill with null Recommendation objects if necessary
+	for len(userData[0].Recommendation) < 24 {
+		userData[0].Recommendation = append(userData[0].Recommendation, structs.Recommendation{})
+	}
+
+	//update specific Recommendation in existing user data from database
+	userData[0].Recommendation[weekToUpdate] = clientRecommendation
+	//update user information in server
+	success := updateUserDocument(userData[0])
+	if success == false {
+		log.Println("ERROR: UpdateUserBaselineHandler: Upload to DB failed")
+		http.Error(w, "500 - Upload to DB Failed", http.StatusInternalServerError)
+		return
+	}
+
+	fmt.Fprint(w, "ok")
+}
+
 func main() {
 	//populate environment variables
 	listenAddress = os.Getenv("DATABASE_LISTEN_ADDRESS")
@@ -200,6 +245,7 @@ func main() {
 	r.HandleFunc("/userInfo/{UID}", GetUserInfoHandler).Methods(http.MethodGet, http.MethodHead)
 	r.HandleFunc("/userInfo/{UID}", UpdateUserProfileHandler).Methods(http.MethodPost)
 	r.HandleFunc("/userBaseline/{week}/{UID}", UpdateUserBaselineHandler).Methods(http.MethodPost)
+	r.HandleFunc("/userRecommendation/{week}/{UID}", UpdateUserRecommendationsHandler).Methods(http.MethodPost)
 	r.HandleFunc("/healthz", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "ok") })
 	var handler http.Handler = r
 	log.Println("Database listening at address " + listenAddress)

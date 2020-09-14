@@ -278,3 +278,101 @@ func TestUpdateInvalidUserBaseline(t *testing.T) {
 		t.Fail()
 	}
 }
+
+// add user Recommendation object
+func TestAddUserRecomendation(t *testing.T) {
+	//create control user in DB
+	postBody := []byte(`{"UID":"testUID6","FirstName":"Test6","LastName":"Update6","Weight":666,"WaistCirc":666.2,"HeightInches":666,"LeanBodyMass":666,"Age":666,"Gender":"female","Week":[{"Day":[{"Fat":666,"Carbs":666,"Protein":666,"TotalCalories":666,"DayCalorie":"high","Weight":666,"Cardio":"missed","WeightTraining":"yes"},{"Fat":20,"Carbs":20,"Protein":20,"TotalCalories":32,"DayCalorie":"normal","Weight":123,"Cardio":"missed","WeightTraining":"no"},{"Fat":30,"Carbs":30,"Protein":30,"TotalCalories":33,"DayCalorie":"high","Weight":123,"Cardio":"missed","WeightTraining":"yes"},{"Fat":40,"Carbs":40,"Protein":40,"TotalCalories":34,"DayCalorie":"normal","Weight":123,"Cardio":"missed","WeightTraining":"yes"},{"Fat":10,"Carbs":10,"Protein":10,"TotalCalories":30,"DayCalorie":"normal","Weight":123,"Cardio":"missed","WeightTraining":"yes"},{"Fat":10,"Carbs":10,"Protein":10,"TotalCalories":30,"DayCalorie":"normal","Weight":123,"Cardio":"missed","WeightTraining":"yes"},{"Fat":6665,"Carbs":6665,"Protein":6665,"TotalCalories":6665,"DayCalorie":"normal","Weight":6665,"Cardio":"missed","WeightTraining":"no"}]}]}`)
+	resp, err := http.Post("http://localhost/userInfo/testUID6", "application/json; charset=UTF-8", bytes.NewBuffer(postBody))
+	if err != nil {
+		t.Errorf("Post failed: %v", err)
+		t.Fail()
+	}
+	respBody, _ := ioutil.ReadAll(resp.Body)
+	if strings.TrimSpace(string(respBody)) != "ok" {
+		t.Errorf("Auth returned unexpected body: got %v \nwant %v", string(respBody), "ok")
+		t.Fail()
+	}
+
+	//do post request and verify success
+	postBody = []byte(`{"Recommendation":[{"HighDayProtein":10,"HighDayCarb":11,"HighDayFat":12,"HighDayCalories":13,"NormalDayProtein":14,"NormalDayCarb":15,"NormalDayFat":16,"NormalDayCalories":17,"LowDayProtein":18,"LowDayCarb":19,"LowDayFat":20,"LowDayCalories":21,"HIITCurrentCardioSession":22,"HIITChangeCardioSession":23,"HIITCurrentCardioIntervals":24,"HIITChangeCarioIntervals":25,"Week":1,"ModifiedDate":"2020-09-13"}]}`)
+	// post some data
+	resp, err = http.Post("http://localhost/userInfo/testUID6", "application/json; charset=UTF-8", bytes.NewBuffer(postBody))
+	if err != nil {
+		t.Errorf("Post failed: %v", err)
+		t.Fail()
+	}
+	respBody, _ = ioutil.ReadAll(resp.Body)
+	if strings.TrimSpace(string(respBody)) != "ok" {
+		t.Errorf("Auth returned unexpected body: got %v \nwant %v", string(respBody), "ok")
+		t.Fail()
+	}
+
+	//validate post request
+	req, err := http.Get("http://localhost/userInfo/testUID6")
+	if err != nil {
+		t.Errorf("Request failed: %v", err)
+		t.Fail()
+	}
+	//unmarshal response into struct
+	reqBody, _ := ioutil.ReadAll(req.Body)
+	var reqAuth, expectedAuth structs.Client
+	json.Unmarshal(reqBody, &reqAuth)
+	//compare received struct with expected struct
+	EXPECTED := []byte(`{"UID":"testUID6","FirstName":"Test6","LastName":"Update6","Weight":666,"WaistCirc":666.2,"HeightInches":666,"LeanBodyMass":666,"Age":666,"Gender":"female","Week":[{"Day":[{"Fat":666,"Carbs":666,"Protein":666,"TotalCalories":666,"DayCalorie":"high","Weight":666,"Cardio":"missed","WeightTraining":"yes"},{"Fat":20,"Carbs":20,"Protein":20,"TotalCalories":32,"DayCalorie":"normal","Weight":123,"Cardio":"missed","WeightTraining":"no"},{"Fat":30,"Carbs":30,"Protein":30,"TotalCalories":33,"DayCalorie":"high","Weight":123,"Cardio":"missed","WeightTraining":"yes"},{"Fat":40,"Carbs":40,"Protein":40,"TotalCalories":34,"DayCalorie":"normal","Weight":123,"Cardio":"missed","WeightTraining":"yes"},{"Fat":10,"Carbs":10,"Protein":10,"TotalCalories":30,"DayCalorie":"normal","Weight":123,"Cardio":"missed","WeightTraining":"yes"},{"Fat":10,"Carbs":10,"Protein":10,"TotalCalories":30,"DayCalorie":"normal","Weight":123,"Cardio":"missed","WeightTraining":"yes"},{"Fat":6665,"Carbs":6665,"Protein":6665,"TotalCalories":6665,"DayCalorie":"normal","Weight":6665,"Cardio":"missed","WeightTraining":"no"}]}],"Recommendation":[{"HighDayProtein":10,"HighDayCarb":11,"HighDayFat":12,"HighDayCalories":13,"NormalDayProtein":14,"NormalDayCarb":15,"NormalDayFat":16,"NormalDayCalories":17,"LowDayProtein":18,"LowDayCarb":19,"LowDayFat":20,"LowDayCalories":21,"HIITCurrentCardioSession":22,"HIITChangeCardioSession":23,"HIITCurrentCardioIntervals":24,"HIITChangeCarioIntervals":25,"Week":1,"ModifiedDate":"2020-09-13"}]}`)
+	json.Unmarshal(EXPECTED, &expectedAuth)
+	if !cmp.Equal(reqAuth, expectedAuth) {
+		t.Errorf("Auth returned unexpected body: \ngot  %+v \nwant %+v", reqAuth, expectedAuth)
+		t.Fail()
+	}
+}
+
+// update user Recommendation object
+func TestUpdateUserRecomendation(t *testing.T) {
+	//create control user in DB
+	postBody := []byte(`{"UID":"testUID7","FirstName":"Test7","LastName":"Update7","Weight":777,"WaistCirc":777.2,"HeightInches":777,"LeanBodyMass":777,"Age":777,"Gender":"female","Recommendation":[{"HighDayProtein":10,"HighDayCarb":11,"HighDayFat":12,"HighDayCalories":13,"NormalDayProtein":14,"NormalDayCarb":15,"NormalDayFat":16,"NormalDayCalories":17,"LowDayProtein":18,"LowDayCarb":19,"LowDayFat":20,"LowDayCalories":21,"HIITCurrentCardioSession":22,"HIITChangeCardioSession":23,"HIITCurrentCardioIntervals":24,"HIITChangeCarioIntervals":25,"Week":1,"ModifiedDate":"2020-09-13"}],"Week":[{"Day":[{"Fat":777,"Carbs":777,"Protein":777,"TotalCalories":777,"DayCalorie":"high","Weight":777,"Cardio":"missed","WeightTraining":"yes"},{"Fat":20,"Carbs":20,"Protein":20,"TotalCalories":32,"DayCalorie":"normal","Weight":123,"Cardio":"missed","WeightTraining":"no"},{"Fat":30,"Carbs":30,"Protein":30,"TotalCalories":33,"DayCalorie":"high","Weight":123,"Cardio":"missed","WeightTraining":"yes"},{"Fat":40,"Carbs":40,"Protein":40,"TotalCalories":34,"DayCalorie":"normal","Weight":123,"Cardio":"missed","WeightTraining":"yes"},{"Fat":10,"Carbs":10,"Protein":10,"TotalCalories":30,"DayCalorie":"normal","Weight":123,"Cardio":"missed","WeightTraining":"yes"},{"Fat":10,"Carbs":10,"Protein":10,"TotalCalories":30,"DayCalorie":"normal","Weight":123,"Cardio":"missed","WeightTraining":"yes"},{"Fat":7775,"Carbs":7775,"Protein":7775,"TotalCalories":7775,"DayCalorie":"normal","Weight":7775,"Cardio":"missed","WeightTraining":"no"}]}]}`)
+	resp, err := http.Post("http://localhost/userInfo/testUID7", "application/json; charset=UTF-8", bytes.NewBuffer(postBody))
+	if err != nil {
+		t.Errorf("Post failed: %v", err)
+		t.Fail()
+	}
+	respBody, _ := ioutil.ReadAll(resp.Body)
+	if strings.TrimSpace(string(respBody)) != "ok" {
+		t.Errorf("Auth returned unexpected body: got %v \nwant %v", string(respBody), "ok")
+		t.Fail()
+	}
+
+	//do post request and verify success
+	postBody = []byte(`{"Recommendation":[{"HighDayProtein":10,"HighDayCarb":11,"HighDayFat":12,"HighDayCalories":13,"NormalDayProtein":14,"NormalDayCarb":15,"NormalDayFat":16,"NormalDayCalories":17,"LowDayProtein":18,"LowDayCarb":19,"LowDayFat":20,"LowDayCalories":21,"HIITCurrentCardioSession":22,"HIITChangeCardioSession":23,"HIITCurrentCardioIntervals":24,"HIITChangeCarioIntervals":25,"Week":1,"ModifiedDate":"2020-09-13"}]}`)
+	// post some data
+	resp, err = http.Post("http://localhost/userRecommendation/2/testUID7", "application/json; charset=UTF-8", bytes.NewBuffer(postBody))
+	if err != nil {
+		t.Errorf("Post failed: %v", err)
+		t.Fail()
+	}
+	respBody, _ = ioutil.ReadAll(resp.Body)
+	if strings.TrimSpace(string(respBody)) != "ok" {
+		t.Errorf("Auth returned unexpected body: got %v \nwant %v", string(respBody), "ok")
+		t.Fail()
+	}
+
+	//validate post request
+	req, err := http.Get("http://localhost/userInfo/testUID7")
+	if err != nil {
+		t.Errorf("Request failed: %v", err)
+		t.Fail()
+	}
+	//unmarshal response into struct
+	reqBody, _ := ioutil.ReadAll(req.Body)
+	var reqAuth, expectedAuth structs.Client
+	json.Unmarshal(reqBody, &reqAuth)
+	//compare received struct with expected struct
+	//FIXME
+	EXPECTED := []byte(`{"UID":"testUID7","FirstName":"Test7","LastName":"Update7","Weight":777,"WaistCirc":777.2,"HeightInches":777,"LeanBodyMass":777,"Age":777,"Gender":"female","Week":[{"Day":[{"Fat":777,"Carbs":777,"Protein":777,"TotalCalories":777,"DayCalorie":"high","Weight":777,"Cardio":"missed","WeightTraining":"yes"},{"Fat":20,"Carbs":20,"Protein":20,"TotalCalories":32,"DayCalorie":"normal","Weight":123,"Cardio":"missed","WeightTraining":"no"},{"Fat":30,"Carbs":30,"Protein":30,"TotalCalories":33,"DayCalorie":"high","Weight":123,"Cardio":"missed","WeightTraining":"yes"},{"Fat":40,"Carbs":40,"Protein":40,"TotalCalories":34,"DayCalorie":"normal","Weight":123,"Cardio":"missed","WeightTraining":"yes"},{"Fat":10,"Carbs":10,"Protein":10,"TotalCalories":30,"DayCalorie":"normal","Weight":123,"Cardio":"missed","WeightTraining":"yes"},{"Fat":10,"Carbs":10,"Protein":10,"TotalCalories":30,"DayCalorie":"normal","Weight":123,"Cardio":"missed","WeightTraining":"yes"},{"Fat":7775,"Carbs":7775,"Protein":7775,"TotalCalories":7775,"DayCalorie":"normal","Weight":7775,"Cardio":"missed","WeightTraining":"no"}]}],"Recommendation":[{"HighDayProtein":10,"HighDayCarb":11,"HighDayFat":12,"HighDayCalories":13,"NormalDayProtein":14,"NormalDayCarb":15,"NormalDayFat":16,"NormalDayCalories":17,"LowDayProtein":18,"LowDayCarb":19,"LowDayFat":20,"LowDayCalories":21,"HIITCurrentCardioSession":22,"HIITChangeCardioSession":23,"HIITCurrentCardioIntervals":24,"HIITChangeCarioIntervals":25,"Week":1,"ModifiedDate":"2020-09-13"},{"HighDayProtein":0,"HighDayCarb":0,"HighDayFat":0,"HighDayCalories":0,"NormalDayProtein":0,"NormalDayCarb":0,"NormalDayFat":0,"NormalDayCalories":0,"LowDayProtein":0,"LowDayCarb":0,"LowDayFat":0,"LowDayCalories":0,"HIITCurrentCardioSession":0,"HIITChangeCardioSession":0,"HIITCurrentCardioIntervals":0,"HIITChangeCarioIntervals":0,"Week":0,"ModifiedDate":""},{"HighDayProtein":0,"HighDayCarb":0,"HighDayFat":0,"HighDayCalories":0,"NormalDayProtein":0,"NormalDayCarb":0,"NormalDayFat":0,"NormalDayCalories":0,"LowDayProtein":0,"LowDayCarb":0,"LowDayFat":0,"LowDayCalories":0,"HIITCurrentCardioSession":0,"HIITChangeCardioSession":0,"HIITCurrentCardioIntervals":0,"HIITChangeCarioIntervals":0,"Week":0,"ModifiedDate":""},{"HighDayProtein":0,"HighDayCarb":0,"HighDayFat":0,"HighDayCalories":0,"NormalDayProtein":0,"NormalDayCarb":0,"NormalDayFat":0,"NormalDayCalories":0,"LowDayProtein":0,"LowDayCarb":0,"LowDayFat":0,"LowDayCalories":0,"HIITCurrentCardioSession":0,"HIITChangeCardioSession":0,"HIITCurrentCardioIntervals":0,"HIITChangeCarioIntervals":0,"Week":0,"ModifiedDate":""},{"HighDayProtein":0,"HighDayCarb":0,"HighDayFat":0,"HighDayCalories":0,"NormalDayProtein":0,"NormalDayCarb":0,"NormalDayFat":0,"NormalDayCalories":0,"LowDayProtein":0,"LowDayCarb":0,"LowDayFat":0,"LowDayCalories":0,"HIITCurrentCardioSession":0,"HIITChangeCardioSession":0,"HIITCurrentCardioIntervals":0,"HIITChangeCarioIntervals":0,"Week":0,"ModifiedDate":""},{"HighDayProtein":0,"HighDayCarb":0,"HighDayFat":0,"HighDayCalories":0,"NormalDayProtein":0,"NormalDayCarb":0,"NormalDayFat":0,"NormalDayCalories":0,"LowDayProtein":0,"LowDayCarb":0,"LowDayFat":0,"LowDayCalories":0,"HIITCurrentCardioSession":0,"HIITChangeCardioSession":0,"HIITCurrentCardioIntervals":0,"HIITChangeCarioIntervals":0,"Week":0,"ModifiedDate":""},{"HighDayProtein":0,"HighDayCarb":0,"HighDayFat":0,"HighDayCalories":0,"NormalDayProtein":0,"NormalDayCarb":0,"NormalDayFat":0,"NormalDayCalories":0,"LowDayProtein":0,"LowDayCarb":0,"LowDayFat":0,"LowDayCalories":0,"HIITCurrentCardioSession":0,"HIITChangeCardioSession":0,"HIITCurrentCardioIntervals":0,"HIITChangeCarioIntervals":0,"Week":0,"ModifiedDate":""},{"HighDayProtein":0,"HighDayCarb":0,"HighDayFat":0,"HighDayCalories":0,"NormalDayProtein":0,"NormalDayCarb":0,"NormalDayFat":0,"NormalDayCalories":0,"LowDayProtein":0,"LowDayCarb":0,"LowDayFat":0,"LowDayCalories":0,"HIITCurrentCardioSession":0,"HIITChangeCardioSession":0,"HIITCurrentCardioIntervals":0,"HIITChangeCarioIntervals":0,"Week":0,"ModifiedDate":""},{"HighDayProtein":0,"HighDayCarb":0,"HighDayFat":0,"HighDayCalories":0,"NormalDayProtein":0,"NormalDayCarb":0,"NormalDayFat":0,"NormalDayCalories":0,"LowDayProtein":0,"LowDayCarb":0,"LowDayFat":0,"LowDayCalories":0,"HIITCurrentCardioSession":0,"HIITChangeCardioSession":0,"HIITCurrentCardioIntervals":0,"HIITChangeCarioIntervals":0,"Week":0,"ModifiedDate":""},{"HighDayProtein":0,"HighDayCarb":0,"HighDayFat":0,"HighDayCalories":0,"NormalDayProtein":0,"NormalDayCarb":0,"NormalDayFat":0,"NormalDayCalories":0,"LowDayProtein":0,"LowDayCarb":0,"LowDayFat":0,"LowDayCalories":0,"HIITCurrentCardioSession":0,"HIITChangeCardioSession":0,"HIITCurrentCardioIntervals":0,"HIITChangeCarioIntervals":0,"Week":0,"ModifiedDate":""},{"HighDayProtein":0,"HighDayCarb":0,"HighDayFat":0,"HighDayCalories":0,"NormalDayProtein":0,"NormalDayCarb":0,"NormalDayFat":0,"NormalDayCalories":0,"LowDayProtein":0,"LowDayCarb":0,"LowDayFat":0,"LowDayCalories":0,"HIITCurrentCardioSession":0,"HIITChangeCardioSession":0,"HIITCurrentCardioIntervals":0,"HIITChangeCarioIntervals":0,"Week":0,"ModifiedDate":""},{"HighDayProtein":0,"HighDayCarb":0,"HighDayFat":0,"HighDayCalories":0,"NormalDayProtein":0,"NormalDayCarb":0,"NormalDayFat":0,"NormalDayCalories":0,"LowDayProtein":0,"LowDayCarb":0,"LowDayFat":0,"LowDayCalories":0,"HIITCurrentCardioSession":0,"HIITChangeCardioSession":0,"HIITCurrentCardioIntervals":0,"HIITChangeCarioIntervals":0,"Week":0,"ModifiedDate":""},{"HighDayProtein":0,"HighDayCarb":0,"HighDayFat":0,"HighDayCalories":0,"NormalDayProtein":0,"NormalDayCarb":0,"NormalDayFat":0,"NormalDayCalories":0,"LowDayProtein":0,"LowDayCarb":0,"LowDayFat":0,"LowDayCalories":0,"HIITCurrentCardioSession":0,"HIITChangeCardioSession":0,"HIITCurrentCardioIntervals":0,"HIITChangeCarioIntervals":0,"Week":0,"ModifiedDate":""},{"HighDayProtein":0,"HighDayCarb":0,"HighDayFat":0,"HighDayCalories":0,"NormalDayProtein":0,"NormalDayCarb":0,"NormalDayFat":0,"NormalDayCalories":0,"LowDayProtein":0,"LowDayCarb":0,"LowDayFat":0,"LowDayCalories":0,"HIITCurrentCardioSession":0,"HIITChangeCardioSession":0,"HIITCurrentCardioIntervals":0,"HIITChangeCarioIntervals":0,"Week":0,"ModifiedDate":""},{"HighDayProtein":0,"HighDayCarb":0,"HighDayFat":0,"HighDayCalories":0,"NormalDayProtein":0,"NormalDayCarb":0,"NormalDayFat":0,"NormalDayCalories":0,"LowDayProtein":0,"LowDayCarb":0,"LowDayFat":0,"LowDayCalories":0,"HIITCurrentCardioSession":0,"HIITChangeCardioSession":0,"HIITCurrentCardioIntervals":0,"HIITChangeCarioIntervals":0,"Week":0,"ModifiedDate":""},{"HighDayProtein":0,"HighDayCarb":0,"HighDayFat":0,"HighDayCalories":0,"NormalDayProtein":0,"NormalDayCarb":0,"NormalDayFat":0,"NormalDayCalories":0,"LowDayProtein":0,"LowDayCarb":0,"LowDayFat":0,"LowDayCalories":0,"HIITCurrentCardioSession":0,"HIITChangeCardioSession":0,"HIITCurrentCardioIntervals":0,"HIITChangeCarioIntervals":0,"Week":0,"ModifiedDate":""},{"HighDayProtein":0,"HighDayCarb":0,"HighDayFat":0,"HighDayCalories":0,"NormalDayProtein":0,"NormalDayCarb":0,"NormalDayFat":0,"NormalDayCalories":0,"LowDayProtein":0,"LowDayCarb":0,"LowDayFat":0,"LowDayCalories":0,"HIITCurrentCardioSession":0,"HIITChangeCardioSession":0,"HIITCurrentCardioIntervals":0,"HIITChangeCarioIntervals":0,"Week":0,"ModifiedDate":""},{"HighDayProtein":0,"HighDayCarb":0,"HighDayFat":0,"HighDayCalories":0,"NormalDayProtein":0,"NormalDayCarb":0,"NormalDayFat":0,"NormalDayCalories":0,"LowDayProtein":0,"LowDayCarb":0,"LowDayFat":0,"LowDayCalories":0,"HIITCurrentCardioSession":0,"HIITChangeCardioSession":0,"HIITCurrentCardioIntervals":0,"HIITChangeCarioIntervals":0,"Week":0,"ModifiedDate":""},{"HighDayProtein":0,"HighDayCarb":0,"HighDayFat":0,"HighDayCalories":0,"NormalDayProtein":0,"NormalDayCarb":0,"NormalDayFat":0,"NormalDayCalories":0,"LowDayProtein":0,"LowDayCarb":0,"LowDayFat":0,"LowDayCalories":0,"HIITCurrentCardioSession":0,"HIITChangeCardioSession":0,"HIITCurrentCardioIntervals":0,"HIITChangeCarioIntervals":0,"Week":0,"ModifiedDate":""},{"HighDayProtein":0,"HighDayCarb":0,"HighDayFat":0,"HighDayCalories":0,"NormalDayProtein":0,"NormalDayCarb":0,"NormalDayFat":0,"NormalDayCalories":0,"LowDayProtein":0,"LowDayCarb":0,"LowDayFat":0,"LowDayCalories":0,"HIITCurrentCardioSession":0,"HIITChangeCardioSession":0,"HIITCurrentCardioIntervals":0,"HIITChangeCarioIntervals":0,"Week":0,"ModifiedDate":""},{"HighDayProtein":0,"HighDayCarb":0,"HighDayFat":0,"HighDayCalories":0,"NormalDayProtein":0,"NormalDayCarb":0,"NormalDayFat":0,"NormalDayCalories":0,"LowDayProtein":0,"LowDayCarb":0,"LowDayFat":0,"LowDayCalories":0,"HIITCurrentCardioSession":0,"HIITChangeCardioSession":0,"HIITCurrentCardioIntervals":0,"HIITChangeCarioIntervals":0,"Week":0,"ModifiedDate":""},{"HighDayProtein":0,"HighDayCarb":0,"HighDayFat":0,"HighDayCalories":0,"NormalDayProtein":0,"NormalDayCarb":0,"NormalDayFat":0,"NormalDayCalories":0,"LowDayProtein":0,"LowDayCarb":0,"LowDayFat":0,"LowDayCalories":0,"HIITCurrentCardioSession":0,"HIITChangeCardioSession":0,"HIITCurrentCardioIntervals":0,"HIITChangeCarioIntervals":0,"Week":0,"ModifiedDate":""},{"HighDayProtein":0,"HighDayCarb":0,"HighDayFat":0,"HighDayCalories":0,"NormalDayProtein":0,"NormalDayCarb":0,"NormalDayFat":0,"NormalDayCalories":0,"LowDayProtein":0,"LowDayCarb":0,"LowDayFat":0,"LowDayCalories":0,"HIITCurrentCardioSession":0,"HIITChangeCardioSession":0,"HIITCurrentCardioIntervals":0,"HIITChangeCarioIntervals":0,"Week":0,"ModifiedDate":""},{"HighDayProtein":0,"HighDayCarb":0,"HighDayFat":0,"HighDayCalories":0,"NormalDayProtein":0,"NormalDayCarb":0,"NormalDayFat":0,"NormalDayCalories":0,"LowDayProtein":0,"LowDayCarb":0,"LowDayFat":0,"LowDayCalories":0,"HIITCurrentCardioSession":0,"HIITChangeCardioSession":0,"HIITCurrentCardioIntervals":0,"HIITChangeCarioIntervals":0,"Week":0,"ModifiedDate":"14"}]}`)
+	json.Unmarshal(EXPECTED, &expectedAuth)
+	if !cmp.Equal(reqAuth, expectedAuth) {
+		t.Errorf("Auth returned unexpected body: \ngot  %+v \nwant %+v", reqAuth, expectedAuth)
+		t.Errorf("@: %v", string(reqBody))
+		t.Fail()
+	}
+}

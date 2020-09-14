@@ -10,6 +10,26 @@ db.clients.insert({
   "leanbodymass": 15,
   "age": 20,
   "gender": "male",
+  "recomendation": [{
+    "HighDayProtein": 10,
+    "HighDayCarb": 11,
+    "HighDayFat": 12,
+    "HighDayCalories": 13,
+    "NormalDayProtein": 14,
+    "NormalDayCarb": 15,
+    "NormalDayFat": 16,
+    "NormalDayCalories": 17,
+    "LowDayProtein": 18,
+    "LowDayCarb": 19,
+    "LowDayFat": 20,
+    "LowDayCalories": 21,
+    "HIITCurrentCardioSession": 22,
+    "HIITChangeCardioSession": 23,
+    "HIITCurrentCardioIntervals": 24,
+    "HIITChangeCarioIntervals": 25,
+    "Week": 1,
+    "ModifiedDate": "2020-09-13",
+  }],
   "week": [
     {
       "day": [            // Week one

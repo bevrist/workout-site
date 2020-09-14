@@ -1,6 +1,6 @@
 #!/bin/bash
 
-LOCAL_ADDRESS=host.docker.internal
+LOCAL_ADDRESS=192.168.86.118
 
 # stop any running instances of mongodb-test container
 docker stop $(docker ps | grep mongodb-test | cut -f 1 -d " ") &>/dev/null
@@ -25,8 +25,8 @@ docker stop $(docker ps | grep mongodb-test | cut -f 1 -d " ") &>/dev/null
 # backend test
 # TODO: complete backend test
 # auth test
-echo "testing auth..."
-docker run --rm -it auth-test
+# echo "testing auth..."
+# docker run --rm -it auth-test
 # frontend test
 # echo "testing frontend..."
 # FIXME get frontend tests working again
