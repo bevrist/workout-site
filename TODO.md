@@ -4,8 +4,8 @@
 - verify all startup failures result in container termination 
 
 ## Database
-- make errors not crash app
-- update unit tests to marshal output to json instead of direct string compare
+- rename weeklyBaseline endpoint
+- make new endpoint for updating a single day
 
 ## auth
 - find way to pass credentials using env vars
