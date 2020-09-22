@@ -83,7 +83,7 @@ func main() {
 	var useFirebase = true
 	//initialize firebase app connection
 	var opt option.ClientOption
-	if firebaseCredentials == "" {
+	if firebaseCredentials == "{}" {
 		log.Println("Env AUTH_FIREBASE_CREDENTIALS empty, attempting to load from file...")
 		opt = option.WithCredentialsFile("./workout-app-8b023-firebase-adminsdk-jh1ev-bbfc733122.json") //load credentials file
 	} else if firebaseCredentials == "{test}" {

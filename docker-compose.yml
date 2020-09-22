@@ -8,6 +8,7 @@ services:
     build:
       context: .
       dockerfile: ./backend/Dockerfile
+    network_mode: "host"
     ports:
       - 8090:8090
     environment:
@@ -18,6 +19,9 @@ services:
     build:
       context: .
       dockerfile: ./database/mongoDB/Dockerfile
+    logging:
+      driver: "none"
+    network_mode: "host"
     ports:
       - 27017:27017
     environment:
@@ -29,6 +33,7 @@ services:
     build:
       context: .
       dockerfile: ./database/Dockerfile
+    network_mode: "host"
     ports:
       - 8050:8050
     environment:
@@ -42,6 +47,7 @@ services:
     build:
       context: .
       dockerfile: ./auth/Dockerfile
+    network_mode: "host"
     ports:
       - 8070:8070
     environment:
@@ -52,6 +58,7 @@ services:
     build:
       context: .
       dockerfile: ./frontend/Dockerfile
+    network_mode: "host"
     ports:
       - 8080:8080
     environment:
