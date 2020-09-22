@@ -4,8 +4,6 @@ RUN go get -v firebase.google.com/go firebase.google.com/go/auth github.com/gori
 WORKDIR /auth
 COPY ./auth .
 COPY ./common ../common
-# RUN go get -d -v ./...
-RUN echo "go run ./auth.go & sleep 1; go test" > start.sh; chmod 777 start.sh
-CMD ["/bin/bash", "./start.sh"]
+CMD ["go", "test"]
 
-ENV AUTH_LISTEN_ADDRESS=0.0.0.0:80
+ENV AUTH_SERVICE_ADDRESS="localhost:8070"

@@ -80,22 +80,27 @@ func main() {
 		listenAddress = "0.0.0.0:8070"
 	}
 
+	var useFirebase = true
 	//initialize firebase app connection
 	var opt option.ClientOption
 	if firebaseCredentials == "" {
 		log.Println("Env AUTH_FIREBASE_CREDENTIALS empty, attempting to load from file...")
 		opt = option.WithCredentialsFile("./workout-app-8b023-firebase-adminsdk-jh1ev-bbfc733122.json") //load credentials file
+	} else if firebaseCredentials == "{test}" {
+		useFirebase = false
 	} else {
 		opt = option.WithCredentialsJSON([]byte(firebaseCredentials))
 	}
 
-	app, err := firebase.NewApp(context.Background(), nil, opt)
-	if err != nil {
-		log.Fatalf("error initializing firebase app: %v\n", err)
-	}
-	client, err = app.Auth(context.Background())
-	if err != nil {
-		log.Fatalf("error getting firebase Auth client: %v\n", err)
+	if useFirebase == true {
+		app, err := firebase.NewApp(context.Background(), nil, opt)
+		if err != nil {
+			log.Fatalf("error initializing firebase app: %v\n", err)
+		}
+		client, err = app.Auth(context.Background())
+		if err != nil {
+			log.Fatalf("error getting firebase Auth client: %v\n", err)
+		}
 	}
 
 	//specify routes and start http server

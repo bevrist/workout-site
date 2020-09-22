@@ -2,6 +2,8 @@
 
 - break frontend website into frontend-web, make frontend only a REST API
 - verify all startup failures result in container termination 
+- update docker-compose with new services
+- modify all service Dockerfiles to use `scratch` instead of `alpine`
 
 ## Database
 - rename weeklyBaseline endpoint
@@ -47,7 +49,7 @@
 - add better error messages
     - add error ID to all error messages and ensure error is forwarded to user
 - add prometheus logging?
-- grafana monitoring
+- grafana dashboard monitoring
 
 
 

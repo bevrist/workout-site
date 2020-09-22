@@ -1,40 +1,45 @@
 #!/bin/bash
 
-LOCAL_ADDRESS=host.docker.internal
-
-# stop any running instances of mongodb-test container
-docker stop $(docker ps | grep mongodb-test | cut -f 1 -d " ") &>/dev/null
-
 # exit when any command fails
 set -e
 
 # --- build all containers ---
-docker build -t mongodb-test -f ./database/mongoDB/Dockerfile . &
-docker build -t database-test -f ./database/tests.Dockerfile . &
-docker build -t auth-test -f ./auth/tests.Dockerfile . &
-docker build -t frontend-test -f ./frontend/tests.Dockerfile . &
+# service containers
+docker build -t auth:latest -f ./auth/Dockerfile . &
+docker build -t database:latest -f ./database/Dockerfile . &
+wait
+# testing containers
+docker build -t auth-test:latest -f ./auth/tests.Dockerfile . &
+docker build -t database-test:latest -f ./database/tests.Dockerfile . &
+docker build -t mongodb-mock-database:latest -f ./database/mongoDB/Dockerfile . &
+docker build -t frontend-test:latest -f ./frontend/tests.Dockerfile . &
 wait
 
 # --- run all tests ---
 echo "running tests..."
 # database test
+echo "preparing database integration test..."
+docker stop mongodb-mock-database || :
+docker stop database-service || :
+docker run --rm -d --name=mongodb-mock-database -p 27017:27017 -e MONGO_INITDB_ROOT_USERNAME=adminz -e MONGO_INITDB_ROOT_PASSWORD=cheeksbutt mongodb-mock-database:latest
+sleep 2 && docker run --rm -d --name=database-service -p 8050:8050 --net=host database:latest
 echo "testing database..."
-docker run --rm -d -e MONGO_INITDB_ROOT_USERNAME=adminz -e MONGO_INITDB_ROOT_PASSWORD=cheeksbutt -p 27017:27017 mongodb-test && sleep 1
-docker run --rm -it -e DATABASE_ADDRESS="$LOCAL_ADDRESS":27017 database-test
-docker stop $(docker ps | grep mongodb-test | cut -f 1 -d " ") &>/dev/null
+sleep 5 && docker run --rm -i --name=database-test --net=host database-test:latest
+docker stop mongodb-mock-database
+docker stop database-service
 # backend test
 # TODO: complete backend test
 # auth test
-# echo "testing auth..."
-# docker run --rm -it auth-test
+echo "preparing auth integration test..."
+# stop hanging auth-service instances
+docker stop auth-service || :
+docker run -d --name=auth-service -p 8070:8070 --rm -e AUTH_LISTEN_ADDRESS="0.0.0.0:8070" -e AUTH_FIREBASE_CREDENTIALS='{test}' auth:latest
+echo "testing auth..."
+sleep 5 && docker run --rm -i --name=auth-test --net=host auth-test:latest
+docker stop auth-service
 # frontend test
 # echo "testing frontend..."
 # FIXME get frontend tests working again
-# docker run --rm -it frontend-test
+# docker run --rm -i --net=host frontend-test
 # frontend-web test
-#TODO: complete frontend-web test
-
-
-# --- cleanup ---
-# terminate mongoDB container
-docker stop $(docker ps | grep mongodb-test | cut -f 1 -d " ") &>/dev/null
+# TODO: complete frontend-web test

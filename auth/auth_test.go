@@ -4,13 +4,25 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"testing"
 
 	structs "../common"
 )
 
+var authAddress string
+// get service address from env
+func TestMain(m *testing.M) {
+	authAddress = os.Getenv("AUTH_SERVICE_ADDRESS")
+	if authAddress == "" {
+		authAddress = "localhost:8070"
+	}
+
+    os.Exit(m.Run())
+}
+
 func TestApiVersion(t *testing.T) {
-	req, err := http.Get("http://localhost/apiVersion")
+	req, err := http.Get("http://"+authAddress+"/apiVersion")
 	if err != nil {
 		t.Errorf("Connection failed: %v", err)
 		t.Fail()
@@ -25,7 +37,7 @@ func TestApiVersion(t *testing.T) {
 }
 
 func TestGetUID(t *testing.T) {
-	req, err := http.Get("http://localhost/getUID/test")
+	req, err := http.Get("http://"+authAddress+"/getUID/test")
 	if err != nil {
 		t.Errorf("Connection failed: %v", err)
 		t.Fail()
@@ -44,7 +56,7 @@ func TestGetUID(t *testing.T) {
 }
 
 func TestGetUIDFail(t *testing.T) {
-	req, err := http.Get("http://localhost/getUID/testfail")
+	req, err := http.Get("http://"+authAddress+"/getUID/testfail")
 	if err != nil {
 		t.Errorf("Connection failed: %v", err)
 		t.Fail()
