@@ -46,6 +46,23 @@ func getUserCollection(UID string) []structs.Client {
 		var emptyClient []structs.Client
 		return emptyClient
 	}
+
+	if len(client) != 0 {
+		//ensure client week array has correct capacity, fill with null week objects if necessary
+		for len(client[0].Week) < 24 {
+			client[0].Week = append(client[0].Week, structs.Week{})
+		}
+		//ensure all client day array has correct capacity, fill with null day objects if necessary
+		for i := range client[0].Week {
+			for len(client[0].Week[i].Day) < 7 {
+				client[0].Week[i].Day = append(client[0].Week[i].Day, structs.Day{})
+			}
+		}
+		//ensure client Recommendation array has correct capacity, fill with null Recommendation objects if necessary
+		for len(client[0].Recommendation) < 24 {
+			client[0].Recommendation = append(client[0].Recommendation, structs.Recommendation{})
+		}
+	}
 	return client
 }
 
@@ -133,17 +150,53 @@ func UpdateUserBaselineHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//ensure client week array has correct capacity, fill with null week objects if necessary
-	for len(userData[0].Week) < 24 {
-		userData[0].Week = append(userData[0].Week, structs.Week{})
-	}
-
 	//update specific week in existing user data from database
 	userData[0].Week[weekToUpdate] = clientWeek
 	//update user information in server
 	success := updateUserDocument(userData[0])
 	if success == false {
 		log.Println("ERROR: UpdateUserBaselineHandler: Upload to DB failed")
+		http.Error(w, "500 - Upload to DB Failed", http.StatusInternalServerError)
+		return
+	}
+
+	fmt.Fprint(w, "ok")
+}
+
+//UpdateUserDailyHandler updates single day in user profile
+func UpdateUserDailyHandler(w http.ResponseWriter, r *http.Request) {
+	// extract UID and weekToUpdate from URL
+	vars := mux.Vars(r)
+	UID := vars["UID"]
+
+	weekToUpdate, _ := strconv.Atoi(vars["week"])
+	dayToUpdate, _ := strconv.Atoi(vars["day"])
+	// unmarshal the body of POST request as a Day struct
+	reqBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Fatal("ERROR: UpdateUserDailyHandler: " + err.Error())
+	}
+	var clientDay structs.Day
+	err = json.Unmarshal(reqBody, &clientDay)
+	if err != nil {
+		log.Println("ERROR: UpdateUserDailyHandler: " + err.Error())
+		http.Error(w, "400 - invalid syntax.", http.StatusBadRequest)
+		return
+	}
+	//get existing user data from db
+	userData := getUserCollection(UID)
+	if len(userData) == 0 {
+		log.Println("ERROR: UpdateUserDailyHandler: getUserCollection is empty")
+		http.Error(w, "update failed, UID does not exist.", http.StatusNotAcceptable)
+		return
+	}
+
+	//update specific day in existing user data from database
+	userData[0].Week[weekToUpdate].Day[dayToUpdate] = clientDay
+	//update user information in server
+	success := updateUserDocument(userData[0])
+	if success == false {
+		log.Println("ERROR: UpdateUserDailyHandler: Upload to DB failed")
 		http.Error(w, "500 - Upload to DB Failed", http.StatusInternalServerError)
 		return
 	}
@@ -175,11 +228,6 @@ func UpdateUserRecommendationsHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("ERROR: UpdateUserRecommendationsHandler: getUserCollection is empty")
 		http.Error(w, "update failed, UID does not exist.", http.StatusNotAcceptable)
 		return
-	}
-
-	//ensure client Recommendation array has correct capacity, fill with null Recommendation objects if necessary
-	for len(userData[0].Recommendation) < 24 {
-		userData[0].Recommendation = append(userData[0].Recommendation, structs.Recommendation{})
 	}
 
 	//update specific Recommendation in existing user data from database
@@ -244,6 +292,7 @@ func main() {
 	r.HandleFunc("/userInfo/{UID}", GetUserInfoHandler).Methods(http.MethodGet, http.MethodHead)
 	r.HandleFunc("/userInfo/{UID}", UpdateUserProfileHandler).Methods(http.MethodPost)
 	r.HandleFunc("/userBaseline/{week}/{UID}", UpdateUserBaselineHandler).Methods(http.MethodPost)
+	r.HandleFunc("/userDaily/{week}/{day}/{UID}", UpdateUserDailyHandler).Methods(http.MethodPost)
 	r.HandleFunc("/userRecommendation/{week}/{UID}", UpdateUserRecommendationsHandler).Methods(http.MethodPost)
 	r.HandleFunc("/healthz", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "ok") })
 	var handler http.Handler = r

@@ -4,16 +4,13 @@
 - verify all startup failures result in container termination 
 - update docker-compose with new services
 - modify all service Dockerfiles to use `scratch` instead of `alpine`
-
-## Database
-- rename weeklyBaseline endpoint
-- make new endpoint for updating a single day
+- update readme with --net=host for all containers
 
 ## auth
-- find way to pass credentials using env vars
+
 
 ## database
-- change reasonable post errors to non-fatal
+- rename weeklyBaseline endpoint
 
 ## frontend
 - refactor from structs.UserInfo to structs.Client

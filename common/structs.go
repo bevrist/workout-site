@@ -36,14 +36,14 @@ type Week struct {
 	Day []Day `bson:"day,omitempty"`
 }
 type Day struct {
-	Fat            int
-	Carbs          int
-	Protein        int
-	TotalCalories  int    `bson:"total_calories"`
-	DayCalorie     string `bson:"day_calorie"`
-	Weight         float64
-	Cardio         string
-	WeightTraining string `bson:"weight_training"`
+	Fat            int     `bson:"fat,omitempty" json:",omitempty"`
+	Carbs          int     `bson:"carbs,omitempty" json:",omitempty"`
+	Protein        int     `bson:"protein,omitempty" json:",omitempty"`
+	TotalCalories  int     `bson:"total_calories" json:",omitempty"`
+	DayCalorie     string  `bson:"day_calorie" json:",omitempty"`
+	Weight         float64 `bson:"weight,omitempty" json:",omitempty"`
+	Cardio         string  `bson:"cardio,omitempty" json:",omitempty"`
+	WeightTraining string  `bson:"weight_training" json:",omitempty"`
 }
 type Recommendation struct {
 	HighDayProtein             int    `bson:"highdayprotein,omitempty" json:",omitempty"`
