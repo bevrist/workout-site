@@ -34,75 +34,143 @@ func GetUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, string(reqBody))
 }
 
-func CreateUserBaseline(w http.ResponseWriter, r *http.Request) {
+func UpdateUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	UID := vars["UID"]
-	WEEK := vars["Week"]
-	// unmarshal the body of POST request as a Client struct
-	reqBody, err := ioutil.ReadAll(r.Body)
+	rBody, _ := ioutil.ReadAll(r.Body)
+
+	//post user data to backend
+	resp, err := http.Post("http://"+databaseAddress+"/userInfo/"+UID, "application/json", bytes.NewBuffer(rBody))
 	if err != nil {
-		log.Fatal("ERROR: UpdateUserProfileHandler: " + err.Error())
+		http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
+		log.Println("ERROR: UpdateUserInfoHandler() - Backend: " + err.Error())
+		return
 	}
+	//return backend Response 	//TODO: make this check backend response code and return based off (update backend first)
+	respBody, _ := ioutil.ReadAll(resp.Body)
+	fmt.Fprintf(w, string(respBody))
+}
+
+func generateUserBaselineHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	UID := vars["UID"]
+	rBody, _ := ioutil.ReadAll(r.Body)
+
 	var userInfo structs.Client
-	err = json.Unmarshal(reqBody, &userInfo)
+	err := json.Unmarshal(rBody, &userInfo)
 	if err != nil {
-		log.Println("ERROR: UpdateUserProfileHandler: " + err.Error())
+		log.Println("ERROR: generateUserBaselineHandler: " + err.Error())
 		http.Error(w, "400 - invalid syntax.", http.StatusBadRequest)
 		return
 	}
 
 	var bmr float64
-	dbWeight := userInfo.Week[0].Day[0].Weight
 
 	if userInfo.Gender == "male" {
-		bmr = 66 + (6.3 * float64(dbWeight)) + (12.9 * float64(userInfo.HeightInches)) - (6.8 * float64(userInfo.Age))
+		bmr = 66 + (6.3 * float64(userInfo.Weight)) + (12.9 * float64(userInfo.HeightInches)) - (6.8 * float64(userInfo.Age))
 	} else {
-		bmr = 655 + (4.3 * float64(dbWeight)) + (4.7 * float64(userInfo.HeightInches)) - (4.7 * float64(userInfo.Age))
+		bmr = 655 + (4.3 * float64(userInfo.Weight)) + (4.7 * float64(userInfo.HeightInches)) - (4.7 * float64(userInfo.Age))
 	}
 
 	lowday := math.Round(bmr * 1.2)
 	normalday := math.Round(bmr * 1.375)
 	highday := math.Round(bmr * 1.55)
 
-	NFatRatio := .25
-	NCarbRatio := .37
-	NProteinRatio := .38
-	HFatRatio := .3
-	HCarbRatio := .5
-	HProteinRatio := .2
-	LFatRatio := .41
-	LCarbRatio := .32
-	LProteinRatio := .27
+	NormalDayFat := .25
+	NormalDayCarb := .37
+	NormalDayProtein := .38
+	HighDayFat := .3
+	HighDayCarb := .5
+	HighDayProtein := .2
+	LowDayFat := .41
+	LowDayCarb := .32
+	LowDayProtein := .27
 
 	var newRecommendation structs.Recommendation
 
-	newRecommendation.NormalDayFat = int(math.Round((normalday * NFatRatio) / 9))
-	newRecommendation.NormalDayCarb = int(math.Round((normalday * NCarbRatio) / 4))
-	newRecommendation.NormalDayProtein = int(math.Round((normalday * NProteinRatio) / 4))
-	newRecommendation.HighDayFat = int(math.Round((highday * HFatRatio) / 9))
-	newRecommendation.HighDayCarb = int(math.Round((highday * HCarbRatio) / 4))
-	newRecommendation.HighDayProtein = int(math.Round((highday * HProteinRatio) / 4))
-	newRecommendation.LowDayFat = int(math.Round((lowday * LFatRatio) / 9))
-	newRecommendation.LowDayCarb = int(math.Round((lowday * LCarbRatio) / 4))
-	newRecommendation.LowDayProtein = int(math.Round((lowday * LProteinRatio) / 4))
+	newRecommendation.NormalDayFat = int(math.Round((normalday * NormalDayFat) / 9))
+	newRecommendation.NormalDayCarb = int(math.Round((normalday * NormalDayCarb) / 4))
+	newRecommendation.NormalDayProtein = int(math.Round((normalday * NormalDayProtein) / 4))
+	newRecommendation.HighDayFat = int(math.Round((highday * HighDayFat) / 9))
+	newRecommendation.HighDayCarb = int(math.Round((highday * HighDayCarb) / 4))
+	newRecommendation.HighDayProtein = int(math.Round((highday * HighDayProtein) / 4))
+	newRecommendation.LowDayFat = int(math.Round((lowday * LowDayFat) / 9))
+	newRecommendation.LowDayCarb = int(math.Round((lowday * LowDayCarb) / 4))
+	newRecommendation.LowDayProtein = int(math.Round((lowday * LowDayProtein) / 4))
 
-	//log.Println(bmr, lowday, normalday, highday, NFatRatio, NCarbRatio, NProteinRatio, HFatRatio, HCarbRatio, HProteinRatio, LFatRatio, LCarbRatio, LProteinRatio,
-	//NFatAmount, NCarbAmount, NProteinAmount, HFatAmount, HCarbAmount, HProteinAmount, LFatAmount, LCarbAmount, LProteinAmount)
-	//respond with JSON object
-	RecommendationJSON, err := json.Marshal(newRecommendation)
+	userInfo.Recommendation = append(userInfo.Recommendation, newRecommendation)
+
+	userProfile, err := json.Marshal(userInfo)
 	if err != nil {
-		log.Fatal(err)
+		http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
+		log.Println("ERROR: generateUserBaselineHandler() - Backend: " + err.Error())
 	}
 
-	backResp, err := http.Post("http://"+databaseAddress+"/userRecommendation/"+WEEK+"/"+UID, "application/json", bytes.NewBuffer(RecommendationJSON))
+	//post user data to backend
+	resp, err := http.Post("http://"+databaseAddress+"/userInfo/"+UID, "application/json", bytes.NewBuffer(userProfile))
+	if err != nil {
+		http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
+		log.Println("ERROR: generateUserBaselineHandler() - Backend: " + err.Error())
+		return
+	}
+	//return backend Response 	//TODO: make this check backend response code and return based off (update backend first)
+	respBody, _ := ioutil.ReadAll(resp.Body)
+	fmt.Fprintf(w, string(respBody))
+}
+
+func UpdateUserRecommendationsHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	UID := vars["UID"]
+	WEEK := vars["Week"]
+	rBody, _ := ioutil.ReadAll(r.Body)
+
+	//post user data to backend
+	resp, err := http.Post("http://"+databaseAddress+"/userRecommendation/"+WEEK+"/"+UID, "application/json", bytes.NewBuffer(rBody))
 	if err != nil {
 		http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
 		log.Println("ERROR: PostUserProfileHandler() - Backend: " + err.Error())
 		return
 	}
+	//return backend Response 	//TODO: make this check backend response code and return based off (update backend first)
+	respBody, _ := ioutil.ReadAll(resp.Body)
+	fmt.Fprintf(w, string(respBody))
+}
 
-	json.NewEncoder(w).Encode(backResp)
+func UpdateUserDailyHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	UID := vars["UID"]
+	WEEK := vars["Week"]
+	DAY := vars["Day"]
+	rBody, _ := ioutil.ReadAll(r.Body)
 
+	//post user data to backend
+	resp, err := http.Post("http://"+databaseAddress+"/userDaily/"+WEEK+"/"+DAY+"/"+UID, "application/json", bytes.NewBuffer(rBody))
+	if err != nil {
+		http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
+		log.Println("ERROR: PostUserProfileHandler() - Backend: " + err.Error())
+		return
+	}
+	//return backend Response 	//TODO: make this check backend response code and return based off (update backend first)
+	respBody, _ := ioutil.ReadAll(resp.Body)
+	fmt.Fprintf(w, string(respBody))
+}
+
+func UpdateUserWeeklylineHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	UID := vars["UID"]
+	WEEK := vars["Week"]
+	rBody, _ := ioutil.ReadAll(r.Body)
+
+	//post user data to backend
+	resp, err := http.Post("http://"+databaseAddress+"/userWeekly/"+WEEK+"/"+UID, "application/json", bytes.NewBuffer(rBody))
+	if err != nil {
+		http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
+		log.Println("ERROR: PostUserProfileHandler() - Backend: " + err.Error())
+		return
+	}
+	//return backend Response 	//TODO: make this check backend response code and return based off (update backend first)
+	respBody, _ := ioutil.ReadAll(resp.Body)
+	fmt.Fprintf(w, string(respBody))
 }
 
 func main() {
@@ -123,7 +191,11 @@ func main() {
 	r.HandleFunc("/apiVersion", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "{\"apiVersion\":"+apiVersion+"}") })
 	r.HandleFunc("/userInfo/{UID}", GetUserInfoHandler).Methods(http.MethodGet, http.MethodHead)
 	//r.HandleFunc("/userInfo/{UID}/base", CalculateUserInfoHandler).Methods(http.MethodGet, http.MethodHead)
-	//r.HandleFunc("/userInfo/{UID}", UpdateUserInfoHandler).Methods(http.MethodPost)
+	r.HandleFunc("/userInfo/{UID}", UpdateUserInfoHandler).Methods(http.MethodPost)
+	r.HandleFunc("/userWeekly/{week}/{UID}", UpdateUserWeeklylineHandler).Methods(http.MethodPost)
+	r.HandleFunc("/userDaily/{week}/{day}/{UID}", UpdateUserDailyHandler).Methods(http.MethodPost)
+	r.HandleFunc("/generateUserBaseline/{UID}", generateUserBaselineHandler).Methods(http.MethodPost)
+	r.HandleFunc("/userRecommendation/{week}/{UID}", UpdateUserRecommendationsHandler).Methods(http.MethodPost)
 	r.HandleFunc("/_healthz", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "ok") })
 	var handler http.Handler = r
 	log.Printf("Backend listening at address " + listenAddress)

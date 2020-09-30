@@ -124,8 +124,8 @@ func UpdateUserProfileHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "ok")
 }
 
-//UpdateUserBaselineHandler updates user profile info from a Week object
-func UpdateUserBaselineHandler(w http.ResponseWriter, r *http.Request) {
+//UpdateUserWeeklylineHandler updates user profile info from a Week object
+func UpdateUserWeeklylineHandler(w http.ResponseWriter, r *http.Request) {
 	// extract UID and weekToUpdate from URL
 	vars := mux.Vars(r)
 	UID := vars["UID"]
@@ -133,19 +133,19 @@ func UpdateUserBaselineHandler(w http.ResponseWriter, r *http.Request) {
 	// unmarshal the body of POST request as a Week struct
 	reqBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		log.Fatal("ERROR: UpdateUserBaselineHandler: " + err.Error())
+		log.Fatal("ERROR: UpdateUserWeeklylineHandler: " + err.Error())
 	}
 	var clientWeek structs.Week
 	err = json.Unmarshal(reqBody, &clientWeek)
 	if err != nil {
-		log.Println("ERROR: UpdateUserBaselineHandler: " + err.Error())
+		log.Println("ERROR: UpdateUserWeeklylineHandler: " + err.Error())
 		http.Error(w, "400 - invalid syntax.", http.StatusBadRequest)
 		return
 	}
 	//get existing user data from db
 	userData := getUserCollection(UID)
 	if len(userData) == 0 {
-		log.Println("ERROR: UpdateUserBaselineHandler: getUserCollection is empty")
+		log.Println("ERROR: UpdateUserWeeklylineHandler: getUserCollection is empty")
 		http.Error(w, "update failed, UID does not exist.", http.StatusNotAcceptable)
 		return
 	}
@@ -155,7 +155,7 @@ func UpdateUserBaselineHandler(w http.ResponseWriter, r *http.Request) {
 	//update user information in server
 	success := updateUserDocument(userData[0])
 	if success == false {
-		log.Println("ERROR: UpdateUserBaselineHandler: Upload to DB failed")
+		log.Println("ERROR: UpdateUserWeeklylineHandler: Upload to DB failed")
 		http.Error(w, "500 - Upload to DB Failed", http.StatusInternalServerError)
 		return
 	}
@@ -291,7 +291,7 @@ func main() {
 	r.HandleFunc("/apiVersion", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "{\"apiVersion\":"+apiVersion+"}") })
 	r.HandleFunc("/userInfo/{UID}", GetUserInfoHandler).Methods(http.MethodGet, http.MethodHead)
 	r.HandleFunc("/userInfo/{UID}", UpdateUserProfileHandler).Methods(http.MethodPost)
-	r.HandleFunc("/userBaseline/{week}/{UID}", UpdateUserBaselineHandler).Methods(http.MethodPost)
+	r.HandleFunc("/userWeekly/{week}/{UID}", UpdateUserWeeklylineHandler).Methods(http.MethodPost)
 	r.HandleFunc("/userDaily/{week}/{day}/{UID}", UpdateUserDailyHandler).Methods(http.MethodPost)
 	r.HandleFunc("/userRecommendation/{week}/{UID}", UpdateUserRecommendationsHandler).Methods(http.MethodPost)
 	r.HandleFunc("/healthz", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "ok") })

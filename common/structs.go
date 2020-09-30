@@ -7,16 +7,16 @@ type Auth struct {
 }
 
 //UserInfo holds user information for communicating with the BACKEND service
-type UserInfo struct {
-	FirstName    string
-	LastName     string
-	Weight       int
-	WaistCirc    int
-	HeightInches int
-	LeanBodyMass int
-	Age          int
-	Gender       string
-}
+// type UserInfo struct {
+// 	FirstName    string
+// 	LastName     string
+// 	Weight       int
+// 	WaistCirc    int
+// 	HeightInches int
+// 	LeanBodyMass int
+// 	Age          int
+// 	Gender       string
+// }
 
 //Client holds user information in the same format as the Mongo database
 type Client struct {
@@ -39,11 +39,11 @@ type Day struct {
 	Fat            int     `bson:"fat,omitempty" json:",omitempty"`
 	Carbs          int     `bson:"carbs,omitempty" json:",omitempty"`
 	Protein        int     `bson:"protein,omitempty" json:",omitempty"`
-	TotalCalories  int     `bson:"total_calories" json:",omitempty"`
-	DayCalorie     string  `bson:"day_calorie" json:",omitempty"`
+	TotalCalories  int     `bson:"total_calories,omitempty" json:",omitempty"`
+	DayCalorie     string  `bson:"day_calorie,omitempty" json:",omitempty"`
 	Weight         float64 `bson:"weight,omitempty" json:",omitempty"`
 	Cardio         string  `bson:"cardio,omitempty" json:",omitempty"`
-	WeightTraining string  `bson:"weight_training" json:",omitempty"`
+	WeightTraining string  `bson:"weight_training,omitempty" json:",omitempty"`
 }
 type Recommendation struct {
 	HighDayProtein             int    `bson:"highdayprotein,omitempty" json:",omitempty"`
