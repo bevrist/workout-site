@@ -541,6 +541,49 @@ paths:
                   Week: 2
                   ModifiedDate: '2020-90-13'
         description: ''
+  '/userWeekly/{week}/{UID}':
+    parameters:
+      - schema:
+          type: string
+        name: week
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: UID
+        in: path
+        required: true
+    post:
+      summary: ''
+      operationId: post-userWeekly-week-UID
+      responses:
+        '200':
+          description: OK
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Day:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      Fat:
+                        type: integer
+                      Carbs:
+                        type: integer
+                      Protein:
+                        type: integer
+                      TotalCalories:
+                        type: integer
+                      Weight:
+                        type: integer
+                      Cardio:
+                        type: string
+                      WeightTraining:
+                        type: string
 components:
   schemas: {}
 tags:

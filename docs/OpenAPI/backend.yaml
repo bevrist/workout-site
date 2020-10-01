@@ -7,14 +7,62 @@ info:
 servers:
   - url: 'http://localhost:8090'
 paths:
-  '/userInfo/{UID}':
-    get:
-      summary: Get User Info
-      tags:
-        - workout-app
+  '/userDaily/{week}/{day}/{UID}':
+    parameters:
+      - schema:
+          type: string
+        name: week
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: day
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: UID
+        in: path
+        required: true
+    post:
+      summary: ''
+      operationId: post-generateUserBaseline
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Fat:
+                    type: integer
+                  Carbs:
+                    type: integer
+                  Protein:
+                    type: integer
+                  TotalCalories:
+                    type: integer
+                  DayCalories:
+                    type: integer
+                  Weight:
+                    type: integer
+                  Cardio:
+                    type: string
+                  WeightTraining:
+                    type: string
+  '/userInfo/{UID}':
+    parameters:
+      - schema:
+          type: string
+        name: UID
+        in: path
+        required: true
+    get:
+      responses:
+        '200':
+          description: OK
+          headers: {}
           content:
             application/json:
               schema:
@@ -25,35 +73,122 @@ paths:
                   LastName:
                     type: string
                   Weight:
-                    type: string
+                    type: integer
                   WaistCirc:
-                    type: string
+                    type: integer
                   HeightInches:
-                    type: string
+                    type: integer
                   LeanBodyMass:
+                    type: integer
+                  Age:
+                    type: integer
+                  Gender:
                     type: string
-              examples:
-                example:
-                  value:
-                    FirstName: Anthony
-                    LastName: Hannah
-                    Weight: '215'
-                    WaistCirc: '0'
-                    HeightInches: '72'
-                    LeanBodyMass: '15'
-                    Age: 27
-                    Gender: male
-      operationId: get-userInfo
-      parameters: []
-      description: Get user profile information
+      description: ''
     post:
-      summary: Update User Info
-      operationId: post-userInfo
+      summary: ''
+      operationId: post-userInfo-UID
       responses:
-        '202':
-          description: Accepted
-      parameters: []
-      description: Update information related to user ID
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                example-1:
+                  value: {}
+        '':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  FirstName:
+                    type: string
+                  LastName:
+                    type: string
+                  Weight:
+                    type: integer
+                  WaistCirc:
+                    type: integer
+                  HeightInches:
+                    type: integer
+                  LeanBodyMass:
+                    type: integer
+                  Age:
+                    type: integer
+                  Gender:
+                    type: string
+  '/userRecommendation/{week}/{UID}':
+    parameters:
+      - schema:
+          type: number
+        name: week
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: UID
+        in: path
+        required: true
+    post:
+      summary: ''
+      operationId: post-userRecommendation-week-UID
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  HighDayProtein:
+                    type: integer
+                  HighDayCarb:
+                    type: integer
+                  HighDayFat:
+                    type: integer
+                  HaighDayCalories:
+                    type: integer
+                  NormalDayProtein:
+                    type: integer
+                  NormalDayCarb:
+                    type: integer
+                  NormalDayFat:
+                    type: integer
+                  NormalDayCalories:
+                    type: integer
+                  LowDayProtein:
+                    type: integer
+                  LowDayFat:
+                    type: integer
+                  LowDayCalories:
+                    type: integer
+                  HIITCurrentCardioSession:
+                    type: string
+                  HIITChangeCardioSession:
+                    type: string
+                  HIIYCurrentCardioIntervals:
+                    type: integer
+                  HIITChangeCardioIntervals:
+                    type: integer
+                  Week:
+                    type: integer
+                  ModifiedDate:
+                    type: string
+  '/generateUserBaseline/{UID}':
+    parameters:
+      - schema:
+          type: string
+        name: UID
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses: {}
+      operationId: get-generateUserBaseline-UID
       requestBody:
         content:
           application/json:
@@ -72,120 +207,10 @@ paths:
                   type: integer
                 LeanBodyMass:
                   type: integer
-      tags:
-        - workout-app
-    parameters:
-      - schema:
-          type: string
-        name: UID
-        in: path
-        required: true
-        description: Identifier of user in database
-  /apiVersion:
-    get:
-      summary: Get API Version
-      tags:
-        - workout-app
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  apiVersion:
-                    type: number
-      operationId: get-apiVersion
-      description: Returns the symantec version number of the api
-  '/userInfo/{UID}/base':
-    parameters:
-      - schema:
-          type: string
-        name: UID
-        in: path
-        required: true
-        description: Identifier of user in database
-    get:
-      summary: Your GET endpoint
-      tags:
-        - workout-app
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  LowDay:
-                    type: number
-                  NormalDay:
-                    type: number
-                  HighDay:
-                    type: number
-                  LProteinAmount:
-                    type: number
-                  NProteinAmount:
-                    type: number
-                  HProteinAmount:
-                    type: number
-                  LCarbAmount:
-                    type: number
-                  NCarbAmount:
-                    type: number
-                  HCarbAmount:
-                    type: number
-                  LFatAmount:
-                    type: number
-                  NFatAmount:
-                    type: number
-                  HFatAmount:
-                    type: number
-                  LProteinRatio:
-                    type: number
-                  NProteinRatio:
-                    type: number
-                  HProteinRatio:
-                    type: number
-                  LCarbRatio:
-                    type: number
-                  NCarbRatio:
-                    type: number
-                  HCarbRatio:
-                    type: number
-                  LFatRatio:
-                    type: number
-                  NFatRatio:
-                    type: number
-                  HFatRatio:
-                    type: number
-              examples:
-                example:
-                  value:
-                    LowDay: 2599
-                    NormalDay: 2978
-                    HighDay: 3357
-                    NFatRatio: 0.25
-                    NCarbRatio: 0.37
-                    NProteinRatio: 0.38
-                    HFatRatio: 0.3
-                    HCarbRatio: 0.5
-                    HProteinRatio: 0.2
-                    LFatRatio: 0.41
-                    LCarbRatio: 0.32
-                    LProteinRatio: 0.27
-                    NFatAmount: 83
-                    NCarbAmount: 275
-                    NProteinAmount: 283
-                    HFatAmount: 112
-                    HCarbAmount: 420
-                    HProteinAmount: 168
-                    LFatAmount: 118
-                    LCarbAmount: 208
-                    LProteinAmount: 175
-      operationId: get-userInfo-base
-      description: Get user baseline information
+                Age:
+                  type: integer
+                Gender:
+                  type: string
 components:
   schemas: {}
 tags:

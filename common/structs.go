@@ -40,7 +40,7 @@ type Day struct {
 	Carbs          int     `bson:"carbs,omitempty" json:",omitempty"`
 	Protein        int     `bson:"protein,omitempty" json:",omitempty"`
 	TotalCalories  int     `bson:"total_calories,omitempty" json:",omitempty"`
-	DayCalorie     string  `bson:"day_calorie,omitempty" json:",omitempty"`
+	DayCalories    string  `bson:"day_calorie,omitempty" json:",omitempty"`
 	Weight         float64 `bson:"weight,omitempty" json:",omitempty"`
 	Cardio         string  `bson:"cardio,omitempty" json:",omitempty"`
 	WeightTraining string  `bson:"weight_training,omitempty" json:",omitempty"`
@@ -61,7 +61,7 @@ type Recommendation struct {
 	HIITCurrentCardioSession   int    `bson:"hiitcurrentcardiosession,omitempty" json:",omitempty"`
 	HIITChangeCardioSession    int    `bson:"hiitchangecardiosession,omitempty" json:",omitempty"`
 	HIITCurrentCardioIntervals int    `bson:"hiitcurrentcardiointervals,omitempty" json:",omitempty"`
-	HIITChangeCarioIntervals   int    `bson:"hiitchangecariointervals,omitempty" json:",omitempty"`
+	HIITChangeCardioIntervals  int    `bson:"hiitchangecariointervals,omitempty" json:",omitempty"`
 	Week                       int    `bson:"week,omitempty" json:",omitempty"`
 	ModifiedDate               string `bson:"modifieddate,omitempty" json:",omitempty"`
 }
