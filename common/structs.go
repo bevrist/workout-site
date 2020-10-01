@@ -61,7 +61,7 @@ type Recommendation struct {
 	HIITCurrentCardioSession   int    `bson:"hiitcurrentcardiosession,omitempty" json:",omitempty"`
 	HIITChangeCardioSession    int    `bson:"hiitchangecardiosession,omitempty" json:",omitempty"`
 	HIITCurrentCardioIntervals int    `bson:"hiitcurrentcardiointervals,omitempty" json:",omitempty"`
-	HIITChangeCardioIntervals  int    `bson:"hiitchangecariointervals,omitempty" json:",omitempty"`
+	HIITChangeCardioIntervals  int    `bson:"hiitchangecardiointervals,omitempty" json:",omitempty"`
 	Week                       int    `bson:"week,omitempty" json:",omitempty"`
 	ModifiedDate               string `bson:"modifieddate,omitempty" json:",omitempty"`
 }
