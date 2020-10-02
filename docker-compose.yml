@@ -1,70 +1,90 @@
-# Docker compose builds and runs multiple docker containers
-# run simply with `docker-compose up --build`
+# Docker compose for quick local instance of workout app
+# run simply with `docker-compose down && docker-compose up --build`
 
 version: "3"
 
 services:
-  backend:
-    build:
-      context: .
-      dockerfile: ./backend/Dockerfile
-    network_mode: "host"
-    ports:
-      - 8090:8090
-    environment:
-      BACKEND_LISTEN_ADDRESS: 0.0.0.0:8090
-    restart: on-failure
-
-  mongodb:
+  mock-database_service:
     build:
       context: .
       dockerfile: ./database/mongoDB/Dockerfile
-    logging:
-      driver: "none"
-    network_mode: "host"
     ports:
       - 27017:27017
     environment:
       MONGO_INITDB_ROOT_USERNAME: adminz
       MONGO_INITDB_ROOT_PASSWORD: cheeksbutt
+    logging:
+      driver: none
     restart: on-failure
 
-  database:
+  mock-database-debug:
+    image: mongo-express
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: adminz
+      ME_CONFIG_MONGODB_ADMINPASSWORD: cheeksbutt
+      ME_CONFIG_MONGODB_SERVER: mock-database_service
+    logging:
+      driver: none
+    restart: on-failure
+
+  database_service:
     build:
       context: .
       dockerfile: ./database/Dockerfile
-    network_mode: "host"
     ports:
       - 8050:8050
     environment:
       DATABASE_LISTEN_ADDRESS: 0.0.0.0:8050
-      DATABASE_ADDRESS: localhost:27017
+      DATABASE_ADDRESS: mock-database_service:27017
       DATABASE_USERNAME: adminz
       DATABASE_PASSWORD: cheeksbutt
     restart: on-failure
 
-  auth:
+  backend_service:
+    build:
+      context: .
+      dockerfile: ./backend/Dockerfile
+    ports:
+      - 8090:8090
+    environment:
+      BACKEND_LISTEN_ADDRESS: 0.0.0.0:8090
+      DATABASE_ADDRESS: database_service:8050
+    restart: on-failure
+
+  auth_service:
     build:
       context: .
       dockerfile: ./auth/Dockerfile
-    network_mode: "host"
     ports:
       - 8070:8070
     environment:
       AUTH_LISTEN_ADDRESS: 0.0.0.0:8070
-
+      AUTH_FIREBASE_CREDENTIALS: '{test}'
     restart: on-failure
 
-  # frontend:
+  frontend-api_service:
+    build:
+      context: .
+      dockerfile: ./frontend-api/Dockerfile
+    ports:
+      - 8888:8888
+    environment:
+      FRONTEND_API_LISTEN_ADDRESS: 0.0.0.0:8888
+      BACKEND_ADDRESS: backend_service:8090
+      AUTH_ADDRESS: auth_service:8070
+    restart: on-failure
+
+  # frontend-web_service:
   #   build:
   #     context: .
-  #     dockerfile: ./frontend/Dockerfile
-  #   network_mode: "host"
+  #     dockerfile: ./frontend-web/Dockerfile
   #   ports:
   #     - 8080:8080
   #   environment:
-  #     FRONTEND_WEBSITE_URL: http://192.168.86.20:8080
-  #     FRONTEND_LISTEN_ADDRESS: 0.0.0.0:8080
-  #     BACKEND_ADDRESS: localhost:8090
-  #     AUTH_ADDRESS: localhost:8070
+  #     FRONTEND_WEB_LISTEN_ADDRESS: 0.0.0.0:8080
+  #     FRONTEND_WEB_SITE_ADDRESS: "localhost:8080"
+  #     FRONTEND_API_ADDRESS: backend_service:8888
+  #     FRONTEND_API_SITE_ADDRESS: "localhost:8888"
   #   restart: on-failure

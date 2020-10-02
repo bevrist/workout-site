@@ -1,18 +1,16 @@
 FROM golang:latest
-RUN apt-get update && apt-get install uglifyjs -y
-WORKDIR /app
 RUN go get -v github.com/gorilla/mux
-COPY ./frontend/frontend.go .
+WORKDIR /app
+COPY ./frontend-api/frontend-api.go .
 COPY ./common ../common
 # RUN go get -d -v ./...
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o frontend .
-
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o frontend-api .
 
 FROM alpine:latest
 RUN apk --no-cache add ca-certificates
 WORKDIR /root/
 COPY --from=0 /app .
-CMD ["./frontend"]
+CMD ["./frontend-api"]
 
 ENV FRONTEND_LISTEN_ADDRESS=0.0.0.0:80
 ENV BACKEND_ADDRESS=localhost:8090

@@ -1,10 +1,9 @@
 # TODO
 
-- break frontend website into frontend-web, make frontend only a REST API
 - verify all startup failures result in container termination 
-- update docker-compose with new services
 - modify all service Dockerfiles to use `scratch` instead of `alpine`
-- update readme with --net=host for all containers
+- check for log.fatal() calls and replace with log.Println()
+- change all dockerfiles to `FROM golang:1`
 
 ## auth
 
@@ -13,6 +12,7 @@
 - rename weeklyBaseline endpoint
 
 ## frontend
+- Write API integration tests
 - refactor from structs.UserInfo to structs.Client
 - modify frontend endpoints
     - consolidate submitUserProfile & getUserProfile

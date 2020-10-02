@@ -20,6 +20,7 @@ import (
 // Global Variables
 var apiVersion string = "1.0" //the api version this service implements
 var client *auth.Client       //firebase app instance
+var useFirebase bool		  //debug flag for using firebase
 // env
 var listenAddress string //listen address of this service
 
@@ -30,6 +31,9 @@ func getUID(sessionToken string) string {
 		return "testUID"
 	} else if sessionToken == "testfail" {
 		return ""
+	}
+	if useFirebase == false {
+		return sessionToken
 	}
 
 	//validate session token and return UID, failure will return empty string
@@ -80,7 +84,7 @@ func main() {
 		listenAddress = "0.0.0.0:8070"
 	}
 
-	var useFirebase = true
+	useFirebase = true
 	//initialize firebase app connection
 	var opt option.ClientOption
 	if firebaseCredentials == "{}" {
@@ -101,6 +105,8 @@ func main() {
 		if err != nil {
 			log.Fatalf("error getting firebase Auth client: %v\n", err)
 		}
+	} else {
+		log.Println("WARNING: not using firebase, all replies will be mirrored...")
 	}
 
 	//specify routes and start http server

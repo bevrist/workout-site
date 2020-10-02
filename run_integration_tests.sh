@@ -12,7 +12,7 @@ docker build -t database:latest -f ./database/Dockerfile .
 docker build -t auth-test:latest -f ./auth/tests.Dockerfile .
 docker build -t database-test:latest -f ./database/tests.Dockerfile .
 docker build -t mongodb-mock-database:latest -f ./database/mongoDB/Dockerfile .
-docker build -t frontend-test:latest -f ./frontend/tests.Dockerfile .
+docker build -t frontend-api-test:latest -f ./frontend-api/tests.Dockerfile .
 
 # --- run all tests ---
 echo "running tests..."
@@ -21,16 +21,15 @@ echo "preparing database integration test..."
 docker stop mongodb-mock-database || :
 docker stop database-service || :
 docker run --rm -d --name=mongodb-mock-database -p 27017:27017 --net=host -e MONGO_INITDB_ROOT_USERNAME=adminz -e MONGO_INITDB_ROOT_PASSWORD=cheeksbutt mongodb-mock-database:latest
-sleep 2 && docker run -i --rm --name=database-service -p 8050:8050 --net=host database:latest &
+sleep 10 && docker run -i --rm --name=database-service -p 8050:8050 --net=host database:latest &
 echo "testing database..."
-sleep 5 && docker run --rm -i --name=database-test --net=host database-test:latest
+sleep 10 && docker run --rm -i --name=database-test --net=host database-test:latest
 docker stop mongodb-mock-database
 docker stop database-service
 # backend test
 # TODO: complete backend test
 # auth test
 echo "preparing auth integration test..."
-# stop hanging auth-service instances
 docker stop auth-service || :
 docker run -i --name=auth-service -p 8070:8070 --net=host --rm -e AUTH_FIREBASE_CREDENTIALS='{test}' auth:latest &
 echo "testing auth..."

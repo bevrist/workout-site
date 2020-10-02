@@ -1,8 +1,8 @@
 FROM golang:latest
 WORKDIR /app
 RUN go get -v github.com/gorilla/mux github.com/lib/pq
-COPY ./backend .
 COPY ./common ../common
+COPY ./backend/backend.go .
 # RUN go get -d -v ./...
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o backend .
 

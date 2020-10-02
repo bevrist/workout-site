@@ -7,9 +7,9 @@ info:
 servers:
   - url: 'http://localhost:8888'
 paths:
-  /userProfile:
+  /userInfo:
     get:
-      summary: Get User Profile
+      summary: Get User Info
       tags:
         - workout-app
       responses:
@@ -51,8 +51,8 @@ paths:
           description: Unauthorized
         '428':
           description: Precondition Required - missing session-token
-      operationId: get-userProfile
-      description: 'Returns all user profile data, including baseline and weekly tracking data'
+      operationId: get-userInfo
+      description: Returns all user profile data
       parameters:
         - schema:
             type: string

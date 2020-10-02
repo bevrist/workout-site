@@ -27,7 +27,7 @@
 	//"forwardPorts": [8080, 8090, 8888, 8070, 5500],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "go get -d -v ./...",
+	"postCreateCommand": "go get -v ./...",
 
 	// Uncomment to connect as a non-root user. See https://aka.ms/vscode-remote/containers/non-root.
 	// "remoteUser": "vscode"

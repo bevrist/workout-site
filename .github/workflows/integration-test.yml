@@ -49,8 +49,8 @@ jobs:
     - uses: actions/checkout@v2
     - run: docker stop mongodb-mock-database || :;
     - run: docker stop database-service || :;
-    - run: docker run --rm -d --name=mongodb-mock-database -p 27017:27017 -e MONGO_INITDB_ROOT_USERNAME=adminz -e MONGO_INITDB_ROOT_PASSWORD=cheeksbutt mongodb-mock-database:$(git rev-parse --short HEAD)
-    - run: sleep 2 && docker run --rm -d --name=database-service -p 8050:8050 --net=host database:$(git rev-parse --short HEAD)
+    - run: docker run --rm -d --name=mongodb-mock-database -p 27017:27017 --net=host -e MONGO_INITDB_ROOT_USERNAME=adminz -e MONGO_INITDB_ROOT_PASSWORD=cheeksbutt mongodb-mock-database:$(git rev-parse --short HEAD)
+    - run: sleep 10 && docker run --rm -d --name=database-service -p 8050:8050 --net=host database:$(git rev-parse --short HEAD)
     - run: sleep 10 && docker run --rm -i --name=database-test --net=host database-test:$(git rev-parse --short HEAD)
     - run: docker stop mongodb-mock-database
     - run: docker stop database-service

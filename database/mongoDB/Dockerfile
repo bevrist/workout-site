@@ -1,2 +1,2 @@
 FROM mongo:latest
-COPY database/mongoDB/mongo-setup.js /docker-entrypoint-initdb.d/mongo-setup.js
+COPY database/mongoDB/*.js /docker-entrypoint-initdb.d/
