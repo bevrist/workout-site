@@ -4,7 +4,7 @@
 > Run all commands from root folder of project  
 
 ## Docker Compose
-to run with docker compose, simply run `docker-compose up --build`  
+to run a simple local instance, run: `docker-compose down && docker-compose up --build`  
 
 
 ## Individual Containers

@@ -5,5 +5,4 @@ COPY ./common ../common
 COPY ./frontend-api .
 CMD ["go", "test"]
 
-ENV FRONTEND_LISTEN_ADDRESS=0.0.0.0:80
-ENV BACKEND_ADDRESS=localhost:8090
+ENV FRONTEND_API_SERVICE_ADDRESS="localhost:8888"

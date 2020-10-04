@@ -21,7 +21,6 @@ func TestMain(m *testing.M) {
 	if databaseAddress == "" {
 		databaseAddress = "localhost:8050"
 	}
-
     os.Exit(m.Run())
 }
 

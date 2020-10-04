@@ -46,7 +46,7 @@ func UpdateUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("ERROR: UpdateUserInfoHandler() - Backend: " + err.Error())
 		return
 	}
-	//return backend Response 	//TODO: make this check backend response code and return based off (update backend first)
+	//return backend Response
 	respBody, _ := ioutil.ReadAll(resp.Body)
 	fmt.Fprintf(w, string(respBody))
 }
@@ -113,7 +113,7 @@ func generateUserBaselineHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("ERROR: generateUserBaselineHandler() - Backend: " + err.Error())
 		return
 	}
-	//return backend Response 	//TODO: make this check backend response code and return based off (update backend first)
+	//return backend Response
 	respBody, _ := ioutil.ReadAll(resp.Body)
 	fmt.Fprintf(w, string(respBody))
 }
@@ -131,7 +131,7 @@ func UpdateUserRecommendationsHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("ERROR: PostUserProfileHandler() - Backend: " + err.Error())
 		return
 	}
-	//return backend Response 	//TODO: make this check backend response code and return based off (update backend first)
+	//return backend Response
 	respBody, _ := ioutil.ReadAll(resp.Body)
 	fmt.Fprintf(w, string(respBody))
 }
@@ -150,7 +150,7 @@ func UpdateUserDailyHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("ERROR: PostUserProfileHandler() - Backend: " + err.Error())
 		return
 	}
-	//return backend Response 	//TODO: make this check backend response code and return based off (update backend first)
+	//return backend Response
 	respBody, _ := ioutil.ReadAll(resp.Body)
 	fmt.Fprintf(w, string(respBody))
 }
@@ -168,7 +168,7 @@ func UpdateUserWeeklylineHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("ERROR: PostUserProfileHandler() - Backend: " + err.Error())
 		return
 	}
-	//return backend Response 	//TODO: make this check backend response code and return based off (update backend first)
+	//return backend Response
 	respBody, _ := ioutil.ReadAll(resp.Body)
 	fmt.Fprintf(w, string(respBody))
 }
