@@ -25,7 +25,7 @@ jobs:
     runs-on: [self-hosted, docker]
     steps:
     - uses: actions/checkout@v2
-    - run: docker build -t build-backend:$(git rev-parse --short HEAD) -f ./backend/Dockerfile .
+    - run: docker build -t backend:$(git rev-parse --short HEAD) -f ./backend/Dockerfile .
   build-frontend-api:
     runs-on: [self-hosted, docker]
     steps:
