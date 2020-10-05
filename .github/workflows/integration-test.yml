@@ -25,12 +25,12 @@ jobs:
     runs-on: [self-hosted, docker]
     steps:
     - uses: actions/checkout@v2
-    - run: docker build -t database:$(git rev-parse --short HEAD) -f ./backend/Dockerfile .
+    - run: docker build -t build-backend:$(git rev-parse --short HEAD) -f ./backend/Dockerfile .
   build-frontend-api:
     runs-on: [self-hosted, docker]
     steps:
     - uses: actions/checkout@v2
-    - run: docker build -t database:$(git rev-parse --short HEAD) -f ./frontend-api/Dockerfile .
+    - run: docker build -t frontend-api:$(git rev-parse --short HEAD) -f ./frontend-api/Dockerfile .
 
   ### build test images
   build-auth-test:
