@@ -31,4 +31,4 @@ to run a simple local instance, run: `docker-compose down && docker-compose up -
 
 **Auth:** `docker build -t auth-test -f ./auth/tests.Dockerfile . && docker run --rm -it --net=host auth-test`  
 
-**Frontend:** `docker build -t frontend-test -f ./frontend/tests.Dockerfile . && docker run --rm -it --net=host frontend-test`  
+**Frontend-api:** `docker build -t frontend-api-test -f ./frontend-api/tests.Dockerfile . && docker run --rm -it --net=host frontend-api-test`  
