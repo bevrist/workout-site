@@ -3,13 +3,13 @@
 # exit when any command fails
 set -e
 
-# --- build all containers ---
-# service containers
+# --- build all container images ---
+# service images
 docker build -t auth:$(git rev-parse --short HEAD) -f ./auth/Dockerfile .
 docker build -t database:$(git rev-parse --short HEAD) -f ./database/Dockerfile .
 docker build -t backend:$(git rev-parse --short HEAD) -f ./backend/Dockerfile .
 docker build -t frontend-api:$(git rev-parse --short HEAD) -f ./frontend-api/Dockerfile .
-# testing containers
+# testing images
 docker build -t auth-test:$(git rev-parse --short HEAD) -f ./auth/tests.Dockerfile .
 docker build -t database-test:$(git rev-parse --short HEAD) -f ./database/tests.Dockerfile .
 docker build -t mongodb-mock-database:$(git rev-parse --short HEAD) -f ./database/mongoDB/Dockerfile .
@@ -76,3 +76,5 @@ echo ""
 
 # frontend-web test
 # TODO: complete frontend-web test
+
+printf "\nALL TESTS PASSED!!! \n\n"
