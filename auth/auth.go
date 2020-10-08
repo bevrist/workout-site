@@ -106,7 +106,7 @@ func main() {
 			log.Fatalf("error getting firebase Auth client: %v\n", err)
 		}
 	} else {
-		log.Println("WARNING: not using firebase, all replies will be mirrored...")
+		log.Println("WARNING: Auth_Service not using firebase, all replies will be mirrored...")
 	}
 
 	//specify routes and start http server

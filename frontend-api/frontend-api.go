@@ -55,7 +55,6 @@ func GetUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
 		log.Println("ERROR: GetUserInfoHandler - Backend: " + err.Error())
 	}
-	//TODO: VERIFY UID IS MISSING IN TESTS
 	//strip UID field from response
 	reqBody, _ := ioutil.ReadAll(resp.Body)
 	var userInfo structs.Client
@@ -128,7 +127,7 @@ func UpdateUserWeeklyHandler(w http.ResponseWriter, r *http.Request) {
 func UpdateUserDailyHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	WEEK := vars["week"]
-	DAY := vars["Day"]
+	DAY := vars["day"]
 	sessionToken := r.Header.Get("Session-Token")
 	if sessionToken == "" {
 		http.Error(w, "428 Precondition Required - missing Session-Token.", http.StatusPreconditionRequired)
@@ -142,7 +141,7 @@ func UpdateUserDailyHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	//post userInfo data to backend
 	rBody, _ := ioutil.ReadAll(r.Body)
-	resp, err := http.Post("http://"+backendAddress+"/userInfo/"+WEEK+"/"+DAY+"/"+UID, "application/json", bytes.NewBuffer(rBody))
+	resp, err := http.Post("http://"+backendAddress+"/userDaily/"+WEEK+"/"+DAY+"/"+UID, "application/json", bytes.NewBuffer(rBody))
 	if err != nil {
 		http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
 		log.Println("ERROR: UpdateUserDailyHandler - Backend: " + err.Error())
@@ -181,6 +180,7 @@ func GenerateUserBaselineHandler(w http.ResponseWriter, r *http.Request) {
 
 //UpdateUserRecommendationsHandler update the user profile
 func UpdateUserRecommendationsHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "aaaa")
 	vars := mux.Vars(r)
 	WEEK := vars["week"]
 	sessionToken := r.Header.Get("Session-Token")

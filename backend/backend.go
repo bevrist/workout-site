@@ -37,16 +37,25 @@ func GetUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 func UpdateUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	UID := vars["UID"]
+	//add UID to user data
 	rBody, _ := ioutil.ReadAll(r.Body)
-
-	//post user data to backend
-	resp, err := http.Post("http://"+databaseAddress+"/userInfo/"+UID, "application/json", bytes.NewBuffer(rBody))
+	var userInfo structs.Client
+	err := json.Unmarshal(rBody, &userInfo)
 	if err != nil {
 		http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
-		log.Println("ERROR: UpdateUserInfoHandler() - Backend: " + err.Error())
+		log.Println("ERROR: UpdateUserInfoHandler: " + err.Error())
 		return
 	}
-	//return backend Response
+	userInfo.UID = UID
+	userInfoJSON, _ := json.Marshal(userInfo)
+	//post user data to database
+	resp, err := http.Post("http://"+databaseAddress+"/userInfo/"+UID, "application/json", bytes.NewBuffer(userInfoJSON))
+	if err != nil {
+		http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
+		log.Println("ERROR: UpdateUserInfoHandler() - database: " + err.Error())
+		return
+	}
+	//return database Response
 	respBody, _ := ioutil.ReadAll(resp.Body)
 	fmt.Fprintf(w, string(respBody))
 }
@@ -55,7 +64,7 @@ func generateUserBaselineHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	UID := vars["UID"]
 	rBody, _ := ioutil.ReadAll(r.Body)
-
+	//Unmarshal and add UID to userInfo struct
 	var userInfo structs.Client
 	err := json.Unmarshal(rBody, &userInfo)
 	if err != nil {
@@ -63,6 +72,7 @@ func generateUserBaselineHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "400 - invalid syntax.", http.StatusBadRequest)
 		return
 	}
+	userInfo.UID = UID
 
 	var bmr float64
 
@@ -103,17 +113,17 @@ func generateUserBaselineHandler(w http.ResponseWriter, r *http.Request) {
 	userProfile, err := json.Marshal(userInfo)
 	if err != nil {
 		http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
-		log.Println("ERROR: generateUserBaselineHandler() - Backend: " + err.Error())
+		log.Println("ERROR: generateUserBaselineHandler() - database: " + err.Error())
 	}
 
-	//post user data to backend
+	//post user data to database
 	resp, err := http.Post("http://"+databaseAddress+"/userInfo/"+UID, "application/json", bytes.NewBuffer(userProfile))
 	if err != nil {
 		http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
-		log.Println("ERROR: generateUserBaselineHandler() - Backend: " + err.Error())
+		log.Println("ERROR: generateUserBaselineHandler() - database: " + err.Error())
 		return
 	}
-	//return backend Response
+	//return database Response
 	respBody, _ := ioutil.ReadAll(resp.Body)
 	fmt.Fprintf(w, string(respBody))
 }
@@ -121,17 +131,17 @@ func generateUserBaselineHandler(w http.ResponseWriter, r *http.Request) {
 func UpdateUserRecommendationsHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	UID := vars["UID"]
-	WEEK := vars["Week"]
+	WEEK := vars["week"]
 	rBody, _ := ioutil.ReadAll(r.Body)
 
-	//post user data to backend
+	//post user data to database
 	resp, err := http.Post("http://"+databaseAddress+"/userRecommendation/"+WEEK+"/"+UID, "application/json", bytes.NewBuffer(rBody))
 	if err != nil {
 		http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
-		log.Println("ERROR: PostUserProfileHandler() - Backend: " + err.Error())
+		log.Println("ERROR: PostUserProfileHandler() - database: " + err.Error())
 		return
 	}
-	//return backend Response
+	//return database Response
 	respBody, _ := ioutil.ReadAll(resp.Body)
 	fmt.Fprintf(w, string(respBody))
 }
@@ -139,18 +149,18 @@ func UpdateUserRecommendationsHandler(w http.ResponseWriter, r *http.Request) {
 func UpdateUserDailyHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	UID := vars["UID"]
-	WEEK := vars["Week"]
-	DAY := vars["Day"]
+	WEEK := vars["week"]
+	DAY := vars["day"]
 	rBody, _ := ioutil.ReadAll(r.Body)
 
-	//post user data to backend
+	//post user data to database
 	resp, err := http.Post("http://"+databaseAddress+"/userDaily/"+WEEK+"/"+DAY+"/"+UID, "application/json", bytes.NewBuffer(rBody))
 	if err != nil {
 		http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
-		log.Println("ERROR: PostUserProfileHandler() - Backend: " + err.Error())
+		log.Println("ERROR: PostUserProfileHandler() - database: " + err.Error())
 		return
 	}
-	//return backend Response
+	//return database Response
 	respBody, _ := ioutil.ReadAll(resp.Body)
 	fmt.Fprintf(w, string(respBody))
 }
@@ -158,17 +168,17 @@ func UpdateUserDailyHandler(w http.ResponseWriter, r *http.Request) {
 func UpdateUserWeeklylineHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	UID := vars["UID"]
-	WEEK := vars["Week"]
+	WEEK := vars["week"]
 	rBody, _ := ioutil.ReadAll(r.Body)
 
-	//post user data to backend
+	//post user data to database
 	resp, err := http.Post("http://"+databaseAddress+"/userWeekly/"+WEEK+"/"+UID, "application/json", bytes.NewBuffer(rBody))
 	if err != nil {
 		http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
-		log.Println("ERROR: PostUserProfileHandler() - Backend: " + err.Error())
+		log.Println("ERROR: PostUserProfileHandler() - database: " + err.Error())
 		return
 	}
-	//return backend Response
+	//return database Response
 	respBody, _ := ioutil.ReadAll(resp.Body)
 	fmt.Fprintf(w, string(respBody))
 }
@@ -190,7 +200,6 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/apiVersion", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "{\"apiVersion\":"+apiVersion+"}") })
 	r.HandleFunc("/userInfo/{UID}", GetUserInfoHandler).Methods(http.MethodGet, http.MethodHead)
-	//r.HandleFunc("/userInfo/{UID}/base", CalculateUserInfoHandler).Methods(http.MethodGet, http.MethodHead)
 	r.HandleFunc("/userInfo/{UID}", UpdateUserInfoHandler).Methods(http.MethodPost)
 	r.HandleFunc("/userWeekly/{week}/{UID}", UpdateUserWeeklylineHandler).Methods(http.MethodPost)
 	r.HandleFunc("/userDaily/{week}/{day}/{UID}", UpdateUserDailyHandler).Methods(http.MethodPost)
