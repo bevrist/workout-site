@@ -1,24 +1,22 @@
 # TODO
 
-- see if integration tests can be run repeatedly against standing database
-- update readme to use docker networking instead of --net=host
-- verify all startup failures result in container termination 
 - modify all service Dockerfiles to use `scratch` instead of `alpine`
-- check for log.fatal() calls and replace with log.Println()
+- add better error messages
+    - add error ID to all error messages and ensure error is forwarded to user
+- add prometheus logging?
+- grafana dashboard monitoring
+
 
 ## auth
 
 
 ## database
-- rename weeklyBaseline endpoint
 
-## frontend
+
+## frontend-api
 - Write API integration tests
-- refactor from structs.UserInfo to structs.Client
-- modify frontend endpoints
-    - consolidate submitUserProfile & getUserProfile
-- write tests for frontend
-## UI
+
+## frontend-web
 - put start date in profile page
 - make "daily update" page
 - put recommendation and baseline on "daily update" page
@@ -30,7 +28,6 @@
 - make baseline page show current recommendation and "starting baseline" (recommendation shows "last edited" date)
 - coach adjustment: show baseline info, last coach recomendation, last user week, and form for new recomendation
 - make 2 versions of weekly history page, edit version that has the current editable tables, and normal version that has simple tables
-
 ## Webpage
 - test new user sign up flow
 - test new user redirect on baseline page
@@ -42,12 +39,6 @@
 
 ## Admin
 - create admin page for admin users to view all other users?
-
-## all
-- add better error messages
-    - add error ID to all error messages and ensure error is forwarded to user
-- add prometheus logging?
-- grafana dashboard monitoring
 
 
 

@@ -70,7 +70,9 @@ func GetUIDHandler(w http.ResponseWriter, r *http.Request) {
 	//marshal auth struct and respond to request
 	out, err := json.Marshal(auth)
 	if err != nil {
-		log.Fatal(err)
+		log.Println("ERROR: Invalid syntax: " + err.Error())
+		http.Error(w, "400 - invalid syntax.", http.StatusBadRequest)
+		return
 	}
 	fmt.Fprintf(w, string(out))
 }

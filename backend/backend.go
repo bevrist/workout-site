@@ -26,7 +26,8 @@ func GetUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 	resp, err := http.Get("http://" + databaseAddress + "/userInfo/" + UID)
 	if err != nil {
 		http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
-		log.Fatal("GetUserInfoHandler: " + err.Error())
+		log.Println("GetUserInfoHandler: " + err.Error())
+		return
 	}
 
 	reqBody, _ := ioutil.ReadAll(resp.Body)
