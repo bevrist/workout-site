@@ -1,4 +1,4 @@
-FROM golang:latest
+FROM golang:1
 WORKDIR /app
 RUN go get -v github.com/gorilla/mux github.com/lib/pq
 COPY ./common ../common

@@ -1,4 +1,4 @@
-FROM golang:latest
+FROM golang:1
 RUN apt-get update && apt-get install uglifyjs -y
 WORKDIR /app
 RUN go get -v github.com/gorilla/mux

@@ -1,4 +1,4 @@
-FROM golang:latest
+FROM golang:1
 RUN go get -v github.com/gorilla/mux go.mongodb.org/mongo-driver/bson go.mongodb.org/mongo-driver/mongo go.mongodb.org/mongo-driver/mongo/options go.mongodb.org/mongo-driver/mongo/readpref
 WORKDIR /app
 COPY ./database/database.go .

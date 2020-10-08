@@ -1,5 +1,4 @@
 # TODO
-- change all dockerfiles to `FROM golang:1`
 
 - see if integration tests can be run repeatedly against standing database
 - update readme to use docker networking instead of --net=host

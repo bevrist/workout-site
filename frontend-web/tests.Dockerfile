@@ -1,4 +1,4 @@
-FROM golang:latest
+FROM golang:1
 # auth dependencies
 RUN go get -v firebase.google.com/go firebase.google.com/go/auth github.com/gorilla/mux google.golang.org/api/option
 # frontend dependencies

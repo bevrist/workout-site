@@ -1,4 +1,4 @@
-FROM golang:latest
+FROM golang:1
 RUN go get -v github.com/gorilla/mux
 RUN go get -v github.com/google/go-cmp/cmp
 WORKDIR /frontend-api
