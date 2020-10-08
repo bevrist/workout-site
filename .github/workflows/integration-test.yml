@@ -71,56 +71,65 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     # cleaning up hanging containers
-    - run: docker stop mongodb-mock-database || :;
-    - run: docker stop database-service || :;
-    - run: sleep 5
+    - run: docker stop test-database_mongodb-mock-database || :;
+    - run: docker stop test-database_database-service || :;
+    - run: docker network rm database_net || :;
+    - run: sleep 10
     # preparing database integration test
-    - run: docker run --rm -d --name=mongodb-mock-database -p 27017:27017 --net=host -e MONGO_INITDB_ROOT_USERNAME=adminz -e MONGO_INITDB_ROOT_PASSWORD=cheeksbutt mongodb-mock-database:$(git rev-parse --short HEAD)
-    - run: sleep 10 && docker run -d --rm --name=database-service -p 8050:8050 --net=host database:$(git rev-parse --short HEAD)
+    - run: docker network create --driver bridge database_net || :;
+    - run: docker run --rm -d --name=test-database_mongodb-mock-database --net=database_net -e MONGO_INITDB_ROOT_USERNAME=adminz -e MONGO_INITDB_ROOT_PASSWORD=cheeksbutt mongodb-mock-database:$(git rev-parse --short HEAD)
+    - run: sleep 10 && docker run -d --rm --name=test-database_database-service --net=database_net -e DATABASE_ADDRESS=test-database_mongodb-mock-database:27017 -e DATABASE_LISTEN_ADDRESS=0.0.0.0:80 database:$(git rev-parse --short HEAD)
     # testing database
-    - run: sleep 5 && docker run --rm -i --name=database-test --net=host database-test:$(git rev-parse --short HEAD)
+    - run: sleep 10 && docker run --rm -i --name=database-test --net=database_net -e DATABASE_SERVICE_ADDRESS=test-database_database-service database-test:$(git rev-parse --short HEAD)
     # cleaning up
-    - run: docker stop mongodb-mock-database
-    - run: docker stop database-service
+    - run: docker stop test-database_mongodb-mock-database
+    - run: docker stop test-database_database-service
+    - run: docker network rm database_net
 
   test-auth:
-    needs: build-auth-test
+    needs: [build-auth-test]
     runs-on: [self-hosted, docker]
     steps:
     - uses: actions/checkout@v2
     # cleaning up hanging containers
-    - run: docker stop auth-service || :;
-    - run: sleep 5
+    - run: docker stop test-auth_auth-service || :;
+    - run: docker network rm auth_net || :;
+    - run: sleep 10
     # preparing auth integration test
-    - run: docker run --rm -d --name=auth-service -p 8070:8070 --net=host --rm -e AUTH_FIREBASE_CREDENTIALS='{test}' auth:$(git rev-parse --short HEAD)
+    - run: docker network create --driver bridge auth_net || :;
+    - run: docker run --rm -d --name=test-auth_auth-service --net=auth_net -e AUTH_FIREBASE_CREDENTIALS='{test}' -e AUTH_LISTEN_ADDRESS=0.0.0.0:80 auth:$(git rev-parse --short HEAD)
     # testing auth
-    - run: sleep 5 && docker run --rm -i --name=auth-test --net=host auth-test:$(git rev-parse --short HEAD)
+    - run: sleep 10 && docker run --rm -i --name=auth-test --net=auth_net -e AUTH_SERVICE_ADDRESS=test-auth_auth-service auth-test:$(git rev-parse --short HEAD)
     # cleaning up
-    - run: docker stop auth-service
+    - run: docker stop test-auth_auth-service
+    - run: docker network rm auth_net
 
   test-frontend-api:
-    needs: [build-frontend-api-test, test-auth, test-database]
+    needs: [build-frontend-api-test, build-mongodb-mock, build-database, build-auth, build-backend]
     runs-on: [self-hosted, docker]
     steps:
     - uses: actions/checkout@v2
     # cleaning up hanging containers
-    - run: docker stop auth-service || :;
-    - run: docker stop mongodb-mock-database || :;
-    - run: docker stop database-service || :;
-    - run: docker stop backend-service || :;
-    - run: docker stop frontend-api-service || :;
-    - run: sleep 5
+    - run: docker stop test-frontend-api_auth-service || :;
+    - run: docker stop test-frontend-api_mongodb-mock-database || :;
+    - run: docker stop test-frontend-api_database-service || :;
+    - run: docker stop test-frontend-api_backend-service || :;
+    - run: docker stop test-frontend-api_frontend-api-service || :;
+    - run: docker network rm frontend-api_net ||:;
+    - run: sleep 10
     # preparing frontend-api integration test
-    - run: docker run --rm -d --name=auth-service -p 8070:8070 --net=host --rm -e AUTH_FIREBASE_CREDENTIALS='{test}' auth:$(git rev-parse --short HEAD)
-    - run: docker run --rm -d --name=mongodb-mock-database -p 27017:27017 --net=host -e MONGO_INITDB_ROOT_USERNAME=adminz -e MONGO_INITDB_ROOT_PASSWORD=cheeksbutt mongodb-mock-database:$(git rev-parse --short HEAD)
-    - run: sleep 5 && docker run -d --rm --name=database-service -p 8050:8050 --net=host database:$(git rev-parse --short HEAD)
-    - run: sleep 5 && docker run -d --rm --name=backend-service -p 8050:8050 --net=host backend:$(git rev-parse --short HEAD)
-    - run: sleep 5 && docker run -d --rm --name=frontend-api-service -p 8888:8888 --net=host frontend-api:$(git rev-parse --short HEAD)
+    - run: docker network create --driver bridge frontend-api_net || :;
+    - run: docker run --rm -d --name=test-frontend-api_mongodb-mock-database --net=frontend-api_net -e MONGO_INITDB_ROOT_USERNAME=adminz -e MONGO_INITDB_ROOT_PASSWORD=cheeksbutt mongodb-mock-database:$(git rev-parse --short HEAD)
+    - run: docker run --rm -d --name=test-frontend-api_auth-service --net=frontend-api_net -e AUTH_FIREBASE_CREDENTIALS='{test}' -e AUTH_LISTEN_ADDRESS=0.0.0.0:80 auth:$(git rev-parse --short HEAD)
+    - run: sleep 10 && docker run -d --rm --name=test-frontend-api_database-service --net=frontend-api_net -e DATABASE_ADDRESS=test-frontend-api_mongodb-mock-database:27017 -e DATABASE_LISTEN_ADDRESS=0.0.0.0:80 database:$(git rev-parse --short HEAD)
+    - run: sleep 10 && docker run -d --rm --name=test-frontend-api_backend-service --net=frontend-api_net -e DATABASE_ADDRESS=test-frontend-api_database-service -e BACKEND_LISTEN_ADDRESS=0.0.0.0:80 backend:$(git rev-parse --short HEAD)
+    - run: sleep 10 && docker run -d --rm --name=test-frontend-api_frontend-api-service --net=frontend-api_net -e BACKEND_ADDRESS=test-frontend-api_backend-service -e AUTH_ADDRESS=test-frontend-api_auth-service -e FRONTEND_API_LISTEN_ADDRESS=0.0.0.0:80 frontend-api:$(git rev-parse --short HEAD)
     # testing frontend-api
-    - run: sleep 5 && docker run --rm -i --name=frontend-api-test --net=host frontend-api-test:$(git rev-parse --short HEAD)
+    - run: sleep 10 && docker run --rm -i --name=frontend-api-test --net=frontend-api_net -e FRONTEND_API_SERVICE_ADDRESS=test-frontend-api_frontend-api-service frontend-api-test:$(git rev-parse --short HEAD)
     # cleaning up
-    - run: docker stop frontend-api-service
-    - run: docker stop auth-service
-    - run: docker stop backend-service
-    - run: docker stop database-service
-    - run: docker stop mongodb-mock-database
+    - run: docker stop test-frontend-api_frontend-api-service
+    - run: docker stop test-frontend-api_auth-service
+    - run: docker stop test-frontend-api_backend-service
+    - run: docker stop test-frontend-api_database-service
+    - run: docker stop test-frontend-api_mongodb-mock-database
+    - run: docker network rm frontend-api_net

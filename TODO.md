@@ -1,9 +1,11 @@
 # TODO
+- change all dockerfiles to `FROM golang:1`
 
+- see if integration tests can be run repeatedly against standing database
+- update readme to use docker networking instead of --net=host
 - verify all startup failures result in container termination 
 - modify all service Dockerfiles to use `scratch` instead of `alpine`
 - check for log.fatal() calls and replace with log.Println()
-- change all dockerfiles to `FROM golang:1`
 
 ## auth
 
