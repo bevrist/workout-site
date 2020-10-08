@@ -5,8 +5,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
-
-	// "strings"
+	"log"
 	"os"
 	"testing"
 
@@ -23,6 +22,7 @@ func TestMain(m *testing.M) {
 	if frontendApiAddress == "" {
 		frontendApiAddress = "localhost:8050"
 	}
+	log.Println("Testing Frontend-Api at address: " + frontendApiAddress)
 	os.Exit(m.Run())
 }
 

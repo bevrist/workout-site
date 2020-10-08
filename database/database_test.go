@@ -9,6 +9,7 @@ import (
 	"strings"
 	"testing"
 	"os"
+	"log"
 
 	structs "../common"
 	"github.com/google/go-cmp/cmp"
@@ -21,6 +22,7 @@ func TestMain(m *testing.M) {
 	if databaseAddress == "" {
 		databaseAddress = "localhost:8050"
 	}
+	log.Println("Testing Database at address: " + databaseAddress)
     os.Exit(m.Run())
 }
 

@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"log"
 	"testing"
 
 	structs "../common"
@@ -17,7 +18,7 @@ func TestMain(m *testing.M) {
 	if authAddress == "" {
 		authAddress = "localhost:8070"
 	}
-
+	log.Println("Testing Auth at address: " + authAddress)
     os.Exit(m.Run())
 }
 
