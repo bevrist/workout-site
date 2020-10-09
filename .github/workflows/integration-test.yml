@@ -76,7 +76,7 @@ jobs:
     - run: docker network rm database_net || :;
     - run: sleep 10
     # preparing database integration test
-    - run: docker network create --driver bridge database_net || :;
+    - run: docker network create --driver bridge database_net
     - run: docker run --rm -d --name=test-database_mongodb-mock-database --net=database_net -e MONGO_INITDB_ROOT_USERNAME=adminz -e MONGO_INITDB_ROOT_PASSWORD=cheeksbutt mongodb-mock-database:$(git rev-parse --short HEAD)
     - run: sleep 10 && docker run -d --rm --name=test-database_database-service --net=database_net -e DATABASE_ADDRESS=test-database_mongodb-mock-database:27017 -e DATABASE_LISTEN_ADDRESS=0.0.0.0:80 database:$(git rev-parse --short HEAD)
     # testing database
@@ -96,7 +96,7 @@ jobs:
     - run: docker network rm auth_net || :;
     - run: sleep 10
     # preparing auth integration test
-    - run: docker network create --driver bridge auth_net || :;
+    - run: docker network create --driver bridge auth_net
     - run: docker run --rm -d --name=test-auth_auth-service --net=auth_net -e AUTH_FIREBASE_CREDENTIALS='{test}' -e AUTH_LISTEN_ADDRESS=0.0.0.0:80 auth:$(git rev-parse --short HEAD)
     # testing auth
     - run: sleep 10 && docker run --rm -i --name=auth-test --net=auth_net -e AUTH_SERVICE_ADDRESS=test-auth_auth-service auth-test:$(git rev-parse --short HEAD)
@@ -118,7 +118,7 @@ jobs:
     - run: docker network rm frontend-api_net ||:;
     - run: sleep 10
     # preparing frontend-api integration test
-    - run: docker network create --driver bridge frontend-api_net || :;
+    - run: docker network create --driver bridge frontend-api_net
     - run: docker run --rm -d --name=test-frontend-api_mongodb-mock-database --net=frontend-api_net -e MONGO_INITDB_ROOT_USERNAME=adminz -e MONGO_INITDB_ROOT_PASSWORD=cheeksbutt mongodb-mock-database:$(git rev-parse --short HEAD)
     - run: docker run --rm -d --name=test-frontend-api_auth-service --net=frontend-api_net -e AUTH_FIREBASE_CREDENTIALS='{test}' -e AUTH_LISTEN_ADDRESS=0.0.0.0:80 auth:$(git rev-parse --short HEAD)
     - run: sleep 10 && docker run -d --rm --name=test-frontend-api_database-service --net=frontend-api_net -e DATABASE_ADDRESS=test-frontend-api_mongodb-mock-database:27017 -e DATABASE_LISTEN_ADDRESS=0.0.0.0:80 database:$(git rev-parse --short HEAD)

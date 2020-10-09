@@ -535,6 +535,263 @@ func TestUpdateUserDailyOverwrite(t *testing.T) {
 	}
 }
 
-//TODO: complete frontend-api tests
-// /generateUserBaseline
-// /userRecommendations/{week}
+//FIXME revise this when BACKEND/generateUserBaseline is returning correct results
+// //TestGenerateUserBaseline validates updating daily data immediately following previous day
+// func TestGenerateUserBaseline(t *testing.T) {
+// 	var UID = "front-api-testUID8"
+// 	//post update data
+// 	var jsonStrNew = []byte(`{"FirstName":"Anthony8","LastName":"Hanna","Weight":250,"WaistCirc":50.5,"HeightInches":120,"LeanBodyMass":100,"Age":26,"Gender":"male"}`)
+// 	reqNew, _ := http.NewRequest("POST", "http://" + frontendApiAddress + "/generateUserBaseline", bytes.NewBuffer(jsonStrNew))
+// 	// set session token header for request
+// 	reqNew.Header.Set("Session-Token", UID)
+// 	reqNew.Header.Set("Content-Type", "application/json")
+// 	clientNew := &http.Client{}
+// 	respNew, err := clientNew.Do(reqNew)
+// 	if err != nil {
+// 		t.Errorf("Connection failed: %v", err)
+// 		t.FailNow()
+// 	}
+// 	reqBodyNew, _ := ioutil.ReadAll(respNew.Body)
+// 	//check that post response is "ok"
+// 	if string(reqBodyNew) != "ok" {
+// 		t.Errorf("Post Request Response Incorrect (should be 'ok'): %v", string(reqBodyNew))
+// 		t.FailNow()
+// 	}
+// 	//========================================
+// 	//Validate UserInfo is correct
+// 	req2, _ := http.NewRequest("GET", "http://" + frontendApiAddress + "/userInfo", nil)
+// 	// set session token header for request
+// 	req2.Header.Set("Session-Token", UID)
+// 	client2 := &http.Client{}
+// 	resp2, err := client2.Do(req2)
+// 	if err != nil {
+// 		t.Errorf("Connection failed: %v", err)
+// 		t.FailNow()
+// 	}
+// 	//unmarshal response into struct
+// 	reqBody2, _ := ioutil.ReadAll(resp2.Body)
+// 	var reqBackend2, expectedBackend2 structs.Client
+// 	json.Unmarshal(reqBody2, &reqBackend2)
+// 	//check that UID is missing from response
+// 	if reqBackend2.UID != "" {
+// 		t.Errorf("UID Should not be present: UID=%+v", reqBackend2.UID)
+// 		t.FailNow()
+// 	}
+// 	//compare received struct with expected struct
+// 	EXPECTED := []byte(`{"FirstName":"Anthony8","LastName":"Hanna","Weight":250,"WaistCirc":50.5,"HeightInches":120,"LeanBodyMass":100,"Age":26,"Gender":"male","Week":[{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]}],"Recommendation":[{"HighDayProtein":233,"HighDayCarb":584,"HighDayFat":156,"NormalDayProtein":393,"NormalDayCarb":383,"NormalDayFat":115,"LowDayProtein":244,"LowDayCarb":289,"LowDayFat":165},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]}`)
+// 	json.Unmarshal(EXPECTED, &expectedBackend2)
+// 	if !cmp.Equal(reqBackend2, expectedBackend2) {
+// 		t.Errorf("Database returned unexpected body: \ngot -: %+v \nwant -: %+v", string(reqBody2), string(EXPECTED))
+// 		t.FailNow()
+// 	}
+// }
+
+//FIXME revise this when BACKEND/generateUserBaseline is returning correct results
+// //TestGenerateUserBaselineOnExistingData generates baselinedata over existing user data
+// func TestGenerateUserBaselineOnExistingData(t *testing.T) {
+// 	var UID = "front-api-testUID9"
+// 	//post prop data for testing against
+// 	var jsonStr = []byte(`{"FirstName":"Anthony9","LastName":"Hanna","Weight":555,"WaistCirc":55.5,"HeightInches":55,"LeanBodyMass":55,"Age":55,"Gender":"male","Week":[{"Day":[{},{},{},{},{},{"Fat":500,"Carbs":500,"Protein":500,"TotalCalories":300,"DayCalories":"normal","Weight":321,"Cardio":"missed","WeightTraining":"no"},{}]},{"Day":[{},{"Fat":555,"Carbs":555,"Protein":555,"TotalCalories":555,"DayCalories":"normal","Weight":555,"Cardio":"missed","WeightTraining":"no"},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{"Fat":5050,"Carbs":5050,"Protein":5050,"TotalCalories":5050,"DayCalories":"normal","Weight":10,"Cardio":"missed","WeightTraining":"yes"},{}]}],"Recommendation":[{"HighDayProtein":1111,"HighDayCarb":1111,"HighDayFat":1211,"HighDayCalories":1311,"NormalDayProtein":1411,"NormalDayCarb":1511,"NormalDayFat":1611,"NormalDayCalories":1711,"LowDayProtein":1811,"LowDayCarb":1911,"LowDayFat":2011,"LowDayCalories":2111,"HIITCurrentCardioSession":22,"HIITChangeCardioSession":23,"HIITCurrentCardioIntervals":24,"HIITChangeCardioIntervals":25,"Week":1,"ModifiedDate":"2020-09-111"},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{"HighDayProtein":99,"HighDayCarb":99,"HighDayFat":99,"HighDayCalories":99,"NormalDayProtein":14,"NormalDayCarb":15,"NormalDayFat":16,"NormalDayCalories":17,"LowDayProtein":18,"LowDayCarb":19,"LowDayFat":20,"LowDayCalories":21,"HIITCurrentCardioSession":22,"HIITChangeCardioSession":23,"HIITCurrentCardioIntervals":99,"HIITChangeCardioIntervals":99,"Week":21,"ModifiedDate":"2020-09-99"},{},{},{}]}`)
+// 	req, _ := http.NewRequest("POST", "http://" + frontendApiAddress + "/userInfo", bytes.NewBuffer(jsonStr))
+// 	// set session token header for request
+// 	req.Header.Set("Session-Token", UID)
+// 	req.Header.Set("Content-Type", "application/json")
+// 	client := &http.Client{}
+// 	resp, err := client.Do(req)
+// 	if err != nil {
+// 		t.Errorf("Connection failed: %v", err)
+// 		t.FailNow()
+// 	}
+// 	reqBody, _ := ioutil.ReadAll(resp.Body)
+// 	//check that post response is "ok"
+// 	if string(reqBody) != "ok" {
+// 		t.Errorf("Post Request Response Incorrect (should be 'ok'): %v", string(reqBody))
+// 		t.FailNow()
+// 	}
+// 	//========================================
+// 	//post update data
+// 	var jsonStrNew = []byte(`{"FirstName":"Anthony99","LastName":"Hanna","Weight":251,"WaistCirc":50.5,"HeightInches":120,"LeanBodyMass":100,"Age":26,"Gender":"male"}`)
+// 	reqNew, _ := http.NewRequest("POST", "http://" + frontendApiAddress + "/generateUserBaseline", bytes.NewBuffer(jsonStrNew))
+// 	// set session token header for request
+// 	reqNew.Header.Set("Session-Token", UID)
+// 	reqNew.Header.Set("Content-Type", "application/json")
+// 	clientNew := &http.Client{}
+// 	respNew, err := clientNew.Do(reqNew)
+// 	if err != nil {
+// 		t.Errorf("Connection failed: %v", err)
+// 		t.FailNow()
+// 	}
+// 	reqBodyNew, _ := ioutil.ReadAll(respNew.Body)
+// 	//check that post response is "ok"
+// 	if string(reqBodyNew) != "ok" {
+// 		t.Errorf("Post Request Response Incorrect (should be 'ok'): %v", string(reqBodyNew))
+// 		t.FailNow()
+// 	}
+// 	//========================================
+// 	//Validate UserInfo is correct
+// 	req2, _ := http.NewRequest("GET", "http://" + frontendApiAddress + "/userInfo", nil)
+// 	// set session token header for request
+// 	req2.Header.Set("Session-Token", UID)
+// 	client2 := &http.Client{}
+// 	resp2, err := client2.Do(req2)
+// 	if err != nil {
+// 		t.Errorf("Connection failed: %v", err)
+// 		t.FailNow()
+// 	}
+// 	//unmarshal response into struct
+// 	reqBody2, _ := ioutil.ReadAll(resp2.Body)
+// 	var reqBackend2, expectedBackend2 structs.Client
+// 	json.Unmarshal(reqBody2, &reqBackend2)
+// 	//check that UID is missing from response
+// 	if reqBackend2.UID != "" {
+// 		t.Errorf("UID Should not be present: UID=%+v", reqBackend2.UID)
+// 		t.FailNow()
+// 	}
+// 	//compare received struct with expected struct
+// 	EXPECTED := []byte(`{"FirstName":"Anthony99","LastName":"Hanna","Weight":251,"WaistCirc":50.5,"HeightInches":120,"LeanBodyMass":100,"Age":26,"Gender":"male","Week":[{"Day":[{},{},{},{},{},{"Fat":500,"Carbs":500,"Protein":500,"TotalCalories":300,"DayCalories":"normal","Weight":321,"Cardio":"missed","WeightTraining":"no"},{}]},{"Day":[{},{"Fat":555,"Carbs":555,"Protein":555,"TotalCalories":555,"DayCalories":"normal","Weight":555,"Cardio":"missed","WeightTraining":"no"},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{"Fat":5050,"Carbs":5050,"Protein":5050,"TotalCalories":5050,"DayCalories":"normal","Weight":10,"Cardio":"missed","WeightTraining":"yes"},{}]}],"Recommendation":[{"HighDayProtein":234,"HighDayCarb":585,"HighDayFat":156,"NormalDayProtein":394,"NormalDayCarb":384,"NormalDayFat":115,"LowDayProtein":244,"LowDayCarb":290,"LowDayFat":165},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]}`)
+// 	json.Unmarshal(EXPECTED, &expectedBackend2)
+// 	if !cmp.Equal(reqBackend2, expectedBackend2) {
+// 		t.Errorf("Database returned unexpected body: \ngot -: %+v \nwant -: %+v", string(reqBody2), string(EXPECTED))
+// 		t.FailNow()
+// 	}
+// }
+
+//TODO perform data validation on Week and Modified date/ensure they are handled server side on frontend-api
+//TestUpdateUserRecommendations add user recommendation to profile
+func TestUpdateUserRecommendations(t *testing.T) {
+	var UID = "front-api-testUID10"
+	//post prop data for testing against
+	var jsonStr = []byte(`{"FirstName":"Anthony10","LastName":"Hanna","Weight":100,"WaistCirc":55.5,"HeightInches":55,"LeanBodyMass":55,"Age":55,"Gender":"male","Week":[{"Day":[{},{},{},{},{},{"Fat":1000,"Carbs":1000,"Protein":100,"TotalCalories":300,"DayCalories":"normal","Weight":321,"Cardio":"missed","WeightTraining":"no"},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{"Fat":1010,"Carbs":1010,"Protein":1010,"TotalCalories":1010,"DayCalories":"normal","Weight":10,"Cardio":"missed","WeightTraining":"yes"},{}]}],"Recommendation":[{"HighDayProtein":50,"HighDayCarb":11,"HighDayFat":12,"HighDayCalories":13,"NormalDayProtein":14,"NormalDayCarb":15,"NormalDayFat":16,"NormalDayCalories":17,"LowDayProtein":18,"LowDayCarb":19,"LowDayFat":20,"LowDayCalories":21,"HIITCurrentCardioSession":22,"HIITChangeCardioSession":23,"HIITCurrentCardioIntervals":24,"HIITChangeCardioIntervals":25,"Week":1,"ModifiedDate":"2020-09-15"},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]}`)
+	req, _ := http.NewRequest("POST", "http://" + frontendApiAddress + "/userInfo", bytes.NewBuffer(jsonStr))
+	// set session token header for request
+	req.Header.Set("Session-Token", UID)
+	req.Header.Set("Content-Type", "application/json")
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		t.Errorf("Connection failed: %v", err)
+		t.FailNow()
+	}
+	reqBody, _ := ioutil.ReadAll(resp.Body)
+	//check that post response is "ok"
+	if string(reqBody) != "ok" {
+		t.Errorf("Post Request Response Incorrect (should be 'ok'): %v", string(reqBody))
+		t.FailNow()
+	}
+	//========================================
+	//post update data
+	var jsonStrNew = []byte(`{"HighDayProtein":1009,"HighDayCarb":100,"HighDayFat":100,"HighDayCalories":100,"NormalDayProtein":1004,"NormalDayCarb":1005,"NormalDayFat":1006,"NormalDayCalories":1007,"LowDayProtein":18,"LowDayCarb":19,"LowDayFat":20,"LowDayCalories":21,"HIITCurrentCardioSession":22,"HIITChangeCardioSession":23,"HIITCurrentCardioIntervals":1001,"HIITChangeCardioIntervals":25,"Week":1000,"ModifiedDate":"2020-09-1009"}`)
+	reqNew, _ := http.NewRequest("POST", "http://" + frontendApiAddress + "/userRecommendations/0", bytes.NewBuffer(jsonStrNew))
+	// set session token header for request
+	reqNew.Header.Set("Session-Token", UID)
+	reqNew.Header.Set("Content-Type", "application/json")
+	clientNew := &http.Client{}
+	respNew, err := clientNew.Do(reqNew)
+	if err != nil {
+		t.Errorf("Connection failed: %v", err)
+		t.FailNow()
+	}
+	reqBodyNew, _ := ioutil.ReadAll(respNew.Body)
+	//check that post response is "ok"
+	if string(reqBodyNew) != "ok" {
+		t.Errorf("Post Request Response Incorrect (should be 'ok'): %v", string(reqBodyNew))
+		t.FailNow()
+	}
+	//========================================
+	//Validate UserInfo is correct
+	req2, _ := http.NewRequest("GET", "http://" + frontendApiAddress + "/userInfo", nil)
+	// set session token header for request
+	req2.Header.Set("Session-Token", UID)
+	client2 := &http.Client{}
+	resp2, err := client2.Do(req2)
+	if err != nil {
+		t.Errorf("Connection failed: %v", err)
+		t.FailNow()
+	}
+	//unmarshal response into struct
+	reqBody2, _ := ioutil.ReadAll(resp2.Body)
+	var reqBackend2, expectedBackend2 structs.Client
+	json.Unmarshal(reqBody2, &reqBackend2)
+	//check that UID is missing from response
+	if reqBackend2.UID != "" {
+		t.Errorf("UID Should not be present: UID=%+v", reqBackend2.UID)
+		t.FailNow()
+	}
+	//compare received struct with expected struct
+	EXPECTED := []byte(`{"FirstName":"Anthony10","LastName":"Hanna","Weight":100,"WaistCirc":55.5,"HeightInches":55,"LeanBodyMass":55,"Age":55,"Gender":"male","Week":[{"Day":[{},{},{},{},{},{"Fat":1000,"Carbs":1000,"Protein":100,"TotalCalories":300,"DayCalories":"normal","Weight":321,"Cardio":"missed","WeightTraining":"no"},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{"Fat":1010,"Carbs":1010,"Protein":1010,"TotalCalories":1010,"DayCalories":"normal","Weight":10,"Cardio":"missed","WeightTraining":"yes"},{}]}],"Recommendation":[{"HighDayProtein":1009,"HighDayCarb":100,"HighDayFat":100,"HighDayCalories":100,"NormalDayProtein":1004,"NormalDayCarb":1005,"NormalDayFat":1006,"NormalDayCalories":1007,"LowDayProtein":18,"LowDayCarb":19,"LowDayFat":20,"LowDayCalories":21,"HIITCurrentCardioSession":22,"HIITChangeCardioSession":23,"HIITCurrentCardioIntervals":1001,"HIITChangeCardioIntervals":25,"Week":1000,"ModifiedDate":"2020-09-1009"},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]}`)
+	json.Unmarshal(EXPECTED, &expectedBackend2)
+	if !cmp.Equal(reqBackend2, expectedBackend2) {
+		t.Errorf("Database returned unexpected body: \ngot -: %+v \nwant -: %+v", string(reqBody2), string(EXPECTED))
+		t.FailNow()
+	}
+}
+
+//TODO perform data validation on Week and Modified date/ensure they are handled server side on frontend-api
+//TestAddUserRecommendations add second user recommendation to profile
+func TestAddUserRecommendations(t *testing.T) {
+	var UID = "front-api-testUID1a"
+	//post prop data for testing against
+	var jsonStr = []byte(`{"FirstName":"Anthony11","LastName":"Hanna","Weight":100,"WaistCirc":55.5,"HeightInches":55,"LeanBodyMass":55,"Age":55,"Gender":"male","Week":[{"Day":[{},{},{},{},{},{"Fat":1000,"Carbs":1000,"Protein":100,"TotalCalories":300,"DayCalories":"normal","Weight":321,"Cardio":"missed","WeightTraining":"no"},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{"Fat":1010,"Carbs":1010,"Protein":1010,"TotalCalories":1010,"DayCalories":"normal","Weight":10,"Cardio":"missed","WeightTraining":"yes"},{}]}],"Recommendation":[{"HighDayProtein":1009,"HighDayCarb":100,"HighDayFat":100,"HighDayCalories":100,"NormalDayProtein":1004,"NormalDayCarb":1005,"NormalDayFat":1006,"NormalDayCalories":1007,"LowDayProtein":18,"LowDayCarb":19,"LowDayFat":20,"LowDayCalories":21,"HIITCurrentCardioSession":22,"HIITChangeCardioSession":23,"HIITCurrentCardioIntervals":1001,"HIITChangeCardioIntervals":25,"Week":1000,"ModifiedDate":"2020-09-1009"},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]}`)
+	req, _ := http.NewRequest("POST", "http://" + frontendApiAddress + "/userInfo", bytes.NewBuffer(jsonStr))
+	// set session token header for request
+	req.Header.Set("Session-Token", UID)
+	req.Header.Set("Content-Type", "application/json")
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		t.Errorf("Connection failed: %v", err)
+		t.FailNow()
+	}
+	reqBody, _ := ioutil.ReadAll(resp.Body)
+	//check that post response is "ok"
+	if string(reqBody) != "ok" {
+		t.Errorf("Post Request Response Incorrect (should be 'ok'): %v", string(reqBody))
+		t.FailNow()
+	}
+	//========================================
+	//post update data
+	var jsonStrNew = []byte(`{"HighDayProtein":11,"HighDayCarb":11,"HighDayFat":11,"HighDayCalories":11,"NormalDayProtein":11,"NormalDayCarb":1005,"NormalDayFat":1006,"NormalDayCalories":1007,"LowDayProtein":18,"LowDayCarb":19,"LowDayFat":20,"LowDayCalories":21,"HIITCurrentCardioSession":22,"HIITChangeCardioSession":23,"HIITCurrentCardioIntervals":1001,"HIITChangeCardioIntervals":25,"Week":1111,"ModifiedDate":"2020-11-11"}`)
+	reqNew, _ := http.NewRequest("POST", "http://" + frontendApiAddress + "/userRecommendations/2", bytes.NewBuffer(jsonStrNew))
+	// set session token header for request
+	reqNew.Header.Set("Session-Token", UID)
+	reqNew.Header.Set("Content-Type", "application/json")
+	clientNew := &http.Client{}
+	respNew, err := clientNew.Do(reqNew)
+	if err != nil {
+		t.Errorf("Connection failed: %v", err)
+		t.FailNow()
+	}
+	reqBodyNew, _ := ioutil.ReadAll(respNew.Body)
+	//check that post response is "ok"
+	if string(reqBodyNew) != "ok" {
+		t.Errorf("Post Request Response Incorrect (should be 'ok'): %v", string(reqBodyNew))
+		t.FailNow()
+	}
+	//========================================
+	//Validate UserInfo is correct
+	req2, _ := http.NewRequest("GET", "http://" + frontendApiAddress + "/userInfo", nil)
+	// set session token header for request
+	req2.Header.Set("Session-Token", UID)
+	client2 := &http.Client{}
+	resp2, err := client2.Do(req2)
+	if err != nil {
+		t.Errorf("Connection failed: %v", err)
+		t.FailNow()
+	}
+	//unmarshal response into struct
+	reqBody2, _ := ioutil.ReadAll(resp2.Body)
+	var reqBackend2, expectedBackend2 structs.Client
+	json.Unmarshal(reqBody2, &reqBackend2)
+	//check that UID is missing from response
+	if reqBackend2.UID != "" {
+		t.Errorf("UID Should not be present: UID=%+v", reqBackend2.UID)
+		t.FailNow()
+	}
+	//compare received struct with expected struct
+	EXPECTED := []byte(`{"FirstName":"Anthony11","LastName":"Hanna","Weight":100,"WaistCirc":55.5,"HeightInches":55,"LeanBodyMass":55,"Age":55,"Gender":"male","Week":[{"Day":[{},{},{},{},{},{"Fat":1000,"Carbs":1000,"Protein":100,"TotalCalories":300,"DayCalories":"normal","Weight":321,"Cardio":"missed","WeightTraining":"no"},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{"Fat":1010,"Carbs":1010,"Protein":1010,"TotalCalories":1010,"DayCalories":"normal","Weight":10,"Cardio":"missed","WeightTraining":"yes"},{}]}],"Recommendation":[{"HighDayProtein":1009,"HighDayCarb":100,"HighDayFat":100,"HighDayCalories":100,"NormalDayProtein":1004,"NormalDayCarb":1005,"NormalDayFat":1006,"NormalDayCalories":1007,"LowDayProtein":18,"LowDayCarb":19,"LowDayFat":20,"LowDayCalories":21,"HIITCurrentCardioSession":22,"HIITChangeCardioSession":23,"HIITCurrentCardioIntervals":1001,"HIITChangeCardioIntervals":25,"Week":1000,"ModifiedDate":"2020-09-1009"},{},{"HighDayProtein":11,"HighDayCarb":11,"HighDayFat":11,"HighDayCalories":11,"NormalDayProtein":11,"NormalDayCarb":1005,"NormalDayFat":1006,"NormalDayCalories":1007,"LowDayProtein":18,"LowDayCarb":19,"LowDayFat":20,"LowDayCalories":21,"HIITCurrentCardioSession":22,"HIITChangeCardioSession":23,"HIITCurrentCardioIntervals":1001,"HIITChangeCardioIntervals":25,"Week":1111,"ModifiedDate":"2020-11-11"},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]}`)
+	json.Unmarshal(EXPECTED, &expectedBackend2)
+	if !cmp.Equal(reqBackend2, expectedBackend2) {
+		t.Errorf("Database returned unexpected body: \ngot -: %+v \nwant -: %+v", string(reqBody2), string(EXPECTED))
+		t.FailNow()
+	}
+}

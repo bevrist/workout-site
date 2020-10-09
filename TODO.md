@@ -14,7 +14,8 @@
 
 
 ## frontend-api
-- Write API integration tests
+- update /GenerateUserBaseline tests
+- do data validation on post requests
 
 ## frontend-web
 - put start date in profile page
