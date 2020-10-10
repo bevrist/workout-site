@@ -1,5 +1,7 @@
 # TODO
 
+
+- delete all references to Recommmendation[].Week in tests
 - modify all service Dockerfiles to use `scratch` instead of `alpine`
 - add better error messages
     - add error ID to all error messages and ensure error is forwarded to user
@@ -13,7 +15,11 @@
 ## database
 
 
+## Backend
+- add modifiedDate and Week parameters to "UpdateRecommendations"
+
 ## frontend-api
+- finish unit tests
 - update /GenerateUserBaseline tests
 - do data validation on post requests
 
@@ -37,6 +43,7 @@
 - test user baseline update on profile change
 ### weekly tracking
     - load starting week on page load
+
 
 ## Admin
 - create admin page for admin users to view all other users?
