@@ -50,12 +50,12 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - run: docker build -t mongodb-mock-database:$(git rev-parse --short HEAD) -f ./database/mongoDB/Dockerfile .
-  # build-backend-test:
-  #   needs: build-backend
-  #   runs-on: [self-hosted, docker]
-  #   steps:
-  #   - uses: actions/checkout@v2
-  #   - run: docker build -t backend-test:$(git rev-parse --short HEAD) -f ./backend/tests.Dockerfile .
+  build-backend-test:
+    needs: build-backend
+    runs-on: [self-hosted, docker]
+    steps:
+    - uses: actions/checkout@v2
+    - run: docker build -t backend-test:$(git rev-parse --short HEAD) -f ./backend/tests.Dockerfile .
   build-frontend-api-test:
     needs: build-frontend-api
     runs-on: [self-hosted, docker]
@@ -103,6 +103,30 @@ jobs:
     # cleaning up
     - run: docker stop test-auth_auth-service
     - run: docker network rm auth_net
+
+  test-backend:
+    needs: [build-backendtest, build-mongodb-mock, build-database]
+    runs-on: [self-hosted, docker]
+    steps:
+    - uses: actions/checkout@v2
+    # cleaning up hanging containers
+    - run: docker stop mongodb-mock-database || :;
+    - run: docker stop database-service || :;
+    - run: docker stop backend-service || :;
+    - run: docker network rm backend_net ||:;
+    - run: sleep 10
+    # preparing backend integration test
+    - run: docker network create --driver bridge backend_net
+    - run: docker run --rm -d --name=mongodb-mock-database --net=backend_net -e MONGO_INITDB_ROOT_USERNAME=adminz -e MONGO_INITDB_ROOT_PASSWORD=cheeksbutt mongodb-mock-database:$(git rev-parse --short HEAD)
+    - run: sleep 10 && docker run -d --rm --name=database-service --net=backend_net -e DATABASE_ADDRESS=mongodb-mock-database:27017 -e DATABASE_LISTEN_ADDRESS=0.0.0.0:80 database:$(git rev-parse --short HEAD)
+    - run: sleep 10 && docker run -d --rm --name=backend-service --net=backend_net -e DATABASE_ADDRESS=database-service -e BACKEND_LISTEN_ADDRESS=0.0.0.0:80 backend:$(git rev-parse --short HEAD)
+    # testing backend
+    - run: sleep 10 && docker run --rm -i --name=backend-test --net=backend_net -e BACKEND_API_SERVICE_ADDRESS=backend-service    backend-test:$(git rev-parse --short HEAD)
+    # cleaning up
+    - run: docker stop backend-service
+    - run: docker stop database-service
+    - run: docker stop mongodb-mock-database
+    - run: docker network rm backend_net
 
   test-frontend-api:
     needs: [build-frontend-api-test, build-mongodb-mock, build-database, build-auth, build-backend]

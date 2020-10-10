@@ -1,11 +1,12 @@
 FROM golang:1
-RUN go get -v github.com/gorilla/mux
+
+RUN go get -v github.com/gorilla/mux github.com/lib/pq
 RUN go get -v github.com/google/go-cmp/cmp
 ADD https://github.com/golang/go/raw/master/lib/time/zoneinfo.zip /zoneinfo.zip
 ENV ZONEINFO /zoneinfo.zip
-WORKDIR /frontend-api
+WORKDIR /backend
+COPY ./backend .
 COPY ./common ../common
-COPY ./frontend-api .
 CMD ["go", "test"]
 
-ENV FRONTEND_API_SERVICE_ADDRESS="localhost:8888"
+ENV BACKEND_SERVICE_ADDRESS="localhost:8090"

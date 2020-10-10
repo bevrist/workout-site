@@ -27,7 +27,6 @@ db.clients.insert({
     "HIITChangeCardioSession": 23,
     "HIITCurrentCardioIntervals": 24,
     "HIITChangeCardioIntervals": 25,
-    "Week": 1,
     "ModifiedDate": "2020-09-13",
   }],
   "week": [

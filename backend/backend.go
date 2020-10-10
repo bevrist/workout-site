@@ -9,6 +9,7 @@ import (
 	"math"
 	"net/http"
 	"os"
+	"time"
 
 	structs "../common"
 
@@ -99,6 +100,8 @@ func generateUserBaselineHandler(w http.ResponseWriter, r *http.Request) {
 
 	var newRecommendation structs.Recommendation
 
+	loc, _ := time.LoadLocation("America/Los_Angeles")
+	newRecommendation.ModifiedDate = time.Now().In(loc).Format("2006-01-02")
 	newRecommendation.NormalDayFat = int(math.Round((normalday * NormalDayFat) / 9))
 	newRecommendation.NormalDayCarb = int(math.Round((normalday * NormalDayCarb) / 4))
 	newRecommendation.NormalDayProtein = int(math.Round((normalday * NormalDayProtein) / 4))
@@ -134,9 +137,16 @@ func UpdateUserRecommendationsHandler(w http.ResponseWriter, r *http.Request) {
 	UID := vars["UID"]
 	WEEK := vars["week"]
 	rBody, _ := ioutil.ReadAll(r.Body)
+	//add ModifiedDate to post data
+	var recommendation structs.Recommendation
+	err := json.Unmarshal(rBody, &recommendation)
+	loc, _ := time.LoadLocation("America/Los_Angeles")
+	recommendation.ModifiedDate = time.Now().In(loc).Format("2006-01-02")
+
+	recommendationJSON, _ := json.Marshal(recommendation)
 
 	//post user data to database
-	resp, err := http.Post("http://"+databaseAddress+"/userRecommendation/"+WEEK+"/"+UID, "application/json", bytes.NewBuffer(rBody))
+	resp, err := http.Post("http://"+databaseAddress+"/userRecommendation/"+WEEK+"/"+UID, "application/json", bytes.NewBuffer(recommendationJSON))
 	if err != nil {
 		http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
 		log.Println("ERROR: PostUserProfileHandler() - database: " + err.Error())
