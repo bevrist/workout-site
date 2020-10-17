@@ -118,10 +118,10 @@ jobs:
     # preparing backend integration test
     - run: docker network create --driver bridge backend_net
     - run: docker run --rm -d --name=test-backend_mongodb-mock-database --net=backend_net -e MONGO_INITDB_ROOT_USERNAME=adminz -e MONGO_INITDB_ROOT_PASSWORD=cheeksbutt mongodb-mock-database:$(git rev-parse --short HEAD)
-    - run: sleep 10 && docker run -d --rm --name=test-backend_database-service --net=backend_net -e DATABASE_ADDRESS=mongodb-mock-database:27017 -e DATABASE_LISTEN_ADDRESS=0.0.0.0:80 database:$(git rev-parse --short HEAD)
-    - run: sleep 10 && docker run -d --rm --name=test-backend_backend-service --net=backend_net -e DATABASE_ADDRESS=database-service -e BACKEND_LISTEN_ADDRESS=0.0.0.0:80 backend:$(git rev-parse --short HEAD)
+    - run: sleep 10 && docker run -d --rm --name=test-backend_database-service --net=backend_net -e DATABASE_ADDRESS=test-backend_mongodb-mock-database:27017 -e DATABASE_LISTEN_ADDRESS=0.0.0.0:80 database:$(git rev-parse --short HEAD)
+    - run: sleep 10 && docker run -d --rm --name=test-backend_backend-service --net=backend_net -e DATABASE_ADDRESS=test-backend_database-service -e BACKEND_LISTEN_ADDRESS=0.0.0.0:80 backend:$(git rev-parse --short HEAD)
     # testing backend
-    - run: sleep 10 && docker run --rm -i --name=backend-test --net=backend_net -e BACKEND_API_SERVICE_ADDRESS=backend-service    backend-test:$(git rev-parse --short HEAD)
+    - run: sleep 10 && docker run --rm -i --name=backend-test --net=backend_net -e BACKEND_API_SERVICE_ADDRESS=test-backend_backend-service backend-test:$(git rev-parse --short HEAD)
     # cleaning up
     - run: docker stop test-backend_backend-service
     - run: docker stop test-backend_database-service
