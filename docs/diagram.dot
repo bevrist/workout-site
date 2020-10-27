@@ -5,7 +5,8 @@ digraph G {
     label = "Workout App Diagram";
     Client [shape=Mcircle];
     Firebase [shape=Msquare];
-    Frontend;
+    FrontendApi;
+    FrontendWeb;
     Backend;
     Database;
     Auth;
@@ -14,8 +15,9 @@ digraph G {
     subgraph cluster_0 {
         color = white;
         label = "";
-        Client -> Firebase, Frontend;
-        Frontend -> Backend, Auth;
+        Client -> Firebase, FrontendApi, FrontendWeb;
+        FrontendWeb -> FrontendApi;
+        FrontendApi -> Backend, Auth;
         Backend -> Database;
         Database -> MongoDB[minlen=0.5];
         Auth -> Firebase;
