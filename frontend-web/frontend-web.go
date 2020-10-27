@@ -59,12 +59,12 @@ var listenAddress string
 
 func main() {
 	//populate environment variables
-	listenAddress = os.Getenv("FRONTEND_LISTEN_ADDRESS")
+	listenAddress = os.Getenv("FRONTEND_WEB_LISTEN_ADDRESS")
 	//set default environment variables
 	if listenAddress == "" {
 		listenAddress = "0.0.0.0:80"
 	}
-	log.Println("Frontend Website URL: " + os.Getenv("FRONTEND_WEBSITE_URL"))
+	log.Println("Frontend Website URL: " + os.Getenv("FRONTEND_WEB_SITE_URL"))
 
 	//specify routes and start http server
 	r := mux.NewRouter()

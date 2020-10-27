@@ -1,5 +1,7 @@
 # TODO
 
+- double check all API docs
+- finish frontend-api tests
 
 - delete all references to Recommmendation[].Week in tests
 - modify all service Dockerfiles to use `scratch` instead of `alpine`
@@ -17,6 +19,7 @@
 
 ## Backend
 - add modifiedDate and Week parameters to "UpdateRecommendations"
+- TESTS update names of backend-api actions tests
 
 ## frontend-api
 - finish unit tests
