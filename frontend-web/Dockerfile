@@ -21,7 +21,7 @@ RUN echo 'if [[ -n "${FRONTEND_WEBSITE_URL}" ]]; then find ./www/ -type f -exec 
 
 CMD ["/bin/sh", "./start.sh"]
 
-ENV LISTEN_ADDRESS=0.0.0.0:80
+ENV FRONTEND_LISTEN_ADDRESS=0.0.0.0:80
 ENV FRONTEND_WEBSITE_URL=localhost:80
 
 EXPOSE 8080

@@ -1,0 +1,51 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-svc
+  namespace: web
+spec:
+  selector:
+    matchLabels:
+      app: workoutsite
+      svc: auth
+  template:
+    metadata:
+      labels:
+        app: workoutsite
+        svc: auth
+    spec:
+     containers:
+      - name: auth
+        image: auth
+        env:
+          - name: AUTH_LISTEN_ADDRESS
+            value: "0.0.0.0:8070"
+          - name: AUTH_FIREBASE_CREDENTIALS
+            value: '{test}'
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: auth-port
+          containerPort: 8070
+        resources:
+          limits:
+            cpu: "1000m"
+            memory: "600Mi"
+          requests:
+            cpu: "400m"
+            memory: "200Mi"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: web
+  name: auth
+spec:
+  ports:
+  - name: auth
+    port: 8070
+    protocol: TCP
+  selector:
+    svc: auth

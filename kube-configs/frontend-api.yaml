@@ -1,0 +1,72 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-api-svc
+  namespace: web
+spec:
+  selector:
+    matchLabels:
+      app: workoutsite
+      svc: frontend-api
+  template:
+    metadata:
+      labels:
+        app: workoutsite
+        svc: frontend-api
+    spec:
+     containers:
+      - name: frontend-api
+        image: frontend-api
+        env:
+          - name: FRONTEND_LISTEN_ADDRESS
+            value: "0.0.0.0:8888"
+          - name: BACKEND_ADDRESS
+            value: "backend:8090"
+          - name: AUTH_ADDRESS
+            value: "auth:8070"
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: front-api-port
+          containerPort: 8888
+        resources:
+          limits:
+            cpu: "1000m"
+            memory: "600Mi"
+          requests:
+            cpu: "400m"
+            memory: "200Mi"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: web
+  name: frontend-api
+spec:
+  ports:
+  - name: frontend-api
+    port: 8888
+    protocol: TCP
+  selector:
+    svc: frontend-api
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontapi-out
+  namespace: web
+spec:
+  type: NodePort
+  selector:
+    svc: frontend-api
+  ports:
+      # By default and for convenience, the `targetPort` is set to the same value as the `port` field.
+    - port: 8888
+      targetPort: 8888
+      # Optional field
+      # By default and for convenience, the Kubernetes control plane will allocate a port from a range (default: 30000-32767)
+      nodePort: 31007

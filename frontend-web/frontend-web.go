@@ -62,7 +62,7 @@ func main() {
 	listenAddress = os.Getenv("FRONTEND_LISTEN_ADDRESS")
 	//set default environment variables
 	if listenAddress == "" {
-		listenAddress = "0.0.0.0:8080"
+		listenAddress = "0.0.0.0:80"
 	}
 	log.Println("Frontend Website URL: " + os.Getenv("FRONTEND_WEBSITE_URL"))
 

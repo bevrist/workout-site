@@ -1,0 +1,51 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-svc
+  namespace: web
+spec:
+  selector:
+    matchLabels:
+      app: workoutsite
+      svc: backend
+  template:
+    metadata:
+      labels:
+        app: workoutsite
+        svc: backend
+    spec:
+     containers:
+      - name: backend
+        image: backend
+        env:
+        - name: DATABASE_ADDRESS
+          value: "database-svc:8050"
+        - name: BACKEND_LISTEN_ADDRESS
+          value: "0.0.0.0:8090"
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: backend-port
+          containerPort: 8090
+        resources:
+          limits:
+            cpu: "1000m"
+            memory: "600Mi"
+          requests:
+            cpu: "400m"
+            memory: "200Mi"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: web
+  name: backend
+spec:
+  ports:
+  - name: backend
+    port: 8090
+    protocol: TCP
+  selector:
+    svc: backend

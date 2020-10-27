@@ -1,0 +1,56 @@
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db-svc
+  namespace: web
+spec:
+  selector:
+    matchLabels:
+      app: workoutsite
+      svc: database-svc
+  template:
+    metadata:
+      labels:
+        app: workoutsite
+        svc: database-svc
+    spec:
+     containers:
+      - name: database
+        image: database
+        env:
+         - name: DATABASE_LISTEN_ADDRESS
+           value: "0.0.0.0:8050"
+         - name: DATABASE_ADDRESS
+           value: "database:27017"
+         - name: DATABASE_USERNAME
+           value: adminz
+         - name: DATABASE_PASSWORD
+           value: cheeksbutt
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: db-svc-port
+          containerPort: 8050
+        resources:
+          limits:
+            cpu: "1000m"
+            memory: "600Mi"
+          requests:
+            cpu: "400m"
+            memory: "200Mi"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: web
+  name: database-svc
+spec:
+  ports:
+  - name: database-api
+    port: 8050
+    protocol: TCP
+  selector:
+    svc: database-svc
