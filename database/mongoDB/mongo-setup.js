@@ -10,6 +10,7 @@ db.clients.insert({
   "leanbodymass": 15,
   "age": 20,
   "gender": "male",
+  "start_date": "2020-08-15",
   "recommendation": [{
     "HighDayProtein": 10,
     "HighDayCarb": 11,

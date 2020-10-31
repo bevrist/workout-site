@@ -16,6 +16,7 @@ type Client struct {
 	HeightInches   int              `bson:"heightinches,omitempty"`
 	LeanBodyMass   int              `bson:"leanbodymass,omitempty"`
 	Age            int              `bson:"age,omitempty"`
+	StartDate      string           `bson:"start_date,omitempty"`
 	Gender         string           `bson:"gender,omitempty"`
 	Week           []Week           `bson:"week,omitempty"`
 	Recommendation []Recommendation `bson:"recommendation,omitempty"`
@@ -34,22 +35,22 @@ type Day struct {
 	WeightTraining string  `bson:"weight_training,omitempty" json:",omitempty"`
 }
 type Recommendation struct {
-	HighDayProtein             int    `bson:"highdayprotein,omitempty" json:",omitempty"`
-	HighDayCarb                int    `bson:"highdaycarb,omitempty" json:",omitempty"`
-	HighDayFat                 int    `bson:"highdayfat,omitempty" json:",omitempty"`
-	HighDayCalories            int    `bson:"highdaycalories,omitempty" json:",omitempty"`
-	NormalDayProtein           int    `bson:"normaldayprotein,omitempty" json:",omitempty"`
-	NormalDayCarb              int    `bson:"normaldaycarb,omitempty" json:",omitempty"`
-	NormalDayFat               int    `bson:"normaldayfat,omitempty" json:",omitempty"`
-	NormalDayCalories          int    `bson:"normaldaycalories,omitempty" json:",omitempty"`
-	LowDayProtein              int    `bson:"lowdayprotein,omitempty" json:",omitempty"`
-	LowDayCarb                 int    `bson:"lowdaycarb,omitempty" json:",omitempty"`
-	LowDayFat                  int    `bson:"lowdayfat,omitempty" json:",omitempty"`
-	LowDayCalories             int    `bson:"lowdaycalories,omitempty" json:",omitempty"`
-	HIITCurrentCardioSession   int    `bson:"hiitcurrentcardiosession,omitempty" json:",omitempty"`
-	HIITChangeCardioSession    int    `bson:"hiitchangecardiosession,omitempty" json:",omitempty"`
-	HIITCurrentCardioIntervals int    `bson:"hiitcurrentcardiointervals,omitempty" json:",omitempty"`
-	HIITChangeCardioIntervals  int    `bson:"hiitchangecardiointervals,omitempty" json:",omitempty"`
+	HighDayProtein             int `bson:"highdayprotein,omitempty" json:",omitempty"`
+	HighDayCarb                int `bson:"highdaycarb,omitempty" json:",omitempty"`
+	HighDayFat                 int `bson:"highdayfat,omitempty" json:",omitempty"`
+	HighDayCalories            int `bson:"highdaycalories,omitempty" json:",omitempty"`
+	NormalDayProtein           int `bson:"normaldayprotein,omitempty" json:",omitempty"`
+	NormalDayCarb              int `bson:"normaldaycarb,omitempty" json:",omitempty"`
+	NormalDayFat               int `bson:"normaldayfat,omitempty" json:",omitempty"`
+	NormalDayCalories          int `bson:"normaldaycalories,omitempty" json:",omitempty"`
+	LowDayProtein              int `bson:"lowdayprotein,omitempty" json:",omitempty"`
+	LowDayCarb                 int `bson:"lowdaycarb,omitempty" json:",omitempty"`
+	LowDayFat                  int `bson:"lowdayfat,omitempty" json:",omitempty"`
+	LowDayCalories             int `bson:"lowdaycalories,omitempty" json:",omitempty"`
+	HIITCurrentCardioSession   int `bson:"hiitcurrentcardiosession,omitempty" json:",omitempty"`
+	HIITChangeCardioSession    int `bson:"hiitchangecardiosession,omitempty" json:",omitempty"`
+	HIITCurrentCardioIntervals int `bson:"hiitcurrentcardiointervals,omitempty" json:",omitempty"`
+	HIITChangeCardioIntervals  int `bson:"hiitchangecardiointervals,omitempty" json:",omitempty"`
 	// Week                       int    `bson:"week,omitempty" json:",omitempty"`
-	ModifiedDate               string `bson:"modifieddate,omitempty" json:",omitempty"`
+	ModifiedDate string `bson:"modifieddate,omitempty" json:",omitempty"`
 }

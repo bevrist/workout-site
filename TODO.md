@@ -28,16 +28,17 @@
 
 ## frontend-web
 - put start date in profile page
-- make "daily update" page
-- put recommendation and baseline on "daily update" page
+- move global "sign out" button to the profile page (on bigger screens)
+- make "daily update" page for adding that days data
+- put recommendation and baseline info on "daily update" page
 - change profile weight/leanmass/waistCirc to "starting waistCirc..."
-- change baseline page to "Recommendation page" 
-- make "daily data" page for entering day data
-- history page shows weekly data and on weeks  recommendation was made shows the recomendation below that week
-- make a dedicated weekly recommendation page (for admin)
-- make baseline page show current recommendation and "starting baseline" (recommendation shows "last edited" date)
-- coach adjustment: show baseline info, last coach recomendation, last user week, and form for new recomendation
-- make 2 versions of weekly history page, edit version that has the current editable tables, and normal version that has simple tables
+- rename "weekly tracking" to "progress"
+- progress page shows weekly data and on weeks recommendation was made shows the recomendation below that week (like a new table inserted)
+- rename baseline page to "Recommendation page" 
+- make Recommendation page show current recommendation and "starting baseline" (recommendation shows "last edited" date)
+- make 2 versions of weekly history page, edit version that has the current editable tables, and normal version that has simple tables (admin)
+- make a dedicated weekly recommendation creation page (for admin)
+    - ??? coach adjustment: show baseline info, last coach recomendation, last user week, and form for new recomendation ???
 ## Webpage
 - test new user sign up flow
 - test new user redirect on baseline page
@@ -45,11 +46,11 @@
 - test user profile update and saves
 - test user baseline update on profile change
 ### weekly tracking
-    - load starting week on page load
+    - load jump to starting week on page load
 
 
 ## Admin
-- create admin page for admin users to view all other users?
+- create admin page for admin users to view all other users' info?
 
 
 
