@@ -190,11 +190,11 @@ func TestCreateNewSimpleUser2(t *testing.T) {
 	}
 }
 
-//TestUpdateUserInfoStartDate verifies updating user date works correctly
-func TestUpdateUserInfoStartDate(t *testing.T) {
-	var UID = "front-api-testUID1-date"
+//TestUpdateUserInfo verifies updating user data works correctly
+func TestUpdateUserInfo(t *testing.T) {
+	var UID = "front-api-testUID1-data"
 	//post prop data for testing against
-	var jsonStr = []byte(`{"FirstName":"Anthony1-date","LastName":"Hanna","Weight":100,"WaistCirc":55.5,"HeightInches":55,"LeanBodyMass":55,"Age":55,"Gender":"male","StartDate":"2020-10-30","Week":[{"Day":[{},{},{},{},{},{"Fat":1000,"Carbs":1000,"Protein":100,"TotalCalories":300,"DayCalories":"normal","Weight":321,"Cardio":"missed","WeightTraining":"no"},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{"Fat":1010,"Carbs":1010,"Protein":1010,"TotalCalories":1010,"DayCalories":"normal","Weight":10,"Cardio":"missed","WeightTraining":"yes"},{}]}],"Recommendation":[{"HighDayProtein":50,"HighDayCarb":11,"HighDayFat":12,"HighDayCalories":13,"NormalDayProtein":14,"NormalDayCarb":15,"NormalDayFat":16,"NormalDayCalories":17,"LowDayProtein":18,"LowDayCarb":19,"LowDayFat":20,"LowDayCalories":21,"HIITCurrentCardioSession":22,"HIITChangeCardioSession":23,"HIITCurrentCardioIntervals":24,"HIITChangeCardioIntervals":25,"ModifiedDate":"2020-09-15"},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]}`)
+	var jsonStr = []byte(`{"FirstName":"Anthony1-data","LastName":"Hanna","Weight":100,"WaistCirc":55.5,"HeightInches":55,"LeanBodyMass":55,"Age":55,"Gender":"male","StartDate":"2020-10-30","Week":[{"Day":[{},{},{},{},{},{"Fat":1000,"Carbs":1000,"Protein":100,"TotalCalories":300,"DayCalories":"normal","Weight":321,"Cardio":"missed","WeightTraining":"no"},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{"Fat":1010,"Carbs":1010,"Protein":1010,"TotalCalories":1010,"DayCalories":"normal","Weight":10,"Cardio":"missed","WeightTraining":"yes"},{}]}],"Recommendation":[{"HighDayProtein":50,"HighDayCarb":11,"HighDayFat":12,"HighDayCalories":13,"NormalDayProtein":14,"NormalDayCarb":15,"NormalDayFat":16,"NormalDayCalories":17,"LowDayProtein":18,"LowDayCarb":19,"LowDayFat":20,"LowDayCalories":21,"HIITCurrentCardioSession":22,"HIITChangeCardioSession":23,"HIITCurrentCardioIntervals":24,"HIITChangeCardioIntervals":25,"ModifiedDate":"2020-09-15"},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]}`)
 	req, _ := http.NewRequest("POST", "http://"+frontendApiAddress+"/userInfo", bytes.NewBuffer(jsonStr))
 	// set session token header for request
 	req.Header.Set("Session-Token", UID)
@@ -252,6 +252,75 @@ func TestUpdateUserInfoStartDate(t *testing.T) {
 	}
 	//compare received struct with expected struct
 	EXPECTED := []byte(`{"FirstName":"Anthony1-333","LastName":"Hanna","Weight":100,"WaistCirc":55.5,"HeightInches":55,"LeanBodyMass":55,"Age":55,"StartDate":"2033-10-30","Gender":"male","Week":[{"Day":[{},{},{},{},{},{"Fat":1000,"Carbs":1000,"Protein":100,"TotalCalories":300,"DayCalories":"normal","Weight":321,"Cardio":"missed","WeightTraining":"no"},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{"Fat":1010,"Carbs":1010,"Protein":1010,"TotalCalories":1010,"DayCalories":"normal","Weight":10,"Cardio":"missed","WeightTraining":"yes"},{}]}],"Recommendation":[{"HighDayProtein":50,"HighDayCarb":11,"HighDayFat":12,"HighDayCalories":13,"NormalDayProtein":14,"NormalDayCarb":15,"NormalDayFat":16,"NormalDayCalories":17,"LowDayProtein":18,"LowDayCarb":19,"LowDayFat":20,"LowDayCalories":21,"HIITCurrentCardioSession":22,"HIITChangeCardioSession":23,"HIITCurrentCardioIntervals":24,"HIITChangeCardioIntervals":25,"ModifiedDate":"2020-09-15"},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]} `)
+	json.Unmarshal(EXPECTED, &expectedBackend2)
+	if !cmp.Equal(reqBackend2, expectedBackend2) {
+		t.Errorf("Database returned unexpected body: \ngot -: %+v \nwant -: %+v", string(reqBody2), string(EXPECTED))
+		t.FailNow()
+	}
+}
+
+//TestUpdateUserInfoDate verifies updating only user date works correctly
+func TestUpdateUserInfoDate(t *testing.T) {
+	var UID = "front-api-testUID1-date"
+	//post prop data for testing against
+	var jsonStr = []byte(`{"FirstName":"Anthony1-date","LastName":"Hanna","Weight":100,"WaistCirc":55.5,"HeightInches":55,"LeanBodyMass":55,"Age":55,"Gender":"male","StartDate":"2020-10-30","Week":[{"Day":[{},{},{},{},{},{"Fat":1000,"Carbs":1000,"Protein":100,"TotalCalories":300,"DayCalories":"normal","Weight":321,"Cardio":"missed","WeightTraining":"no"},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{"Fat":1010,"Carbs":1010,"Protein":1010,"TotalCalories":1010,"DayCalories":"normal","Weight":10,"Cardio":"missed","WeightTraining":"yes"},{}]}],"Recommendation":[{"HighDayProtein":50,"HighDayCarb":11,"HighDayFat":12,"HighDayCalories":13,"NormalDayProtein":14,"NormalDayCarb":15,"NormalDayFat":16,"NormalDayCalories":17,"LowDayProtein":18,"LowDayCarb":19,"LowDayFat":20,"LowDayCalories":21,"HIITCurrentCardioSession":22,"HIITChangeCardioSession":23,"HIITCurrentCardioIntervals":24,"HIITChangeCardioIntervals":25,"ModifiedDate":"2020-09-15"},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]}`)
+	req, _ := http.NewRequest("POST", "http://"+frontendApiAddress+"/userInfo", bytes.NewBuffer(jsonStr))
+	// set session token header for request
+	req.Header.Set("Session-Token", UID)
+	req.Header.Set("Content-Type", "application/json")
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		t.Errorf("Connection failed: %v", err)
+		t.FailNow()
+	}
+	reqBody, _ := ioutil.ReadAll(resp.Body)
+	//check that post response is "ok"
+	if string(reqBody) != "ok" {
+		t.Errorf("Post Request Response Incorrect (should be 'ok'): %v", string(reqBody))
+		t.FailNow()
+	}
+	//========================================
+	//post update data
+	var jsonStrNew = []byte(`{"StartDate":"3333-10-30"}`)
+	reqNew, _ := http.NewRequest("POST", "http://"+frontendApiAddress+"/userInfo", bytes.NewBuffer(jsonStrNew))
+	// set session token header for request
+	reqNew.Header.Set("Session-Token", UID)
+	reqNew.Header.Set("Content-Type", "application/json")
+	clientNew := &http.Client{}
+	respNew, err := clientNew.Do(reqNew)
+	if err != nil {
+		t.Errorf("Connection failed: %v", err)
+		t.FailNow()
+	}
+	reqBodyNew, _ := ioutil.ReadAll(respNew.Body)
+	//check that post response is "ok"
+	if string(reqBodyNew) != "ok" {
+		t.Errorf("Post Request Response Incorrect (should be 'ok'): %v", string(reqBodyNew))
+		t.FailNow()
+	}
+	//========================================
+	//Validate UserInfo is correct
+	req2, _ := http.NewRequest("GET", "http://"+frontendApiAddress+"/userInfo", nil)
+	// set session token header for request
+	req2.Header.Set("Session-Token", UID)
+	client2 := &http.Client{}
+	resp2, err := client2.Do(req2)
+	if err != nil {
+		t.Errorf("Connection failed: %v", err)
+		t.FailNow()
+	}
+	//unmarshal response into struct
+	reqBody2, _ := ioutil.ReadAll(resp2.Body)
+	var reqBackend2, expectedBackend2 structs.Client
+	json.Unmarshal(reqBody2, &reqBackend2)
+	//check that UID is missing from response
+	if reqBackend2.UID != "" {
+		t.Errorf("UID Should not be present: UID=%+v", reqBackend2.UID)
+		t.FailNow()
+	}
+	//compare received struct with expected struct
+	EXPECTED := []byte(`{"FirstName":"Anthony1-date","LastName":"Hanna","Weight":100,"WaistCirc":55.5,"HeightInches":55,"LeanBodyMass":55,"Age":55,"StartDate":"3333-10-30","Gender":"male","Week":[{"Day":[{},{},{},{},{},{"Fat":1000,"Carbs":1000,"Protein":100,"TotalCalories":300,"DayCalories":"normal","Weight":321,"Cardio":"missed","WeightTraining":"no"},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{"Fat":1010,"Carbs":1010,"Protein":1010,"TotalCalories":1010,"DayCalories":"normal","Weight":10,"Cardio":"missed","WeightTraining":"yes"},{}]}],"Recommendation":[{"HighDayProtein":50,"HighDayCarb":11,"HighDayFat":12,"HighDayCalories":13,"NormalDayProtein":14,"NormalDayCarb":15,"NormalDayFat":16,"NormalDayCalories":17,"LowDayProtein":18,"LowDayCarb":19,"LowDayFat":20,"LowDayCalories":21,"HIITCurrentCardioSession":22,"HIITChangeCardioSession":23,"HIITCurrentCardioIntervals":24,"HIITChangeCardioIntervals":25,"ModifiedDate":"2020-09-15"},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]} `)
 	json.Unmarshal(EXPECTED, &expectedBackend2)
 	if !cmp.Equal(reqBackend2, expectedBackend2) {
 		t.Errorf("Database returned unexpected body: \ngot -: %+v \nwant -: %+v", string(reqBody2), string(EXPECTED))

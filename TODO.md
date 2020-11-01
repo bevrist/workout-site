@@ -1,5 +1,9 @@
 # TODO
 
+- make test mongo data as representative of a real user as possible
+- make other example test users in mock db
+
+- do data validation on incoming data
 - double check all API docs
 - finish frontend-api tests
 
@@ -24,7 +28,8 @@
 ## frontend-api
 - finish unit tests
 - update /GenerateUserBaseline tests
-- do data validation on post requests
+- do data validation on post requests (marshal to client object then send to other services)
+    - test marshaling removes invalid extra data
 
 ## frontend-web
 - put start date in profile page
@@ -39,6 +44,12 @@
 - make 2 versions of weekly history page, edit version that has the current editable tables, and normal version that has simple tables (admin)
 - make a dedicated weekly recommendation creation page (for admin)
     - ??? coach adjustment: show baseline info, last coach recomendation, last user week, and form for new recomendation ???
+
+- 3 pages:
+    - profile page (for creating new profile)
+    - daily update page (with user baseline and recommendation and form for entering daily data)
+    - history page:  (showing all previous weeks with ability to issue corrections, and coach recommendations if present)
+
 ## Webpage
 - test new user sign up flow
 - test new user redirect on baseline page

@@ -20,7 +20,7 @@ import (
 // Global Variables
 var apiVersion string = "1.0" //the api version this service implements
 var client *auth.Client       //firebase app instance
-var useFirebase bool		  //debug flag for using firebase
+var useFirebase bool          //debug flag for using firebase
 // env
 var listenAddress string //listen address of this service
 
@@ -31,8 +31,7 @@ func getUID(sessionToken string) string {
 		return "testUID"
 	} else if sessionToken == "testfail" {
 		return ""
-	}
-	if useFirebase == false {
+	} else if useFirebase == false {
 		return sessionToken
 	}
 
