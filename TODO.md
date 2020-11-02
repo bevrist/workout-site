@@ -1,8 +1,5 @@
 # TODO
 
-- make test mongo data as representative of a real user as possible
-- make other example test users in mock db
-
 - do data validation on incoming data
 - double check all API docs
 - finish frontend-api tests
@@ -16,7 +13,7 @@
 
 
 ## auth
-
+- remove debug for credentials env var
 
 ## database
 
@@ -32,6 +29,7 @@
     - test marshaling removes invalid extra data
 
 ## frontend-web
+- history page: make highlight on current week
 - put start date in profile page
 - move global "sign out" button to the profile page (on bigger screens)
 - make "daily update" page for adding that days data
