@@ -2,7 +2,7 @@
 document.getElementById("Form-Session-Token").value = getCookie("Session-Token");
 
 //get UserProfile json object, call other functions on complete
-fetch("http://localhost:8080/getUserProfile", {
+fetch("http://localhost:8888/userInfo", {
   headers: {
     'Session-Token': getCookie("Session-Token"),
   }
