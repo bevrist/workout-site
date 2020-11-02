@@ -123,16 +123,7 @@ db.clients.insert({ //reasonable looking user
           "cardio": "missed",
           "weight_training": "yes"
         },
-        {
-          "fat": 10,
-          "carbs": 10,
-          "protein": 10,
-          "total_calories": 30,
-          "day_calorie": "normal",
-          "weight": 123,
-          "cardio": "missed",
-          "weight_training": "yes"
-        },
+        {},
         {
           "fat": 100,
           "carbs": 100,

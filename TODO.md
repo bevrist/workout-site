@@ -29,7 +29,9 @@
     - test marshaling removes invalid extra data
 
 ## frontend-web
-- history page: make highlight on current week
+- history page: 
+    - make highlight on current week
+    - highlight missed days in red
 - put start date in profile page
 - move global "sign out" button to the profile page (on bigger screens)
 - make "daily update" page for adding that days data
