@@ -1,5 +1,6 @@
 db = db.getSiblingDB("workoutsite")
 
+//test2
 db.clients.insert({ //reasonable looking user
   "uid": "test2",
   "first_name": "Brett",
@@ -12,22 +13,22 @@ db.clients.insert({ //reasonable looking user
   "gender": "male",
   "start_date": "2020-10-01",
   "recommendation": [{
-    "HighDayProtein": 10,
-    "HighDayCarb": 11,
-    "HighDayFat": 12,
-    "HighDayCalories": 13,
-    "NormalDayProtein": 14,
-    "NormalDayCarb": 15,
-    "NormalDayFat": 16,
-    "NormalDayCalories": 17,
-    "LowDayProtein": 18,
-    "LowDayCarb": 19,
-    "LowDayFat": 20,
-    "LowDayCalories": 21,
-    "HIITCurrentCardioSession": 22,
-    "HIITChangeCardioSession": 23,
-    "HIITCurrentCardioIntervals": 24,
-    "HIITChangeCardioIntervals": 25,
+    "HighDayProtein": 101,
+    "HighDayCarb": 111,
+    "HighDayFat": 121,
+    "HighDayCalories": 131,
+    "NormalDayProtein": 141,
+    "NormalDayCarb": 151,
+    "NormalDayFat": 161,
+    "NormalDayCalories": 171,
+    "LowDayProtein": 181,
+    "LowDayCarb": 191,
+    "LowDayFat": 201,
+    "LowDayCalories": 211,
+    "HIITCurrentCardioSession": 221,
+    "HIITChangeCardioSession": 231,
+    "HIITCurrentCardioIntervals": 241,
+    "HIITChangeCardioIntervals": 251,
     "ModifiedDate": "2020-09-13",
   },
   {},
@@ -852,6 +853,7 @@ db.clients.insert({ //reasonable looking user
   ]
 });
 
+//test3
 db.clients.insert({ //user who completed all sessions
   "uid": "test3",
   "first_name": "Maxed",

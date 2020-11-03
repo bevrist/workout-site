@@ -16,8 +16,8 @@ FROM alpine:latest
 RUN apk --no-cache add ca-certificates
 WORKDIR /root/
 COPY --from=0 /app .
-# before run substitute all webpage references to http://localhost:8080 & http://localhost:5500 with the env var FRONTEND_WEBSITE_URL (if present)
-RUN echo 'if [[ -n "${FRONTEND_WEB_SITE_URL}" ]]; then find ./www/ -type f -exec sed -i -e "s,http://localhost:8080,$FRONTEND_WEB_SITE_URL,g" {} \;; find ./www/ -type f -exec sed -i -e "s,http://localhost:5500,$FRONTEND_WEB_SITE_URL,g" {} \;; fi; ./frontend-web' > ./start.sh; chmod +x ./start.sh
+# before run substitute all webpage references to http://localhost:8888 & http://localhost:5500 with the env var FRONTEND_WEBSITE_URL (if present)
+RUN echo 'if [[ -n "${FRONTEND_WEB_SITE_URL}" ]]; then find ./www/ -type f -exec sed -i -e "s,http://localhost:8888,$FRONTEND_WEB_SITE_URL,g" {} \;; find ./www/ -type f -exec sed -i -e "s,http://localhost:5500,$FRONTEND_WEB_SITE_URL,g" {} \;; fi; ./frontend-web' > ./start.sh; chmod +x ./start.sh
 
 CMD ["/bin/sh", "./start.sh"]
 
