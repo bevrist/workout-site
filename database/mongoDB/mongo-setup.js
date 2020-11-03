@@ -5,7 +5,7 @@ db.clients.insert({
   "first_name": "Anthony",
   "last_name": "Hanna",
   "weight": 215,
-  "waistcirc": 35.5,
+  "waistcirc": 35,
   "heightinches": 75,
   "leanbodymass": 15,
   "age": 20,
