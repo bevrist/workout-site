@@ -32,7 +32,7 @@ firebase.auth().onAuthStateChanged(function (user) {
 
 // if #SignOutBtn present, check that user is signed in and redirect to homepage if not
 if (document.getElementById("SignOutBtn") != null) {
-  if (getCookie("Session-Token") == null) {
+  if (getCookie("Session-Token") == null || getCookie("Session-Token") == "") {
     console.log("Not Signed In, redirecting to homepage...");
     // window.location.replace('http://localhost:5500/'); //FIXME
   }

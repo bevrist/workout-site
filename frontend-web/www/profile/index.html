@@ -24,29 +24,33 @@
         </div>
     </nav>
     <div class="container" style="padding-bottom: 24px;">
-        <form action="http://localhost:8080/submitUserProfile" method="post"><input class="form-control" type="hidden" id="Form-Session-Token">
+        <form id="ProfileForm" onsubmit="return false">
             <div class="form-row">
                 <div class="col-md-4">
                     <div class="form-group">
-                        <p style="margin: 0px;margin-left: 5px;">First Name</p><input class="form-control" type="text" id="firstName" placeholder="First Name" name="firstName" required="" minlength="2" pattern="^[a-zA-Z ]+"></div>
+                        <p style="margin: 0px;margin-left: 5px;">First Name</p><input class="form-control" type="text" id="firstName" placeholder="First Name" name="FirstName" required="" minlength="2" pattern="^[a-zA-Z ]+"></div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
-                        <p style="margin: 0px;margin-left: 5px;">Last Name</p><input class="form-control" type="text" id="lastName" placeholder="Last Name" name="lastName" minlength="1" required="" pattern="^[a-zA-Z ]+"></div>
+                        <p style="margin: 0px;margin-left: 5px;">Last Name</p><input class="form-control" type="text" id="lastName" placeholder="Last Name" name="LastName" minlength="1" required="" pattern="^[a-zA-Z ]+"></div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <p style="margin: 0px;margin-left: 5px;">Start Date</p><input class="form-control" id="StartDate" type="date" name="StartDate"></div>
                 </div>
             </div>
             <div class="form-row">
                 <div class="col-md-2">
                     <div class="form-group">
-                        <p style="margin: 0px;margin-left: 5px;">Weight</p><input class="form-control" type="number" id="weight" placeholder="150" name="weight" min="10" max="500" required=""></div>
+                        <p style="margin: 0px;margin-left: 5px;">Weight</p><input class="form-control" type="number" id="weight" placeholder="150" name="Weight" min="10" max="500" required=""></div>
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
-                        <p style="margin: 0px;margin-left: 5px;">Height</p><input class="form-control" type="number" id="heightInches" placeholder="70" name="heightInches" min="10" max="90" required=""></div>
+                        <p style="margin: 0px;margin-left: 5px;">Height</p><input class="form-control" type="number" id="heightInches" placeholder="70" name="HeightInches" min="10" max="90" required=""></div>
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
-                        <p style="margin: 0px;margin-left: 5px;">Waist Cir.</p><input class="form-control" type="number" id="waistCirc" placeholder="150" name="waistCirc" min="1" max="100" required=""></div>
+                        <p style="margin: 0px;margin-left: 5px;">Waist Cir.</p><input class="form-control" type="number" id="waistCirc" placeholder="150" name="WaistCirc" min="1" max="100" required=""></div>
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
@@ -58,13 +62,17 @@
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
-                        <p style="margin: 0px;margin-left: 5px;">Gender</p><select class="form-control" name="gender" id="gender">
-    <option id="genderNone">none</option>
-    <option id="genderMale">Male</option>
-    <option id="genderFemale">Female</option>
+                        <p style="margin: 0px;margin-left: 5px;">Gender</p><select class="form-control" name="gender" id="gender" required>
+    <option value="" id="genderNone">none</option>
+    <option value="male" id="genderMale">Male</option>
+    <option value="female" id="genderFemale">Female</option>
 </select></div>
                 </div>
-            </div><button class="btn btn-primary" type="submit">Save</button></form>
+            </div>
+            <div class="form-row">
+                <div class="col-md-4"><button class="btn btn-primary" id="SaveBtn" type="submit" onclick="submitForm()">Save</button><em id="SaveConfirmationText"></em></div>
+            </div>
+        </form>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
