@@ -29,21 +29,20 @@
     - test marshaling removes invalid extra data
 
 ## frontend-web
+- rename "weekly tracking" to "history"
 - history page: 
     - make highlight on current week
     - highlight missed days in red
-- put start date in profile page
-- move global "sign out" button to the profile page (on bigger screens)
-- make "daily update" page for adding that days data
-- put recommendation and baseline info on "daily update" page
-- change profile weight/leanmass/waistCirc to "starting waistCirc..."
-- rename "weekly tracking" to "progress"
-- progress page shows weekly data and on weeks recommendation was made shows the recomendation below that week (like a new table inserted)
-- rename baseline page to "Recommendation page" 
-- make Recommendation page show current recommendation and "starting baseline" (recommendation shows "last edited" date)
-- make 2 versions of weekly history page, edit version that has the current editable tables, and normal version that has simple tables (admin)
-- make a dedicated weekly recommendation creation page (for admin)
-    - ??? coach adjustment: show baseline info, last coach recomendation, last user week, and form for new recomendation ???
+    - progress page shows weekly data and on weeks recommendation was made shows the recommendation below that week (like a new table inserted)
+- Daily Update page:
+    - make "daily update" page for adding that days data
+- Profile page:
+    - change profile weight/leanmass/waistCirc to "starting waistCirc..."
+
+- Admin:
+    - make 2 versions of weekly history page, edit version that has the current editable tables, and normal version that has simple tables (admin)
+    - make a dedicated weekly recommendation creation page (for admin)
+        - ??? coach adjustment: show baseline info, last coach recomendation, last user week, and form for new recomendation ???
 
 - 3 pages:
     - profile page (for creating new profile)
