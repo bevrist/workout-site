@@ -24,14 +24,71 @@
         </div>
     </nav>
     <section></section>
-    <div></div>
+    <div>
+        <div class="container" style="padding-bottom: 24px;">
+            <form id="DailyUpdateForm" onsubmit="return false">
+                <div class="form-row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <p style="margin: 0px;margin-left: 5px;">Fat</p><input class="form-control" type="number" id="fat" placeholder="150" name="Weight" min="0" max="5000" required=""></div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <p style="margin: 0px;margin-left: 5px;">Carbs</p><input class="form-control" type="number" id="carbs" placeholder="150" name="leanBodyMass" min="0" max="5000" required=""></div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <p style="margin: 0px;margin-left: 5px;">Protein</p><input class="form-control" type="number" id="protein" placeholder="35" name="age" min="0" max="5000" required=""></div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <p style="margin: 0px;margin-left: 5px;">Weight</p><input class="form-control" type="number" id="weight" placeholder="150" name="leanBodyMass" min="50" max="500" required=""></div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <p style="margin: 0px;margin-left: 5px;">Total Calories</p><input class="form-control" type="number" id="totalCalories" placeholder="150" name="WaistCirc" min="0" max="5000" required=""></div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <p style="margin: 0px;margin-left: 5px;">Day Calorie</p><select class="form-control" name="dayCalorie" id="dayCalorie" required>
+    <option value="" id="dayCalorieDefault">select</option>
+    <option value="normal" id="dayCalorieNormal">Normal</option>
+    <option value="low" id="dayCalorieLow">Low</option>
+    <option value="high" id="dayCalorieHigh">High</option>
+</select></div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <p style="margin: 0px;margin-left: 5px;">Cardio</p><select class="form-control" name="cardio" id="cardio" required>
+    <option value="" id="cardioDefault">select</option>
+    <option value="missed" id="genderNone">Missed</option>
+    <option value="hit" id="genderMale">Hit</option>
+</select></div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <p style="margin: 0px;margin-left: 5px;">Weight Training</p><select class="form-control" name="weightTraining" id="weightTraining" required>
+    <option value="" id="weightTrainingDefault">select</option>
+    <option value="no" id="weightTrainingNo">No</option>
+    <option value="yes" id="weightTrainingYes">Yes</option>
+</select></div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-md-6"><button class="btn btn-primary" id="SaveBtn" type="submit" onclick="submitForm()">Save Daily Update</button><em id="SaveConfirmationText"></em></div>
+                </div>
+            </form>
+        </div>
+    </div>
     <div>
         <div class="container" id="CoachRecContainer">
             <div class="row">
                 <div class="col-md-8">
                     <h1 style="padding-top: 6px;">Coach Recommendation</h1>
                 </div>
-                <div class="col-md-4 my-auto"><span id="updateDateText">Updated: &lt;DATE&gt;</span></div>
+                <div class="col-md-4 my-auto"><span id="updateDateText">Last Updated: &lt;DATE&gt;</span></div>
             </div>
             <hr style="margin: 0px;">
             <div class="row">

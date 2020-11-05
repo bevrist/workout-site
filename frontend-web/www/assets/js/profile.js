@@ -1,5 +1,5 @@
 //TODO: test flow for brand new users
-var myToken = "test3"; //FIXME remove
+var myToken = "test"; //FIXME remove
 
 //get user profile info from server and prepopulate form
 var xmlHttp = new XMLHttpRequest();
