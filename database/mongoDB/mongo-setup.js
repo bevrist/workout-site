@@ -25,15 +25,14 @@ db.clients.insert({
     "LowDayFat": 20,
     "LowDayCalories": 21,
     "HIITCurrentCardioSession": 22,
-    "HIITChangeCardioSession": 23,
     "HIITCurrentCardioIntervals": 24,
-    "HIITChangeCardioIntervals": 25,
     "ModifiedDate": "2020-09-13",
   }],
   "week": [
     {
       "day": [            // Week one
         {
+          "waistcirc": 20,
           "fat": 10,
           "carbs": 10,
           "protein": 10,
@@ -118,6 +117,7 @@ db.clients.insert({
           "weight_training": "yes"
         },
         {
+          "waistcirc": 20,
           "fat": 10,
           "carbs": 10,
           "protein": 10,

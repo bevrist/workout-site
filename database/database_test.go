@@ -1,21 +1,23 @@
 package main
+
 // this test requires mock mongoDB container to be running
 
 import (
 	"bytes"
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"net/http"
+	"os"
 	"strings"
 	"testing"
-	"os"
-	"log"
 
 	structs "../common"
 	"github.com/google/go-cmp/cmp"
 )
 
 var databaseAddress string
+
 // get service address from env
 func TestMain(m *testing.M) {
 	databaseAddress = os.Getenv("DATABASE_SERVICE_ADDRESS")
@@ -23,11 +25,11 @@ func TestMain(m *testing.M) {
 		databaseAddress = "localhost:8050"
 	}
 	log.Println("Testing Database at address: " + databaseAddress)
-    os.Exit(m.Run())
+	os.Exit(m.Run())
 }
 
 func TestApiVersion(t *testing.T) {
-	req, err := http.Get("http://"+databaseAddress+"/apiVersion")
+	req, err := http.Get("http://" + databaseAddress + "/apiVersion")
 	if err != nil {
 		t.Errorf("Connection failed: %v", err)
 		t.Fail()
@@ -43,7 +45,7 @@ func TestApiVersion(t *testing.T) {
 
 //get testUID user info from database
 func TestGetUserInfo(t *testing.T) {
-	req, err := http.Get("http://"+databaseAddress+"/userInfo/testUID")
+	req, err := http.Get("http://" + databaseAddress + "/userInfo/testUID")
 	if err != nil {
 		t.Errorf("Connection failed: %v", err)
 		t.Fail()
@@ -53,7 +55,7 @@ func TestGetUserInfo(t *testing.T) {
 	var reqAuth, expectedAuth structs.Client
 	json.Unmarshal(reqBody, &reqAuth)
 	//compare received struct with expected struct
-	EXPECTED := []byte(`{"UID":"testUID","FirstName":"Anthony","LastName":"Hanna","Weight":215,"WaistCirc":35,"HeightInches":75,"LeanBodyMass":15,"Age":20,"StartDate":"2020-08-15","Gender":"male","Week":[{"Day":[{"Fat":10,"Carbs":10,"Protein":10,"TotalCalories":30,"DayCalories":"normal","Weight":123,"Cardio":"missed","WeightTraining":"yes"},{"Fat":20,"Carbs":20,"Protein":20,"TotalCalories":32,"DayCalories":"normal","Weight":123,"Cardio":"missed","WeightTraining":"no"},{"Fat":30,"Carbs":30,"Protein":30,"TotalCalories":33,"DayCalories":"high","Weight":123,"Cardio":"missed","WeightTraining":"yes"},{"Fat":40,"Carbs":40,"Protein":40,"TotalCalories":34,"DayCalories":"normal","Weight":123,"Cardio":"missed","WeightTraining":"yes"},{"Fat":10,"Carbs":10,"Protein":10,"TotalCalories":30,"DayCalories":"normal","Weight":123,"Cardio":"missed","WeightTraining":"yes"},{"Fat":10,"Carbs":10,"Protein":10,"TotalCalories":30,"DayCalories":"normal","Weight":123,"Cardio":"missed","WeightTraining":"yes"},{"Fat":100,"Carbs":100,"Protein":100,"TotalCalories":300,"DayCalories":"normal","Weight":321,"Cardio":"missed","WeightTraining":"no"}]},{"Day":[{"Fat":11,"Carbs":11,"Protein":11,"TotalCalories":31,"DayCalories":"normal","Weight":222,"Cardio":"missed","WeightTraining":"yes"},{"Fat":10,"Carbs":10,"Protein":10,"TotalCalories":30,"DayCalories":"normal","Weight":123,"Cardio":"missed","WeightTraining":"no"},{},{},{},{},{}]},{"Day":[{"Fat":110,"Carbs":110,"Protein":110,"TotalCalories":310,"DayCalories":"normal","Weight":123,"Cardio":"missed","WeightTraining":"yes"},{"Fat":10,"Carbs":10,"Protein":10,"TotalCalories":30,"DayCalories":"normal","Weight":123,"Cardio":"missed","WeightTraining":"yes"},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]}],"Recommendation":[{"HighDayProtein":10,"HighDayCarb":11,"HighDayFat":12,"HighDayCalories":13,"NormalDayProtein":14,"NormalDayCarb":15,"NormalDayFat":16,"NormalDayCalories":17,"LowDayProtein":18,"LowDayCarb":19,"LowDayFat":20,"LowDayCalories":21,"HIITCurrentCardioSession":22,"HIITChangeCardioSession":23,"HIITCurrentCardioIntervals":24,"HIITChangeCardioIntervals":25,"ModifiedDate":"2020-09-13"},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]}`)
+	EXPECTED := []byte(`{"UID":"testUID","FirstName":"Anthony","LastName":"Hanna","Weight":215,"WaistCirc":35,"HeightInches":75,"LeanBodyMass":15,"Age":20,"StartDate":"2020-08-15","Gender":"male","Week":[{"Day":[{"WaistCirc":20,"Fat":10,"Carbs":10,"Protein":10,"TotalCalories":30,"DayCalories":"normal","Weight":123,"Cardio":"missed","WeightTraining":"yes"},{"Fat":20,"Carbs":20,"Protein":20,"TotalCalories":32,"DayCalories":"normal","Weight":123,"Cardio":"missed","WeightTraining":"no"},{"Fat":30,"Carbs":30,"Protein":30,"TotalCalories":33,"DayCalories":"high","Weight":123,"Cardio":"missed","WeightTraining":"yes"},{"Fat":40,"Carbs":40,"Protein":40,"TotalCalories":34,"DayCalories":"normal","Weight":123,"Cardio":"missed","WeightTraining":"yes"},{"Fat":10,"Carbs":10,"Protein":10,"TotalCalories":30,"DayCalories":"normal","Weight":123,"Cardio":"missed","WeightTraining":"yes"},{"Fat":10,"Carbs":10,"Protein":10,"TotalCalories":30,"DayCalories":"normal","Weight":123,"Cardio":"missed","WeightTraining":"yes"},{"Fat":100,"Carbs":100,"Protein":100,"TotalCalories":300,"DayCalories":"normal","Weight":321,"Cardio":"missed","WeightTraining":"no"}]},{"Day":[{"Fat":11,"Carbs":11,"Protein":11,"TotalCalories":31,"DayCalories":"normal","Weight":222,"Cardio":"missed","WeightTraining":"yes"},{"WaistCirc":20,"Fat":10,"Carbs":10,"Protein":10,"TotalCalories":30,"DayCalories":"normal","Weight":123,"Cardio":"missed","WeightTraining":"no"},{},{},{},{},{}]},{"Day":[{"Fat":110,"Carbs":110,"Protein":110,"TotalCalories":310,"DayCalories":"normal","Weight":123,"Cardio":"missed","WeightTraining":"yes"},{"Fat":10,"Carbs":10,"Protein":10,"TotalCalories":30,"DayCalories":"normal","Weight":123,"Cardio":"missed","WeightTraining":"yes"},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]}],"Recommendation":[{"HighDayProtein":10,"HighDayCarb":11,"HighDayFat":12,"HighDayCalories":13,"NormalDayProtein":14,"NormalDayCarb":15,"NormalDayFat":16,"NormalDayCalories":17,"LowDayProtein":18,"LowDayCarb":19,"LowDayFat":20,"LowDayCalories":21,"HIITCurrentCardioSession":22,"HIITCurrentCardioIntervals":24,"ModifiedDate":"2020-09-13"},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]}`)
 	json.Unmarshal(EXPECTED, &expectedAuth)
 	if !cmp.Equal(reqAuth, expectedAuth) {
 		t.Errorf("Database returned unexpected body: \ngot -: %+v \nwant -: %+v", string(reqBody), string(EXPECTED))
@@ -63,7 +65,7 @@ func TestGetUserInfo(t *testing.T) {
 
 //get "null" from a non-existant user in DB
 func TestGetEmptyUserInfo(t *testing.T) {
-	req, err := http.Get("http://"+databaseAddress+"/userInfo/testUIDNoExists")
+	req, err := http.Get("http://" + databaseAddress + "/userInfo/testUIDNoExists")
 	if err != nil {
 		t.Errorf("Connection failed: %v", err)
 		t.Fail()
@@ -94,7 +96,7 @@ func TestNewUserInfo(t *testing.T) {
 	}
 
 	//validate post request
-	req, err := http.Get("http://"+databaseAddress+"/userInfo/db-testUID2")
+	req, err := http.Get("http://" + databaseAddress + "/userInfo/db-testUID2")
 	if err != nil {
 		t.Errorf("Request failed: %v", err)
 		t.Fail()
@@ -129,7 +131,7 @@ func TestUpdateUserInfo(t *testing.T) {
 	}
 
 	//validate post request
-	req, err := http.Get("http://"+databaseAddress+"/userInfo/db-testUID2")
+	req, err := http.Get("http://" + databaseAddress + "/userInfo/db-testUID2")
 	if err != nil {
 		t.Errorf("Request failed: %v", err)
 		t.Fail()
@@ -177,7 +179,7 @@ func TestUpdateUserProfile(t *testing.T) {
 	}
 
 	//validate post request
-	req, err := http.Get("http://"+databaseAddress+"/userInfo/db-testUID3")
+	req, err := http.Get("http://" + databaseAddress + "/userInfo/db-testUID3")
 	if err != nil {
 		t.Errorf("Request failed: %v", err)
 		t.Fail()
@@ -226,7 +228,7 @@ func TestUpdateUserWeekly(t *testing.T) {
 	}
 
 	//validate post request
-	req, err := http.Get("http://"+databaseAddress+"/userInfo/db-testUID4")
+	req, err := http.Get("http://" + databaseAddress + "/userInfo/db-testUID4")
 	if err != nil {
 		t.Errorf("Request failed: %v", err)
 		t.Fail()
@@ -274,7 +276,7 @@ func TestUpdateInvalidUserWeekly(t *testing.T) {
 	}
 
 	//validate post request
-	req, err := http.Get("http://"+databaseAddress+"/userInfo/db-testUID5")
+	req, err := http.Get("http://" + databaseAddress + "/userInfo/db-testUID5")
 	if err != nil {
 		t.Errorf("Request failed: %v", err)
 		t.Fail()
@@ -322,7 +324,7 @@ func TestAddUserRecommendation(t *testing.T) {
 	}
 
 	//validate post request
-	req, err := http.Get("http://"+databaseAddress+"/userInfo/db-testUID6")
+	req, err := http.Get("http://" + databaseAddress + "/userInfo/db-testUID6")
 	if err != nil {
 		t.Errorf("Request failed: %v", err)
 		t.Fail()
@@ -370,7 +372,7 @@ func TestUpdateUserRecommendation(t *testing.T) {
 	}
 
 	//validate post request
-	req, err := http.Get("http://"+databaseAddress+"/userInfo/db-testUID7")
+	req, err := http.Get("http://" + databaseAddress + "/userInfo/db-testUID7")
 	if err != nil {
 		t.Errorf("Request failed: %v", err)
 		t.Fail()
@@ -418,7 +420,7 @@ func TestUpdateUserRecommendation2(t *testing.T) {
 	}
 
 	//validate post request
-	req, err := http.Get("http://"+databaseAddress+"/userInfo/db-testUID8")
+	req, err := http.Get("http://" + databaseAddress + "/userInfo/db-testUID8")
 	if err != nil {
 		t.Errorf("Request failed: %v", err)
 		t.Fail()
@@ -467,7 +469,7 @@ func TestUpdateDay(t *testing.T) {
 	}
 
 	//validate post request
-	req, err := http.Get("http://"+databaseAddress+"/userInfo/db-testUID9")
+	req, err := http.Get("http://" + databaseAddress + "/userInfo/db-testUID9")
 	if err != nil {
 		t.Errorf("Request failed: %v", err)
 		t.Fail()
@@ -515,7 +517,7 @@ func TestUpdateDayWeek(t *testing.T) {
 	}
 
 	//validate post request
-	req, err := http.Get("http://"+databaseAddress+"/userInfo/db-testUID9w")
+	req, err := http.Get("http://" + databaseAddress + "/userInfo/db-testUID9w")
 	if err != nil {
 		t.Errorf("Request failed: %v", err)
 		t.Fail()
@@ -563,7 +565,7 @@ func TestUpdateNewWeekDay(t *testing.T) {
 	}
 
 	//validate post request
-	req, err := http.Get("http://"+databaseAddress+"/userInfo/db-testUID10")
+	req, err := http.Get("http://" + databaseAddress + "/userInfo/db-testUID10")
 	if err != nil {
 		t.Errorf("Request failed: %v", err)
 		t.Fail()
@@ -611,7 +613,7 @@ func TestUpdateNewWeekDay2(t *testing.T) {
 	}
 
 	//validate post request
-	req, err := http.Get("http://"+databaseAddress+"/userInfo/db-testUID11")
+	req, err := http.Get("http://" + databaseAddress + "/userInfo/db-testUID11")
 	if err != nil {
 		t.Errorf("Request failed: %v", err)
 		t.Fail()

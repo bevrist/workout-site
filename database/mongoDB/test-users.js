@@ -26,9 +26,7 @@ db.clients.insert({ //reasonable looking user
     "LowDayFat": 201,
     "LowDayCalories": 211,
     "HIITCurrentCardioSession": 221,
-    "HIITChangeCardioSession": 231,
     "HIITCurrentCardioIntervals": 241,
-    "HIITChangeCardioIntervals": 251,
     "ModifiedDate": "2020-09-13",
   },
   {},
@@ -47,9 +45,7 @@ db.clients.insert({ //reasonable looking user
     "LowDayFat": 22,
     "LowDayCalories": 22,
     "HIITCurrentCardioSession": 22,
-    "HIITChangeCardioSession": 22,
     "HIITCurrentCardioIntervals": 22,
-    "HIITChangeCardioIntervals": 22,
     "ModifiedDate": "2020-09-16",
     },
     {
@@ -65,16 +61,15 @@ db.clients.insert({ //reasonable looking user
       "LowDayCarb": 13,
       "LowDayFat": 23,
       "LowDayCalories": 23,
-      "HIITCurrentCardioSession": 23,
-      "HIITChangeCardioSession": 23,
-      "HIITCurrentCardioIntervals": 23,
-      "HIITChangeCardioIntervals": 23,
+      "HIITCurrentCardioSession": 231,
+      "HIITCurrentCardioIntervals": 232,
       "ModifiedDate": "2020-09-16",
     }],
   "week": [
     {
       "day": [
         {
+          "waistcirc": 20,
           "fat": 10,
           "carbs": 10,
           "protein": 10,
@@ -160,6 +155,7 @@ db.clients.insert({ //reasonable looking user
           "weight_training": "no"
         },
         {
+          "waistcirc": 21,
           "fat": 11,
           "carbs": 11,
           "protein": 11,
@@ -224,6 +220,7 @@ db.clients.insert({ //reasonable looking user
           "weight_training": "no"
         },
         {
+          "waistcirc": 22,
           "fat": 10,
           "carbs": 10,
           "protein": 10,
@@ -265,6 +262,7 @@ db.clients.insert({ //reasonable looking user
           "weight_training": "yes"
         },
         {
+          "waistcirc": 23,
           "fat": 110,
           "carbs": 110,
           "protein": 110,
@@ -363,6 +361,7 @@ db.clients.insert({ //reasonable looking user
           "weight_training": "no"
         },
         {
+          "waistcirc": 25,
           "fat": 10,
           "carbs": 10,
           "protein": 10,
@@ -879,9 +878,7 @@ db.clients.insert({ //user who completed all sessions
     "LowDayFat": 20,
     "LowDayCalories": 21,
     "HIITCurrentCardioSession": 22,
-    "HIITChangeCardioSession": 23,
     "HIITCurrentCardioIntervals": 24,
-    "HIITChangeCardioIntervals": 25,
     "ModifiedDate": "2020-09-13",
   },
   {},
@@ -900,9 +897,7 @@ db.clients.insert({ //user who completed all sessions
     "LowDayFat": 22,
     "LowDayCalories": 22,
     "HIITCurrentCardioSession": 22,
-    "HIITChangeCardioSession": 22,
     "HIITCurrentCardioIntervals": 22,
-    "HIITChangeCardioIntervals": 22,
     "ModifiedDate": "2020-09-16",
     },
     {
@@ -919,9 +914,7 @@ db.clients.insert({ //user who completed all sessions
       "LowDayFat": 23,
       "LowDayCalories": 23,
       "HIITCurrentCardioSession": 23,
-      "HIITChangeCardioSession": 23,
       "HIITCurrentCardioIntervals": 23,
-      "HIITChangeCardioIntervals": 23,
       "ModifiedDate": "2020-09-16",
     }],
   "week": [
@@ -978,6 +971,7 @@ db.clients.insert({ //user who completed all sessions
           "weight_training": "yes"
         },
         {
+          "waistcirc": 10,
           "fat": 10,
           "carbs": 10,
           "protein": 10,
@@ -1022,6 +1016,7 @@ db.clients.insert({ //user who completed all sessions
           "weight_training": "no"
         },
         {
+          "waistcirc": 20,
           "fat": 11,
           "carbs": 11,
           "protein": 11,
@@ -1096,6 +1091,7 @@ db.clients.insert({ //user who completed all sessions
           "weight_training": "yes"
         },
         {
+          "waistcirc": 30,
           "fat": 110,
           "carbs": 110,
           "protein": 110,
@@ -1150,6 +1146,7 @@ db.clients.insert({ //user who completed all sessions
     {
       "Day": [
         {
+          "waistcirc": 40,
           "fat": 11,
           "carbs": 11,
           "protein": 11,
@@ -1520,6 +1517,7 @@ db.clients.insert({ //user who completed all sessions
     {
       "Day": [
         {
+          "waistcirc": 50,
           "fat": 110,
           "carbs": 110,
           "protein": 110,
