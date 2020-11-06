@@ -27,7 +27,7 @@ db.clients.insert({ //reasonable looking user
     "LowDayCalories": 211,
     "HIITCurrentCardioSession": 221,
     "HIITCurrentCardioIntervals": 241,
-    "ModifiedDate": "2020-09-13",
+    "ModifiedDate": "",
   },
   {},
   {},

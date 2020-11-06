@@ -26,7 +26,7 @@ db.clients.insert({
     "LowDayCalories": 21,
     "HIITCurrentCardioSession": 22,
     "HIITCurrentCardioIntervals": 24,
-    "ModifiedDate": "2020-09-13",
+    "ModifiedDate": "",
   }],
   "week": [
     {
