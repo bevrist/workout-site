@@ -11,6 +11,9 @@ var userData = JSON.parse(xmlHttp.responseText);
 //FIXME remove
 // console.log(JSON.stringify(userData.Recommendation));
 // console.log(JSON.stringify(getLatestRecommendation(userData)));
+// console.log("weeks:: " + getCurrentWeek(userData.StartDate));
+// console.log("days:: " + getCurrentDay(userData.StartDate));
+userData.StartDate = "2020-10-01";
 //FIXME remove
 
 updateCharts(userData);
@@ -34,6 +37,16 @@ function updateCharts(userData) {
     console.log("Baseline data blank, redirecting to profile...")
     // window.location.replace('http://localhost:5500/profile');  //FIXME
   }
+
+  //remove WaistCirc form field if data has been entered for the current week
+  userData.Week[getCurrentWeek(userData.StartDate)].Day.some(item => {  //array.some so that return "true" breaks loop
+    if (item.WaistCirc) {
+      console.log("WaistCirc form field removed...");
+      document.getElementById("waistCircColumn").remove();
+      return true;
+    }
+  });
+
   // === COACH RECOMMENDATION CHART ===
   //get latest recommendation object for charts
   var latestRec = getLatestRecommendation(userData)
@@ -69,7 +82,10 @@ function updateCharts(userData) {
     document.getElementById("coach-LFatAmount").innerHTML = latestRec.LowDayFat;
     document.getElementById("coach-LFatRatio").innerHTML = (latestRec.LowDayFat/latestRec.LowDayCalories).toPrecision(1) + "%";
     document.getElementById("coach-LCalories").innerHTML = latestRec.LowDayCalories;
-    document.getElementById("coach-LCaloriesRatio").innerHTML = ((latestRec.LowDayProtein+latestRec.LowDayCarb+latestRec.LowDayFat)/latestRec.LowDayCalories).toPrecision(1) + "%";
+    document.getElementById("coach-LCaloriesRatio").innerHTML = ((latestRec.LowDayProtein + latestRec.LowDayCarb + latestRec.LowDayFat) / latestRec.LowDayCalories).toPrecision(1) + "%";
+    //HIIT
+    document.getElementById("coach-HIITCurrentCardioSession").innerHTML = latestRec.HIITCurrentCardioSession;
+    document.getElementById("coach-HIITCurrentCardioIntervals").innerHTML = latestRec.HIITCurrentCardioIntervals;
   }
 
   // === BASELINE CHART ===
@@ -103,10 +119,12 @@ function updateCharts(userData) {
   document.getElementById("LCaloriesRatio").innerHTML = ((baselineRec.LowDayProtein+baselineRec.LowDayCarb+baselineRec.LowDayFat)/baselineRec.LowDayCalories).toPrecision(1) + "%";
 }
 
+//==================================================
+// Helper Functions
+
 // returns latest recommendation object that has an "ModifiedDate"
 function getLatestRecommendation(userData) {
   var latestRec = userData.Recommendation.filter(value => Object.keys(value).length !== 0).slice(-1)[0];
-  console.log(latestRec.ModifiedDate);
   if (latestRec.ModifiedDate) {
     return latestRec;
   }
@@ -115,16 +133,19 @@ function getLatestRecommendation(userData) {
   }
 }
 
+// returns the int for the current week as shown in history page
+function getCurrentWeek(startingDate) {
+  return Math.floor((new Date() - new Date(startingDate))/604800000);
+}
 
-
-
-
-//FIXME ============= YOINKED FROM PROFILE.js ==================
-//FIXME
+// returns the int for the current day as shown in history page
+function getCurrentDay(startingDate) {
+  return Math.floor(((new Date() - new Date(startingDate))/86400000)%7);
+}
 
 //serialize form fields into json object
-function serializeProfile(form) {
-  return {
+function serializeDailyUpdate(form) {
+  var formJSON = {
     Fat: Number(document.getElementById("fat").value),
     Carbs: Number(document.getElementById("carbs").value),
     Protein: Number(document.getElementById("protein").value),
@@ -134,6 +155,11 @@ function serializeProfile(form) {
     Cardio: document.getElementById("cardio").value,
     WeightTraining: document.getElementById("weightTraining").value,
   };
+  //add waistCirc field if present in form
+  if (document.getElementById("waistCirc").value) {
+    formJSON.WaistCirc = document.getElementById("waistCirc").value;
+  }
+  return formJSON;
 }
 
 //submit form as JSON on "save" button click
@@ -144,13 +170,12 @@ function submitForm() {
     return
   }
   //serialize form to JSON
-  var dataObject = serializeProfile(document.getElementById("DailyUpdateForm"));
+  var dataObject = serializeDailyUpdate(document.getElementById("DailyUpdateForm"));
   var jsonData = JSON.stringify(dataObject);
   console.log(jsonData);  //FIXME remove
-  //TODO POST json to api
   //POST JSON to api
   var xmlHttp = new XMLHttpRequest();
-  xmlHttp.open( "POST", "http://localhost:8888/userInfo", false );
+  xmlHttp.open( "POST", "http://localhost:8888/userDaily/" + getCurrentWeek(userData.StartDate) + "/" + getCurrentDay(userData.StartDate), false );
   // xmlHttp.setRequestHeader("Session-Token",getCookie("Session-Token"));
   xmlHttp.setRequestHeader("Session-Token",myToken); //FIXME use correct session-token
   xmlHttp.send(jsonData);
@@ -158,6 +183,3 @@ function submitForm() {
   //show note that save was successful
   document.getElementById("SaveConfirmationText").innerHTML = "&nbsp; &nbsp; &nbsp; Saved!";
 }
-// ============= YOINKED FROM PROFILE.js ==================
-//FIXME
-

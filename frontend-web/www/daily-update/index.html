@@ -28,28 +28,28 @@
         <div class="container" style="padding-bottom: 24px;">
             <form id="DailyUpdateForm" onsubmit="return false">
                 <div class="form-row">
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <div class="form-group">
                             <p style="margin: 0px;margin-left: 5px;">Fat</p><input class="form-control" type="number" id="fat" placeholder="150" name="Weight" min="0" max="5000" required=""></div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <div class="form-group">
                             <p style="margin: 0px;margin-left: 5px;">Carbs</p><input class="form-control" type="number" id="carbs" placeholder="150" name="leanBodyMass" min="0" max="5000" required=""></div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <div class="form-group">
                             <p style="margin: 0px;margin-left: 5px;">Protein</p><input class="form-control" type="number" id="protein" placeholder="35" name="age" min="0" max="5000" required=""></div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <div class="form-group">
                             <p style="margin: 0px;margin-left: 5px;">Weight</p><input class="form-control" type="number" id="weight" placeholder="150" name="leanBodyMass" min="50" max="500" required=""></div>
                     </div>
-                </div>
-                <div class="form-row">
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <div class="form-group">
                             <p style="margin: 0px;margin-left: 5px;">Total Calories</p><input class="form-control" type="number" id="totalCalories" placeholder="150" name="WaistCirc" min="0" max="5000" required=""></div>
                     </div>
+                </div>
+                <div class="form-row">
                     <div class="col-md-3">
                         <div class="form-group">
                             <p style="margin: 0px;margin-left: 5px;">Day Calorie</p><select class="form-control" name="dayCalorie" id="dayCalorie" required>
@@ -75,6 +75,10 @@
     <option value="yes" id="weightTrainingYes">Yes</option>
 </select></div>
                     </div>
+                    <div class="col-md-3" id="waistCircColumn">
+                        <div class="form-group">
+                            <p style="margin: 0px;margin-left: 5px;">Waist Circumference</p><input class="form-control" type="number" id="waistCirc" placeholder="150" name="WaistCirc" min="20" max="500"></div>
+                    </div>
                 </div>
                 <div class="form-row">
                     <div class="col-md-6"><button class="btn btn-primary" id="SaveBtn" type="submit" onclick="submitForm()">Save Daily Update</button><em id="SaveConfirmationText"></em></div>
@@ -83,7 +87,7 @@
         </div>
     </div>
     <div>
-        <div class="container" id="CoachRecContainer">
+        <div class="container" id="CoachRecContainer" style="background: #dddddd;">
             <div class="row">
                 <div class="col-md-8">
                     <h1 style="padding-top: 6px;">Coach Recommendation</h1>
@@ -200,6 +204,13 @@
                         </table>
                     </div>
                 </div>
+            </div>
+            <div class="row" style="margin-top: -20px;">
+                <div class="col-md-4 offset-md-0" style="padding: 0px;padding-top: 10px;padding-right: 3px;padding-bottom: 3px;background: #d2d2d2;">
+                    <h4 style="padding-left: 10px;">High Intensity Interval Training:</h4>
+                </div>
+                <div class="col-md-4 offset-md-0" style="padding: 0px;padding-top: 10px;padding-right: 3px;padding-bottom: 3px;background: #d2d2d2;"><span style="padding-left: 10px;">HIITCurrentCardioSession:&nbsp;</span><span id="coach-HIITCurrentCardioSession" style="padding-left: 10px; display: inline-block;">####</span></div>
+                <div class="col-md-4 offset-md-0" style="padding: 0px;padding-top: 10px;padding-right: 3px;padding-bottom: 10px;background: #d2d2d2;"><span style="padding-left: 10px;">HIITCurrentCardioIntervals:</span><span id="coach-HIITCurrentCardioIntervals" style="padding-left: 10px; display: inline-block;">####</span></div>
             </div>
         </div>
     </div>
