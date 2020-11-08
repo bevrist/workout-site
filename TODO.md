@@ -31,6 +31,7 @@
 ## frontend-web
 - rename "weekly tracking" to "history"
 - history page: 
+    - make start date non-editable (only edit from profile)
     - make highlight on current week
     - highlight missed days in red
     - progress page shows weekly data and on weeks recommendation was made shows the recommendation below that week (like a new table inserted)
@@ -49,16 +50,6 @@
     - daily update page (with user baseline and recommendation and form for entering daily data)
     - history page:  (showing all previous weeks with ability to issue corrections, and coach recommendations if present)
 
-
-- feedback:
-    - ratios = protein/calories
-    - calorieRatio = sum of other percentages
-    - add waistCirc to the day struct
-    - waistCirc box should appear once a week when missing from week
-    - HIIT-session/interval added to part of coachRecommendation
-        - baseline will not have a HIIT but recommendations will
-    - change dailyUpdate page to hide coach recommendation when "ModifiedDate" is blank, otherwise show latest rec (even if rec is only one)
-    - change profile page inputs to "Starting ..."
 
 ## Webpage
 - test new user sign up flow
