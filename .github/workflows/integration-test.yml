@@ -35,7 +35,7 @@ jobs:
     runs-on: [self-hosted, docker]
     steps:
     - uses: actions/checkout@v2
-    - run: docker build -t frontend-web:$(git rev-parse --short HEAD) -f ./frontend-web
+    - run: docker build -t frontend-web:$(git rev-parse --short HEAD) ./frontend-web
 
   ### build test images
   build-auth-test:
