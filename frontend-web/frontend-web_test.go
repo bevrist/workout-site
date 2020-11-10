@@ -1,13 +1,26 @@
 package main
 
 import (
-	"io/ioutil"
+	"log"
 	"net/http"
+	"os"
 	"testing"
 )
 
+var frontendWebAddress string
+
+// get service address from env
+func TestMain(m *testing.M) {
+	frontendWebAddress = os.Getenv("FRONTEND_WEB_ADDRESS")
+	if frontendWebAddress == "" {
+		frontendWebAddress = "http://localhost"
+	}
+	log.Println("Testing Frontend-Web at address: " + frontendWebAddress)
+	os.Exit(m.Run())
+}
+
 func TestGetHtmlFiles(t *testing.T) {
-	URL := "http://localhost"
+	URL := frontendWebAddress
 	req, err := http.Get(URL)
 	if err != nil {
 		t.Errorf("Connection failed: %v", err)
@@ -18,46 +31,31 @@ func TestGetHtmlFiles(t *testing.T) {
 		t.Fail()
 	}
 
-	URL = "http://localhost/auth"
+	URL = frontendWebAddress + "/auth"
 	req, err = http.Get(URL)
 	if req.StatusCode != 200 {
 		t.Errorf("Bad Response (not 200 OK) %v - %v on URL: %v", req.StatusCode, http.StatusText(req.StatusCode), URL)
 		t.Fail()
 	}
 
-	URL = "http://localhost/baseline"
+	URL = frontendWebAddress + "/history"
 	req, err = http.Get(URL)
 	if req.StatusCode != 200 {
 		t.Errorf("Bad Response (not 200 OK) %v - %v on URL: %v", req.StatusCode, http.StatusText(req.StatusCode), URL)
 		t.Fail()
 	}
 
-	URL = "http://localhost/profile"
+	URL = frontendWebAddress + "/profile"
 	req, err = http.Get(URL)
 	if req.StatusCode != 200 {
 		t.Errorf("Bad Response (not 200 OK) %v - %v on URL: %v", req.StatusCode, http.StatusText(req.StatusCode), URL)
 		t.Fail()
 	}
 
-	URL = "http://localhost/weekly-tracking"
+	URL = frontendWebAddress + "/daily-update"
 	req, err = http.Get(URL)
 	if req.StatusCode != 200 {
 		t.Errorf("Bad Response (not 200 OK) %v - %v on URL: %v", req.StatusCode, http.StatusText(req.StatusCode), URL)
-		t.Fail()
-	}
-}
-
-func TestAPIVersion(t *testing.T) {
-	req, err := http.Get("http://localhost/apiVersion")
-	if err != nil {
-		t.Errorf("Connection failed: %v", err)
-		t.Fail()
-	}
-	// Check the response body is what we expect.
-	expected := `{"apiVersion":1.0}`
-	respBody, _ := ioutil.ReadAll(req.Body)
-	if string(respBody) != expected {
-		t.Errorf("Auth returned unexpected body: got %v \nwant %v", string(respBody), expected)
 		t.Fail()
 	}
 }

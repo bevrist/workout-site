@@ -15,6 +15,7 @@ docker build -t database-test:$(git rev-parse --short HEAD) -f ./database/tests.
 docker build -t mongodb-mock-database:$(git rev-parse --short HEAD) -f ./database/mongoDB/Dockerfile .
 docker build -t backend-test:$(git rev-parse --short HEAD) -f ./backend/tests.Dockerfile .
 docker build -t frontend-api-test:$(git rev-parse --short HEAD) -f ./frontend-api/tests.Dockerfile .
+# TODO: add frontend-web test
 
 
 # --- run all tests ---

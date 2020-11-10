@@ -76,15 +76,12 @@ services:
       AUTH_ADDRESS: auth_service:8070
     restart: on-failure
 
-  # frontend-web_service:
-  #   build:
-  #     context: .
-  #     dockerfile: ./frontend-web/Dockerfile
-  #   ports:
-  #     - 8080:8080
-  #   environment:
-  #     FRONTEND_WEB_LISTEN_ADDRESS: 0.0.0.0:8080
-  #     FRONTEND_WEB_SITE_ADDRESS: "localhost:8080"
-  #     FRONTEND_API_ADDRESS: backend_service:8888
-  #     FRONTEND_API_SITE_ADDRESS: "localhost:8888"
-  #   restart: on-failure
+  frontend-web_service:
+    build:
+      context: ./frontend-web
+    ports:
+      - 80:80
+    environment:
+      FRONTEND_API_URL: "http://192.168.1.135:8888"
+      # FRONTEND_API_URL: "http://localhost:8888"
+    restart: on-failure

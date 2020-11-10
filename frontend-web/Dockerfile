@@ -1,27 +1,43 @@
-FROM golang:1
-RUN apt-get update && apt-get install uglifyjs -y
+FROM ubuntu:20.04 as builder
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install npm -y
+RUN npm install --global google-closure-compiler html-minifier csso-cli
 WORKDIR /app
-RUN go get -v github.com/gorilla/mux
-COPY ./frontend-web/frontend-web.go .
-COPY ./common ../common
-# RUN go get -d -v ./...
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o frontend-web .
-COPY ./frontend/www/ ./www
-# minify all js and css files
-# RUN find ./ -type f -name "*.js" -exec uglifyjs --compress --mangle -o {}.min {} \; -exec rm {} \; -exec mv {}.min {} \;
-# RUN find ./ -type f -name "*.css" -exec uglifycss --compress --mangle -o {}.min {} \; -exec rm {} \; -exec mv {}.min {} \;
+COPY ./www .
+# replace all hardcoded test addresses (http://localhost:5500) with relative addresses
+RUN find ./ -type f -exec sed -i -e "s,http://localhost:5500/,/,g" {} \;
+# compile all web files into optimized and minified versions
+RUN find ./ -type f -name "*.js" -exec google-closure-compiler --js {} --js_output_file {}.min \; -exec mv {}.min {} \; \
+    && find ./ -type f -name "*.css" -exec csso {} -o {}.min \; -exec mv {}.min {} \; \
+    && find ./ -type f -name "*.html" -exec html-minifier --collapse-whitespace --remove-comments --remove-optional-tags --remove-redundant-attributes --remove-script-type-attributes --remove-tag-whitespace --use-short-doctype --minify-css true --minify-js true {} -o {}.min \; -exec mv {}.min {} \;
+
 
 
 FROM alpine:latest
-RUN apk --no-cache add ca-certificates
-WORKDIR /root/
-COPY --from=0 /app .
-# before run substitute all webpage references to http://localhost:8888 & http://localhost:5500 with the env var FRONTEND_WEBSITE_URL (if present)
-RUN echo 'if [[ -n "${FRONTEND_WEB_SITE_URL}" ]]; then find ./www/ -type f -exec sed -i -e "s,http://localhost:8888,$FRONTEND_WEB_SITE_URL,g" {} \;; find ./www/ -type f -exec sed -i -e "s,http://localhost:5500,$FRONTEND_WEB_SITE_URL,g" {} \;; fi; ./frontend-web' > ./start.sh; chmod +x ./start.sh
+# install nginx
+RUN mkdir -p /run/nginx
+RUN apk add nginx
+# remove default site
+RUN rm -rf /var/www/*
+RUN rm -rf /etc/nginx/conf.d/*
+# copy static site and config
+COPY --from=builder /app /var/www/
+COPY ./nginx.conf /etc/nginx/conf.d/nginx.conf
+# link logs to docker output
+RUN ln -sf /dev/stdout /var/log/nginx/access.log \
+    && ln -sf /dev/stderr /var/log/nginx/error.log
 
-CMD ["/bin/sh", "./start.sh"]
+# before run substitute all API references to http://localhost:8888 with the env var FRONTEND_API_URL (if present)
+RUN printf '#!/bin/sh \n\
+    if [[ -n "${FRONTEND_API_URL}" ]]; then \n\
+        find /var/www/ -type f -exec sed -i -e "s,http://localhost:8888,$FRONTEND_API_URL,g" {} \; \n\
+    fi \n\
+    echo "frontend-web listening at: 0.0.0.0:80" \n\
+    echo "\$FRONTEND_API_URL = $FRONTEND_API_URL" \n\
+    nginx -g "daemon off;" \n\
+    ' > /start.sh; chmod +x /start.sh
 
-ENV FRONTEND_WEB_LISTEN_ADDRESS=0.0.0.0:80
-ENV FRONTEND_WEB_SITE_URL=localhost:80
+CMD ["/bin/sh", "/start.sh"]
 
-# EXPOSE 8080
+EXPOSE 80
+ENV FRONTEND_API_URL=localhost:8888
