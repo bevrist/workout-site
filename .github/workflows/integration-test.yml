@@ -31,6 +31,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - run: docker build -t frontend-api:$(git rev-parse --short HEAD) -f ./frontend-api/Dockerfile .
+  build-frontend-web:
+    runs-on: [self-hosted, docker]
+    steps:
+    - uses: actions/checkout@v2
+    - run: docker build -t frontend-web:$(git rev-parse --short HEAD) -f ./frontend-web
 
   ### build test images
   build-auth-test:
@@ -62,7 +67,12 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - run: docker build -t frontend-api-test:$(git rev-parse --short HEAD) -f ./frontend-api/tests.Dockerfile .
-
+  build-frontend-web-test:
+    needs: build-frontend-web
+    runs-on: [self-hosted, docker]
+    steps:
+    - uses: actions/checkout@v2
+    - run: docker build -t frontend-web-test:$(git rev-parse --short HEAD) -f ./frontend-web/tests.Dockerfile .
 
   ### run tests against service images
   test-database:
@@ -157,3 +167,37 @@ jobs:
     - run: docker stop test-frontend-api_database-service
     - run: docker stop test-frontend-api_mongodb-mock-database
     - run: docker network rm frontend-api_net
+
+  # TODO: fix this, this test only needs to test the web service itself without dependencies
+  # test-frontend-web:
+  #   needs: [build-frontend-web-test, build-mongodb-mock, build-database, build-auth, build-backend, build-frontend-api]
+  #   runs-on: [self-hosted, docker]
+  #   steps:
+  #   - uses: actions/checkout@v2
+  #   # cleaning up hanging containers
+  #   - run: docker stop test-frontend-web_auth-service || :;
+  #   - run: docker stop test-frontend-web_mongodb-mock-database || :;
+  #   - run: docker stop test-frontend-web_database-service || :;
+  #   - run: docker stop test-frontend-web_backend-service || :;
+  #   - run: docker stop test-frontend-web_frontend-api-service || :;
+  #   - run: docker stop test-frontend-web_frontend-web-service || :;
+  #   - run: docker network rm frontend-web_net ||:;
+  #   - run: sleep 10
+  #   # preparing frontend-web integration test
+  #   - run: docker network create --driver bridge frontend-web_net
+  #   - run: docker run --rm -d --name=test-frontend-web_mongodb-mock-database --net=frontend-web_net -e MONGO_INITDB_ROOT_USERNAME=adminz -e MONGO_INITDB_ROOT_PASSWORD=cheeksbutt mongodb-mock-database:$(git rev-parse --short HEAD)
+  #   - run: docker run --rm -d --name=test-frontend-web_auth-service --net=frontend-web_net -e AUTH_FIREBASE_CREDENTIALS='{test}' -e AUTH_LISTEN_ADDRESS=0.0.0.0:80 auth:$(git rev-parse --short HEAD)
+  #   - run: sleep 10 && docker run -d --rm --name=test-frontend-web_database-service --net=frontend-web_net -e DATABASE_ADDRESS=test-frontend-web_mongodb-mock-database:27017 -e DATABASE_LISTEN_ADDRESS=0.0.0.0:80 database:$(git rev-parse --short HEAD)
+  #   - run: sleep 10 && docker run -d --rm --name=test-frontend-web_backend-service --net=frontend-web_net -e DATABASE_ADDRESS=test-frontend-web_database-service -e BACKEND_LISTEN_ADDRESS=0.0.0.0:80 backend:$(git rev-parse --short HEAD)
+  #   - run: sleep 10 && docker run -d --rm --name=test-frontend-web_frontend-api-service --net=frontend-web_net -e BACKEND_ADDRESS=test-frontend-web_backend-service -e AUTH_ADDRESS=test-frontend-web_auth-service -e FRONTEND_API_LISTEN_ADDRESS=0.0.0.0:80 frontend-api:$(git rev-parse --short HEAD)
+  #   - run: sleep 10 && docker run -d --rm --name=test-frontend-web_frontend-web-service --net=frontend-web_net -e BACKEND_ADDRESS=test-frontend-web_backend-service -e FRONTEND_API_URL=http://test-frontend-web_frontend-api-service:8888 frontend-web:$(git rev-parse --short HEAD)
+  #   # testing frontend-web
+  #   - run: sleep 10 && docker run --rm -i --name=frontend-web-test --net=frontend-web_net -e FRONTEND_WEB_ADDRESS=http://test-frontend-web_frontend-web-service frontend-api-test:$(git rev-parse --short HEAD)
+  #   # cleaning up
+  #   - run: docker stop test-frontend-web_frontend-web-service
+  #   - run: docker stop test-frontend-web_frontend-api-service
+  #   - run: docker stop test-frontend-web_auth-service
+  #   - run: docker stop test-frontend-web_backend-service
+  #   - run: docker stop test-frontend-web_database-service
+  #   - run: docker stop test-frontend-web_mongodb-mock-database
+  #   - run: docker network rm frontend-web_net

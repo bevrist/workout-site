@@ -9,13 +9,14 @@ docker build -t auth:$(git rev-parse --short HEAD) -f ./auth/Dockerfile .
 docker build -t database:$(git rev-parse --short HEAD) -f ./database/Dockerfile .
 docker build -t backend:$(git rev-parse --short HEAD) -f ./backend/Dockerfile .
 docker build -t frontend-api:$(git rev-parse --short HEAD) -f ./frontend-api/Dockerfile .
+docker build -t frontend-web:$(git rev-parse --short HEAD) ./frontend-web
 # testing images
 docker build -t auth-test:$(git rev-parse --short HEAD) -f ./auth/tests.Dockerfile .
 docker build -t database-test:$(git rev-parse --short HEAD) -f ./database/tests.Dockerfile .
 docker build -t mongodb-mock-database:$(git rev-parse --short HEAD) -f ./database/mongoDB/Dockerfile .
 docker build -t backend-test:$(git rev-parse --short HEAD) -f ./backend/tests.Dockerfile .
 docker build -t frontend-api-test:$(git rev-parse --short HEAD) -f ./frontend-api/tests.Dockerfile .
-# TODO: add frontend-web test
+docker build -t frontend-web-test:$(git rev-parse --short HEAD) -f ./frontend-web/tests.Dockerfile .
 
 
 # --- run all tests ---
@@ -86,8 +87,8 @@ docker network rm frontend-api_net ||:
 sleep 1
 echo "preparing frontend-api integration test..."
 docker network create --driver bridge frontend-api_net
-docker run --rm -d --name=auth-service --net=frontend-api_net -e AUTH_FIREBASE_CREDENTIALS='{test}' -e AUTH_LISTEN_ADDRESS=0.0.0.0:80 auth:$(git rev-parse --short HEAD)
 docker run --rm -d --name=mongodb-mock-database --net=frontend-api_net -e MONGO_INITDB_ROOT_USERNAME=adminz -e MONGO_INITDB_ROOT_PASSWORD=cheeksbutt mongodb-mock-database:$(git rev-parse --short HEAD)
+docker run --rm -d --name=auth-service --net=frontend-api_net -e AUTH_FIREBASE_CREDENTIALS='{test}' -e AUTH_LISTEN_ADDRESS=0.0.0.0:80 auth:$(git rev-parse --short HEAD)
 sleep 1 && docker run -d --rm --name=database-service --net=frontend-api_net -e DATABASE_ADDRESS=mongodb-mock-database:27017 -e DATABASE_LISTEN_ADDRESS=0.0.0.0:80 database:$(git rev-parse --short HEAD)
 sleep 1 && docker run -d --rm --name=backend-service --net=frontend-api_net -e DATABASE_ADDRESS=database-service -e BACKEND_LISTEN_ADDRESS=0.0.0.0:80 backend:$(git rev-parse --short HEAD)
 sleep 1 && docker run -i --rm --name=frontend-api-service --net=frontend-api_net -e BACKEND_ADDRESS=backend-service -e AUTH_ADDRESS=auth-service -e FRONTEND_API_LISTEN_ADDRESS=0.0.0.0:80 frontend-api:$(git rev-parse --short HEAD) &
@@ -103,7 +104,34 @@ docker network rm frontend-api_net
 echo ""
 
 # frontend-web test
-# TODO: complete frontend-web test
-
+# TODO: fix this, this test only needs to test the web service itself without dependencies
+echo "cleaning up hanging containers..."
+docker stop auth-service || :
+docker stop mongodb-mock-database || :
+docker stop database-service || :
+docker stop backend-service || :
+docker stop frontend-api-service || :
+docker stop frontend-web-service || :
+docker network rm frontend-web_net ||:
+sleep 1
+echo "preparing frontend-web integration test..."
+docker network create --driver bridge frontend-web_net
+docker run --rm -d --name=mongodb-mock-database --net=frontend-web_net -e MONGO_INITDB_ROOT_USERNAME=adminz -e MONGO_INITDB_ROOT_PASSWORD=cheeksbutt mongodb-mock-database:$(git rev-parse --short HEAD)
+docker run --rm -d --name=auth-service --net=frontend-web_net -e AUTH_FIREBASE_CREDENTIALS='{test}' -e AUTH_LISTEN_ADDRESS=0.0.0.0:80 auth:$(git rev-parse --short HEAD)
+sleep 1 && docker run -d --rm --name=database-service --net=frontend-web_net -e DATABASE_ADDRESS=mongodb-mock-database:27017 -e DATABASE_LISTEN_ADDRESS=0.0.0.0:80 database:$(git rev-parse --short HEAD)
+sleep 1 && docker run -d --rm --name=backend-service --net=frontend-web_net -e DATABASE_ADDRESS=database-service -e BACKEND_LISTEN_ADDRESS=0.0.0.0:80 backend:$(git rev-parse --short HEAD)
+sleep 1 && docker run -d --rm --name=frontend-api-service --net=frontend-web_net -e BACKEND_ADDRESS=backend-service -e AUTH_ADDRESS=auth-service -e FRONTEND_API_LISTEN_ADDRESS=0.0.0.0:80 frontend-api:$(git rev-parse --short HEAD)
+sleep 1 && docker run -d --rm --name=frontend-web-service --net=frontend-web_net -e FRONTEND_API_URL=http://frontend-api-service:8888 frontend-web:$(git rev-parse --short HEAD)
+echo "testing frontend-web..."
+sleep 1 && docker run --rm -i --name=frontend-web-test --net=frontend-web_net -e FRONTEND_WEB_ADDRESS=http://frontend-web-service frontend-web-test:$(git rev-parse --short HEAD)
+echo "cleaning up..."
+docker stop frontend-web-service
+docker stop frontend-api-service
+docker stop auth-service
+docker stop backend-service
+docker stop database-service
+docker stop mongodb-mock-database
+docker network rm frontend-web_net
+echo ""
 
 printf "\nALL TESTS PASSED!!! \n\n"
