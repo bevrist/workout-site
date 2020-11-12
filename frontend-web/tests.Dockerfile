@@ -8,4 +8,4 @@ COPY ./common ../common
 COPY ./frontend-web .
 CMD ["go", "test"]
 
-ENV FRONTEND_WEB_ADDRESS=http://localhost:80
+ENV FRONTEND_WEB_ADDRESS=http://localhost

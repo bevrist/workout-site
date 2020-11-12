@@ -5,18 +5,18 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>Workout-site</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="../assets/css/Navigation-with-Button.css">
 </head>
 
 <body>
     <nav class="navbar navbar-light navbar-expand-md navigation-clean">
-        <div class="container"><a class="navbar-brand" href="#">Workout-App</a><em>Weekly Tracking</em><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+        <div class="container"><a class="navbar-brand" href="#">Workout-App</a><em>History</em><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
             <div
                 class="collapse navbar-collapse" id="navcol-1">
                 <ul class="nav navbar-nav ml-auto">
-                    <li class="nav-item"><a class="nav-link" href="http://localhost:5500/baseline">Baseline</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="http://localhost:5500/weekly-tracking">Weekly Tracking</a></li>
+                    <li class="nav-item"><a class="nav-link" href="http://localhost:5500/baseline">Daily Update</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="http://localhost:5500/weekly-tracking">History</a></li>
                     <li class="nav-item"><a class="nav-link" href="http://localhost:5500/profile">Profile</a></li>
                     <li class="nav-item"><button class="btn btn-primary action-button" id="SignOutBtn" type="button">Sign Out</button></li>
                 </ul>
@@ -24,12 +24,7 @@
         </div>
     </nav>
     <div class="container">
-        <form action="http://localhost:8080/submitUserProfile" method="post"><input class="form-control" type="hidden" id="Form-Session-Token-StartDate" name="Form-Session-Token">
-            <div class="form-row" style="padding-bottom: 15px;padding-top: 15px;">
-                <div class="col-auto"><input class="form-control" id="StartDate" type="date" style="padding: 0px;width: 145px;" name="StartDate"></div>
-                <div class="col"><button class="btn btn-primary" type="submit">Change Start Date</button></div>
-            </div>
-        </form>
+        <h4 id="StartDateText" style="color: rgba(33,37,41,0.7);">Starting Date: XXXX-XX-XX</h4>
     </div>
     <div class="container" id="myContainer" style="padding-bottom: 24px;">
         <form id="formWeek-0" action="http://localhost:8080/submitUserProfile" method="post"><a id="formLink-0" name="formAnchor"></a>
@@ -84,8 +79,8 @@
             </div>
         </form>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/jquery.min.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-analytics.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-auth.js"></script>
