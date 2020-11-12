@@ -16,7 +16,9 @@
 - remove debug for credentials env var
 
 ## database
-
+- perform data validation on incoming data
+    - validate StartDate and modifiedDate to be iso 8601
+    - check all string inputs for day and recommend are lowercase
 
 ## Backend
 - add modifiedDate and Week parameters to "UpdateRecommendations"
@@ -29,9 +31,11 @@
     - test marshaling removes invalid extra data
 
 ## frontend-web
+- add a note showing what date is being edited on daily-update page
+- correct history jump link day
 - add WaistCirc to history form
 - history page: 
-    - make start date non-editable (only edit from profile)
+    - give dropdowns a default empty option
     - make highlight on current week
     - highlight missed days in red
     - progress page shows weekly data and on weeks recommendation was made shows the recommendation below that week (like a new table inserted)
