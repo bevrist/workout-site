@@ -1,15 +1,15 @@
 //FIXME REMOVE
-var testUID = "test2";
+var myToken = "test2";
 document.cookie = "Session-Token=test; SameSite=Strict;";  //FIXME REMOVE
 
 //FIXME update this
 //get user data from api and store JSON in "userData"
 var xmlHttp = new XMLHttpRequest();
 xmlHttp.open("GET", "http://localhost:8888/userInfo", false);
-xmlHttp.setRequestHeader("Session-Token", testUID); //FIXME use correct session-token
+// xmlHttp.setRequestHeader("Session-Token",getCookie("Session-Token"));
+xmlHttp.setRequestHeader("Session-Token", myToken); //FIXME use correct session-token
 xmlHttp.send(null);
 var userData = JSON.parse(xmlHttp.responseText);
-
 
 
 
@@ -42,6 +42,8 @@ function cloneForm(weekNum) {
   document.getElementById("weekHeading-0").id = "weekHeading-" + weekNum;
   document.getElementById("formSaveButton-0").innerHTML = "Save Week " + weekNum;
   document.getElementById("formSaveButton-0").id = "formSaveButton-" + weekNum;
+  document.getElementById("SaveConfirmationText-0").innerHTML = "";
+  document.getElementById("SaveConfirmationText-0").id = "SaveConfirmationText-" + weekNum;
   document.getElementById("CoachRecContainer-0").id = "CoachRecContainer-" + weekNum;
   document.getElementById("myContainer").id = "week" + weekNum;
   populateCoachRecChart(weekNum);
@@ -249,4 +251,21 @@ function serializeDayForm(weekNum, dayNum) {
     // WaistCirc: Number(document.getElementById("waistCirc").value),
   }
   return dayJSON;
+}
+
+//submit form as JSON on "save" button click
+function submitForm(weekNum) {
+  //serialize form to JSON
+  var dataObject = serializeWeekForm(document.getElementById("formWeek-" + weekNum));
+  var jsonData = JSON.stringify(dataObject);
+  console.log(jsonData);  //FIXME remove
+  //POST JSON to api
+  var xmlHttp = new XMLHttpRequest();
+  xmlHttp.open( "POST", "http://localhost:8888/userDaily/" + getCurrentWeek(userData.StartDate) + "/" + getCurrentDay(userData.StartDate), false );
+  // xmlHttp.setRequestHeader("Session-Token",getCookie("Session-Token"));
+  xmlHttp.setRequestHeader("Session-Token",myToken); //FIXME use correct session-token
+  xmlHttp.send(jsonData);
+  console.log("Server response: " + xmlHttp.responseText);
+  //show note that save was successful
+  document.getElementById("SaveConfirmationText-" + weekNum).innerHTML = "&nbsp; &nbsp; &nbsp; Week " + weekNum + " Saved!";
 }

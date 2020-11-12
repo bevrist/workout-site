@@ -156,7 +156,8 @@ function serializeDailyUpdate(form) {
     WeightTraining: document.getElementById("weightTraining").value,
   };
   //add waistCirc field if present in form
-  if (document.getElementById("waistCirc").value) {
+  var waistCirc = document.getElementById("waistCirc");
+  if (waistCirc) {
     formJSON.WaistCirc = Number(document.getElementById("waistCirc").value);
   }
   return formJSON;
