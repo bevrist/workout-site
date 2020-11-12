@@ -129,103 +129,128 @@ function populateCoachRecChart(weekNum) {
   }
 }
 
-  var dayOffset = 1;
-  // populates form boxes for each week from user data
-  function makeWeekChart(weekNum, dayNum) {
-    //if weekNum is null: remove last tableRow, return
-    if (weekNum == null) {
-      document.getElementById("tableRow").remove();
-      // jump to particular location on page
-      setTimeout(function () { location.href = currentWeekLink; }, 1000);
-      return;
-    }
-    weekNum = weekNum - 1;
-    var myDiv2 = document.getElementById("tableRow");
-    var divClone2 = myDiv2.cloneNode(true);
-    //populate existing week row with data and remove id's
-    // calculate date for row
-    var currDate = startDate.addDays(dayOffset++);
-    document.getElementById("date").childNodes[0].innerHTML = currDate.getMonth() + 1 + "/" + currDate.getDate();
-    document.getElementById("date").removeAttribute("id");
-    //check if date is current date, set link to jump down to week on page completion
-    var todayDate = new Date();
-    if (currDate.toISOString().split('T')[0] == todayDate.toISOString().split('T')[0]) {
-      currentWeekLink = "#formLink-" + (weekNum + 1);
-    }
-    //TODO: training //check for and store week of current date
-    //day calories
-    switch (userData.Week[weekNum].Day[dayNum].DayCalories) {
-      case "normal":
-        document.getElementById("dayNorm").selected = "selected"
-        break;
-      case "low":
-        document.getElementById("dayLow").selected = "selected"
-        break;
-      case "high":
-        document.getElementById("dayHigh").selected = "selected"
-        break;
-    }
-    document.getElementById("dayNorm").removeAttribute("id");
-    document.getElementById("dayLow").removeAttribute("id");
-    document.getElementById("dayHigh").removeAttribute("id");
-
-    //cardio
-    switch (userData.Week[weekNum].Day[dayNum].Cardio) {
-      case "none":
-        document.getElementById("cardioNone").selected = "selected"
-        break;
-      case "missed":
-        document.getElementById("cardioMiss").selected = "selected"
-        break;
-      case "hit":
-        document.getElementById("cardioHit").selected = "selected"
-        break;
-    }
-    document.getElementById("cardioNone").removeAttribute("id");
-    document.getElementById("cardioMiss").removeAttribute("id");
-    document.getElementById("cardioHit").removeAttribute("id");
-
-    //weight training
-    switch (userData.Week[weekNum].Day[dayNum].WeightTraining) {
-      case "yes":
-        document.getElementById("trainingYes").selected = "selected"
-        break;
-      case "no":
-        document.getElementById("trainingNo").selected = "selected"
-        break;
-    }
-    document.getElementById("trainingNo").removeAttribute("id");
-    document.getElementById("trainingYes").removeAttribute("id");
-
-    document.getElementById("fat").value = userData.Week[weekNum].Day[dayNum].Fat;
-    document.getElementById("fat").removeAttribute("id");
-    document.getElementById("carbs").value = userData.Week[weekNum].Day[dayNum].Carbs;
-    document.getElementById("carbs").removeAttribute("id");
-    document.getElementById("protein").value = userData.Week[weekNum].Day[dayNum].Protein;
-    document.getElementById("protein").removeAttribute("id");
-    document.getElementById("calories").value = userData.Week[weekNum].Day[dayNum].TotalCalories;
-    document.getElementById("calories").removeAttribute("id");
-    document.getElementById("weight").value = userData.Week[weekNum].Day[dayNum].Weight;
-    document.getElementById("weight").removeAttribute("id");
-    //clone table row
-    document.getElementById("tableRow").id = "tableRowNext";
-    document.getElementById("tableRowNext").parentElement.appendChild(divClone2);
-    document.getElementById("tableRowNext").removeAttribute("id");
+var dayOffset = 1;
+// populates form boxes for each week from user data
+function makeWeekChart(weekNum, dayNum) {
+  //if weekNum is null: remove last tableRow, return
+  if (weekNum == null) {
+    document.getElementById("tableRow").remove();
+    // jump to particular location on page
+    setTimeout(function () { location.href = currentWeekLink; }, 1000);
+    return;
   }
-
-  //clone through week 24
-  for (var i = 1; i <= userData.Week.length; i++) {
-    cloneForm(i);
+  weekNum = weekNum - 1;
+  var myDiv2 = document.getElementById("tableRow");
+  var divClone2 = myDiv2.cloneNode(true);
+  //populate existing week row with data and remove id's
+  // calculate date for row
+  var currDate = startDate.addDays(dayOffset++);
+  document.getElementById("date").childNodes[0].innerHTML = currDate.getMonth() + 1 + "/" + currDate.getDate();
+  document.getElementById("date").removeAttribute("id");
+  //check if date is current date, set link to jump down to week on page completion
+  var todayDate = new Date();
+  if (currDate.toISOString().split('T')[0] == todayDate.toISOString().split('T')[0]) {
+    currentWeekLink = "#formLink-" + (weekNum + 1);
   }
-  document.getElementById("myContainer").remove(); // delete empty clone form at end
+  //day calories
+  switch (userData.Week[weekNum].Day[dayNum].DayCalories) {
+    case "normal":
+      document.getElementById("dayNorm").selected = "selected"
+      break;
+    case "low":
+      document.getElementById("dayLow").selected = "selected"
+      break;
+    case "high":
+      document.getElementById("dayHigh").selected = "selected"
+      break;
+  }
+  document.getElementById("day").id = "day-" + weekNum+dayNum;
+  document.getElementById("dayNorm").removeAttribute("id");
+  document.getElementById("dayLow").removeAttribute("id");
+  document.getElementById("dayHigh").removeAttribute("id");
 
-// //get UserProfile json object, call other functions on complete
-// fetch("http://localhost:8080/userWeeklyTracking/" + num, {
-//   headers: {
-//     'Session-Token': getCookie("Session-Token"),
-//   }
-// }).then(function (response) {
-//   response.json().then(function (data) {
-//     updateForm(data);
-//   });
-// });
+  //cardio
+  switch (userData.Week[weekNum].Day[dayNum].Cardio) {
+    case "none":
+      document.getElementById("cardioNone").selected = "selected"
+      break;
+    case "missed":
+      document.getElementById("cardioMiss").selected = "selected"
+      break;
+    case "hit":
+      document.getElementById("cardioHit").selected = "selected"
+      break;
+  }
+  document.getElementById("cardio").id = "cardio-" + weekNum+dayNum;
+  document.getElementById("cardioNone").removeAttribute("id");
+  document.getElementById("cardioMiss").removeAttribute("id");
+  document.getElementById("cardioHit").removeAttribute("id");
+
+  //weight training
+  switch (userData.Week[weekNum].Day[dayNum].WeightTraining) {
+    case "yes":
+      document.getElementById("trainingYes").selected = "selected"
+      break;
+    case "no":
+      document.getElementById("trainingNo").selected = "selected"
+      break;
+  }
+  document.getElementById("training").id = "training-" + weekNum+dayNum;
+  document.getElementById("trainingNo").removeAttribute("id");
+  document.getElementById("trainingYes").removeAttribute("id");
+
+  document.getElementById("fat").value = userData.Week[weekNum].Day[dayNum].Fat;
+  document.getElementById("fat").id = "fat-" + weekNum+dayNum;
+  document.getElementById("carbs").value = userData.Week[weekNum].Day[dayNum].Carbs;
+  document.getElementById("carbs").id = "carbs-" + weekNum+dayNum;
+  document.getElementById("protein").value = userData.Week[weekNum].Day[dayNum].Protein;
+  document.getElementById("protein").id = "protein-" + weekNum+dayNum;
+  document.getElementById("calories").value = userData.Week[weekNum].Day[dayNum].TotalCalories;
+  document.getElementById("calories").id = "calories-" + weekNum+dayNum;
+  document.getElementById("weight").value = userData.Week[weekNum].Day[dayNum].Weight;
+  document.getElementById("weight").id = "weight-" + weekNum+dayNum;
+  //clone table row
+  document.getElementById("tableRow").id = "tableRowNext";
+  document.getElementById("tableRowNext").parentElement.appendChild(divClone2);
+  document.getElementById("tableRowNext").removeAttribute("id");
+}
+
+//clone through week 24
+for (var i = 1; i <= userData.Week.length; i++) {
+  cloneForm(i);
+}
+document.getElementById("myContainer").remove(); // delete empty clone form at end
+
+//serialize form fields into json object
+function serializeWeekForm(weekNum) {
+  let DayArr = [
+    serializeDayForm(weekNum, 0),
+    serializeDayForm(weekNum, 1),
+    serializeDayForm(weekNum, 2),
+    serializeDayForm(weekNum, 3),
+    serializeDayForm(weekNum, 4),
+    serializeDayForm(weekNum, 5),
+    serializeDayForm(weekNum, 6),
+  ];
+  var formJSON = {
+    Day: DayArr,
+  }
+  // console.log(formJSON);
+  return formJSON;
+}
+
+//serialize a day object in the form
+function serializeDayForm(weekNum, dayNum) {
+  var dayJSON = {
+    Fat: Number(document.getElementById("fat-" + weekNum+dayNum).value),
+    Carbs: Number(document.getElementById("carbs-" + weekNum+dayNum).value),
+    Protein: Number(document.getElementById("protein-" + weekNum+dayNum).value),
+    Weight: Number(document.getElementById("weight-" + weekNum+dayNum).value),
+    TotalCalories: Number(document.getElementById("calories-" + weekNum+dayNum).value),
+    DayCalories: document.getElementById("day-" + weekNum+dayNum).value,
+    Cardio: document.getElementById("cardio-" + weekNum+dayNum).value,
+    WeightTraining: document.getElementById("training-" + weekNum+dayNum).value,
+    // WaistCirc: Number(document.getElementById("waistCirc").value),
+  }
+  return dayJSON;
+}

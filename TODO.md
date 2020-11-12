@@ -29,7 +29,7 @@
     - test marshaling removes invalid extra data
 
 ## frontend-web
-- rename "weekly tracking" to "history"
+- add WaistCirc to history form
 - history page: 
     - make start date non-editable (only edit from profile)
     - make highlight on current week
