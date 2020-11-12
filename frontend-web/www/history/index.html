@@ -78,6 +78,132 @@
                 </div>
             </div>
         </form>
+        <div id="CoachRecContainer-0" style="background: #dddddd;margin: 5px;padding: 15px;">
+            <div class="row">
+                <div class="col-md-8">
+                    <h1 style="padding-top: 6px;">Coach Recommendation</h1>
+                </div>
+                <div class="col-md-4 my-auto"><span id="updateDateText">Last Updated: &lt;DATE&gt;</span></div>
+            </div>
+            <hr style="margin: 0px;">
+            <div class="row">
+                <div class="col-md-4" style="padding: 0px;padding-top: 10px;padding-right: 3px;padding-bottom: 3px;">
+                    <h2 style="padding-left: 10px;">Normal Day</h2>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Grams</th>
+                                    <th>Ratio</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Protein</td>
+                                    <td id="coach-NProteinAmount"></td>
+                                    <td id="coach-NProteinRatio">%</td>
+                                </tr>
+                                <tr>
+                                    <td>Carbs</td>
+                                    <td id="coach-NCarbAmount"></td>
+                                    <td id="coach-NCarbRatio">%</td>
+                                </tr>
+                                <tr>
+                                    <td>Fat</td>
+                                    <td id="coach-NFatAmount"></td>
+                                    <td id="coach-NFatRatio">%</td>
+                                </tr>
+                                <tr>
+                                    <td>Calories</td>
+                                    <td id="coach-NCalories"></td>
+                                    <td id="coach-NCaloriesRatio">%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-md-4" style="padding: 0px;padding-top: 10px;padding-right: 3px;padding-bottom: 3px;">
+                    <h2 style="padding-left: 10px;">High Day</h2>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Grams</th>
+                                    <th>Ratio</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Protein</td>
+                                    <td id="coach-HProteinAmount"></td>
+                                    <td id="coach-HProteinRatio">%</td>
+                                </tr>
+                                <tr>
+                                    <td>Carbs</td>
+                                    <td id="coach-HCarbAmount"></td>
+                                    <td id="coach-HCarbRatio">%</td>
+                                </tr>
+                                <tr>
+                                    <td>Fat</td>
+                                    <td id="coach-HFatAmount"></td>
+                                    <td id="coach-HFatRatio">%</td>
+                                </tr>
+                                <tr>
+                                    <td>Calories</td>
+                                    <td id="coach-HCalories"></td>
+                                    <td id="coach-HCaloriesRatio">%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-md-4" style="padding: 0px;padding-top: 10px;padding-right: 3px;padding-bottom: 3px;">
+                    <h2 style="padding-left: 10px;">Low Day</h2>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Grams</th>
+                                    <th>Ratio</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Protein</td>
+                                    <td id="coach-LProteinAmount"></td>
+                                    <td id="coach-LProteinRatio">%</td>
+                                </tr>
+                                <tr>
+                                    <td>Carbs</td>
+                                    <td id="coach-LCarbAmount"></td>
+                                    <td id="coach-LCarbRatio">%</td>
+                                </tr>
+                                <tr>
+                                    <td>Fat</td>
+                                    <td id="coach-LFatAmount"></td>
+                                    <td id="coach-LFatRatio">%</td>
+                                </tr>
+                                <tr>
+                                    <td>Calories</td>
+                                    <td id="coach-LCalories"></td>
+                                    <td id="coach-LCaloriesRatio">%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="margin-top: -20px;">
+                <div class="col-md-4 offset-md-0" style="padding: 0px;padding-top: 10px;padding-right: 3px;padding-bottom: 3px;background: #d2d2d2;">
+                    <h4 style="padding-left: 10px;">High Intensity Interval Training:</h4>
+                </div>
+                <div class="col-md-4 offset-md-0" style="padding: 0px;padding-top: 10px;padding-right: 3px;padding-bottom: 3px;background: #d2d2d2;"><span style="padding-left: 10px;">HIITCurrentCardioSession:&nbsp;</span><span id="coach-HIITCurrentCardioSession" style="padding-left: 10px; display: inline-block;">####</span></div>
+                <div class="col-md-4 offset-md-0" style="padding: 0px;padding-top: 10px;padding-right: 3px;padding-bottom: 10px;background: #d2d2d2;"><span style="padding-left: 10px;">HIITCurrentCardioIntervals:</span><span id="coach-HIITCurrentCardioIntervals" style="padding-left: 10px; display: inline-block;">####</span></div>
+            </div>
+        </div>
     </div>
     <script src="../assets/js/jquery.min.js"></script>
     <script src="../assets/bootstrap/js/bootstrap.min.js"></script>

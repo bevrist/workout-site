@@ -157,7 +157,7 @@ function serializeDailyUpdate(form) {
   };
   //add waistCirc field if present in form
   if (document.getElementById("waistCirc").value) {
-    formJSON.WaistCirc = document.getElementById("waistCirc").value;
+    formJSON.WaistCirc = Number(document.getElementById("waistCirc").value);
   }
   return formJSON;
 }

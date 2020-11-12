@@ -44,6 +44,7 @@ function cloneForm(weekNum) {
   document.getElementById("formSaveButton-0").id = "formSaveButton-" + weekNum;
   document.getElementById("Form-Session-Token-0").value = getCookie("Session-Token");
   document.getElementById("Form-Session-Token-0").id = "Form-Session-Token-" + weekNum;
+  document.getElementById("CoachRecContainer-0").id = "CoachRecContainer-" + weekNum;
   document.getElementById("myContainer").id = "week" + weekNum;
   document.body.appendChild(divClone);
 
