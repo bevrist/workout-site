@@ -171,9 +171,6 @@ function makeWeekChart(weekNum, dayNum) {
 
   //cardio
   switch (userData.Week[weekNum].Day[dayNum].Cardio) {
-    case "none":
-      document.getElementById("cardioNone").selected = "selected"
-      break;
     case "missed":
       document.getElementById("cardioMiss").selected = "selected"
       break;
@@ -182,7 +179,6 @@ function makeWeekChart(weekNum, dayNum) {
       break;
   }
   document.getElementById("cardio").id = "cardio-" + weekNum+dayNum;
-  document.getElementById("cardioNone").removeAttribute("id");
   document.getElementById("cardioMiss").removeAttribute("id");
   document.getElementById("cardioHit").removeAttribute("id");
 
