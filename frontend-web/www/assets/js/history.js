@@ -41,6 +41,8 @@ function cloneForm(weekNum) {
   document.getElementById("weekHeading-0").innerHTML = "Week " + weekNum;
   document.getElementById("weekHeading-0").id = "weekHeading-" + weekNum;
   document.getElementById("formSaveButton-0").innerHTML = "Save Week " + weekNum;
+  // document.getElementById("formSaveButton-0").onclick = "submitForm(" + weekNum + ")";
+  document.getElementById("formSaveButton-0").setAttribute("onclick", "submitForm(" + weekNum + ")");
   document.getElementById("formSaveButton-0").id = "formSaveButton-" + weekNum;
   document.getElementById("SaveConfirmationText-0").innerHTML = "";
   document.getElementById("SaveConfirmationText-0").id = "SaveConfirmationText-" + weekNum;
@@ -255,13 +257,15 @@ function serializeDayForm(weekNum, dayNum) {
 
 //submit form as JSON on "save" button click
 function submitForm(weekNum) {
+  //stop from from refreshing page
+  event.preventDefault(); //FIXME see if can remove
   //serialize form to JSON
-  var dataObject = serializeWeekForm(document.getElementById("formWeek-" + weekNum));
+  var dataObject = serializeWeekForm(weekNum-1);
   var jsonData = JSON.stringify(dataObject);
   console.log(jsonData);  //FIXME remove
   //POST JSON to api
   var xmlHttp = new XMLHttpRequest();
-  xmlHttp.open( "POST", "http://localhost:8888/userDaily/" + getCurrentWeek(userData.StartDate) + "/" + getCurrentDay(userData.StartDate), false );
+  xmlHttp.open( "POST", "http://localhost:8888/userWeekly/" + (weekNum-1), false );
   // xmlHttp.setRequestHeader("Session-Token",getCookie("Session-Token"));
   xmlHttp.setRequestHeader("Session-Token",myToken); //FIXME use correct session-token
   xmlHttp.send(jsonData);
@@ -269,3 +273,9 @@ function submitForm(weekNum) {
   //show note that save was successful
   document.getElementById("SaveConfirmationText-" + weekNum).innerHTML = "&nbsp; &nbsp; &nbsp; Week " + weekNum + " Saved!";
 }
+
+// function submitForm() {
+//   //stop from from refreshing page
+//   event.preventDefault();
+//   console.log("hi");
+// }
