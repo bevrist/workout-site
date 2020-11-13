@@ -31,8 +31,6 @@
     - test marshaling removes invalid extra data
 
 ## frontend-web
-- add a note showing what date is being edited on daily-update page
-- correct history jump link day
 - add WaistCirc to history form
 - history page: 
     - give dropdowns a default empty option

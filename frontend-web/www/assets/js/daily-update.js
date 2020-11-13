@@ -8,13 +8,11 @@ xmlHttp.setRequestHeader("Session-Token", myToken); //FIXME use correct session-
 xmlHttp.send(null);
 var userData = JSON.parse(xmlHttp.responseText);
 
-//FIXME remove
-// console.log(JSON.stringify(userData.Recommendation));
-// console.log(JSON.stringify(getLatestRecommendation(userData)));
-// console.log("weeks:: " + getCurrentWeek(userData.StartDate));
-// console.log("days:: " + getCurrentDay(userData.StartDate));
-userData.StartDate = "2020-10-01";
-//FIXME remove
+// update "Todays Date" text
+var todayLocalDate = (new Date()).getTimezoneOffset() * 60000;
+var localISOTime = (new Date(Date.now() - todayLocalDate)).toISOString().split('T')[0];
+document.getElementById("TodayDateText").innerHTML = "Today's Date: " + localISOTime;
+
 
 updateCharts(userData);
 
@@ -135,12 +133,12 @@ function getLatestRecommendation(userData) {
 
 // returns the int for the current week as shown in history page
 function getCurrentWeek(startingDate) {
-  return Math.floor((new Date() - new Date(startingDate))/604800000);
+  return Math.floor((new Date() - new Date(startingDate + "T00:00"))/604800000);
 }
 
 // returns the int for the current day as shown in history page
 function getCurrentDay(startingDate) {
-  return Math.floor(((new Date() - new Date(startingDate))/86400000)%7);
+  return Math.floor(((new Date() - new Date(startingDate + "T00:00"))/86400000)%7);
 }
 
 //serialize form fields into json object
@@ -173,7 +171,6 @@ function submitForm() {
   //serialize form to JSON
   var dataObject = serializeDailyUpdate(document.getElementById("DailyUpdateForm"));
   var jsonData = JSON.stringify(dataObject);
-  console.log(jsonData);  //FIXME remove
   //POST JSON to api
   var xmlHttp = new XMLHttpRequest();
   xmlHttp.open( "POST", "http://localhost:8888/userDaily/" + getCurrentWeek(userData.StartDate) + "/" + getCurrentDay(userData.StartDate), false );
