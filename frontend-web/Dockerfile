@@ -6,6 +6,8 @@ WORKDIR /app
 COPY ./www .
 # replace all hardcoded test addresses (http://localhost:5500) with relative addresses
 RUN find ./ -type f -exec sed -i -e "s,http://localhost:5500/,/,g" {} \;
+# replace all hardcoded test addresses (http://localhost:8888) with relative API addresses /api/page
+RUN find ./ -type f -exec sed -i -e "s,http://localhost:8888/,/api/,g" {} \;
 # compile all web files into optimized and minified versions
 RUN find ./ -type f -name "*.js" -exec google-closure-compiler --js {} --js_output_file {}.min \; -exec mv {}.min {} \; \
     && find ./ -type f -name "*.css" -exec csso {} -o {}.min \; -exec mv {}.min {} \; \
@@ -28,16 +30,26 @@ RUN ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log
 
 # before run substitute all API references to http://localhost:8888 with the env var FRONTEND_API_URL (if present)
+# TODO: change api addresses to be handled by nginx reverse proxy instead <API_ADDRESS>
+# RUN printf '#!/bin/sh \n\
+#     if [[ -n "${FRONTEND_API_URL}" ]]; then \n\
+#         find /var/www/ -type f -exec sed -i -e "s,http://localhost:8888,$FRONTEND_API_URL,g" {} \; \n\
+#     fi \n\
+#     echo "frontend-web listening at: 0.0.0.0:80" \n\
+#     echo "\$FRONTEND_API_URL = $FRONTEND_API_URL" \n\
+#     nginx -g "daemon off;" \n\
+#     ' > /start.sh; chmod +x /start.sh
+
 RUN printf '#!/bin/sh \n\
     if [[ -n "${FRONTEND_API_URL}" ]]; then \n\
-        find /var/www/ -type f -exec sed -i -e "s,http://localhost:8888,$FRONTEND_API_URL,g" {} \; \n\
+        sed -i -e "s,<API_ADDRESS>,$FRONTEND_API_URL,g" /etc/nginx/conf.d/nginx.conf \; \n\
     fi \n\
     echo "frontend-web listening at: 0.0.0.0:80" \n\
-    echo "\$FRONTEND_API_URL = $FRONTEND_API_URL" \n\
+    echo "forwarding api requests to: $FRONTEND_API_URL" \n\
     nginx -g "daemon off;" \n\
     ' > /start.sh; chmod +x /start.sh
 
 CMD ["/bin/sh", "/start.sh"]
 
 EXPOSE 80
-ENV FRONTEND_API_URL=localhost:8888
+ENV FRONTEND_API_URL=http://host.docker.internal:8888
