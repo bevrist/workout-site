@@ -21,14 +21,14 @@ firebase.auth().getRedirectResult().then(function (result) {
         // window.location.replace('http://localhost:5500/profile');
       }
       else {
-        //else redirect to baseline page
-        console.log("user profile data found, redirecting to baseline...")
-        // window.location.replace('http://localhost:5500/baseline');
+        //else redirect to daily-update page
+        console.log("user profile data found, redirecting to daily-update...")
+        // window.location.replace('http://localhost:5500/daily-update');
       }
     });
   });
-  console.log("redirecting to baseline... I DONT KNOW WHY THIS SHOULDNT HAPPEN")
-  // window.location.replace('http://localhost:5500/baseline'); //FIXME remove?
+  console.log("redirecting to daily-update... I DONT KNOW WHY THIS SHOULDNT HAPPEN")
+  // window.location.replace('http://localhost:5500/daily-update'); //FIXME remove?
 
 }).catch(function (error) {
   // Handle Errors here.
