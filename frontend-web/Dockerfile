@@ -31,7 +31,7 @@ RUN ln -sf /dev/stdout /var/log/nginx/access.log \
 
 RUN printf '#!/bin/sh \n\
     if [[ -n "${FRONTEND_API_URL}" ]]; then \n\
-        sed -i -e "s,<API_ADDRESS>,$FRONTEND_API_URL,g" /etc/nginx/conf.d/nginx.conf \; \n\
+        sed -i -e "s,<API_ADDRESS>,$FRONTEND_API_URL,g" /etc/nginx/conf.d/nginx.conf \n\
     fi \n\
     echo "frontend-web listening at: 0.0.0.0:80" \n\
     echo "forwarding api requests to: $FRONTEND_API_URL" \n\
@@ -41,4 +41,4 @@ RUN printf '#!/bin/sh \n\
 CMD ["/bin/sh", "/start.sh"]
 
 EXPOSE 80
-ENV FRONTEND_API_URL=http://host.docker.internal:8888
+ENV FRONTEND_API_URL=http://localhost:8888

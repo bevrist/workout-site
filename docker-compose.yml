@@ -82,6 +82,7 @@ services:
     ports:
       - 80:80
     environment:
-      FRONTEND_API_URL: "http://192.168.1.135:8888"
-      # FRONTEND_API_URL: "http://localhost:8888"
+      FRONTEND_API_URL: "http://frontend-api_service:8888"
+    logging:
+      driver: none
     restart: on-failure
