@@ -1,13 +1,13 @@
 //FIXME REMOVE
-var myToken = "test2";
-document.cookie = "Session-Token=test; SameSite=Strict;";  //FIXME REMOVE
+// var myToken = "test2";
+// document.cookie = "Session-Token=test; SameSite=Strict;";  //FIXME REMOVE
 
 //FIXME update this
 //get user data from api and store JSON in "userData"
 var xmlHttp = new XMLHttpRequest();
 xmlHttp.open("GET", "http://localhost:8888/userInfo", false);
-// xmlHttp.setRequestHeader("Session-Token",getCookie("Session-Token"));
-xmlHttp.setRequestHeader("Session-Token", myToken); //FIXME use correct session-token
+xmlHttp.setRequestHeader("Session-Token",getCookie("Session-Token"));
+// xmlHttp.setRequestHeader("Session-Token", myToken); //FIXME use correct session-token
 xmlHttp.send(null);
 var userData = JSON.parse(xmlHttp.responseText);
 
@@ -262,12 +262,11 @@ function submitForm(weekNum) {
   //serialize form to JSON
   var dataObject = serializeWeekForm(weekNum-1);
   var jsonData = JSON.stringify(dataObject);
-  console.log(jsonData);  //FIXME remove
   //POST JSON to api
   var xmlHttp = new XMLHttpRequest();
   xmlHttp.open( "POST", "http://localhost:8888/userWeekly/" + (weekNum-1), false );
-  // xmlHttp.setRequestHeader("Session-Token",getCookie("Session-Token"));
-  xmlHttp.setRequestHeader("Session-Token",myToken); //FIXME use correct session-token
+  xmlHttp.setRequestHeader("Session-Token",getCookie("Session-Token"));
+  // xmlHttp.setRequestHeader("Session-Token",myToken); //FIXME use correct session-token
   xmlHttp.send(jsonData);
   console.log("Server response: " + xmlHttp.responseText);
   //show note that save was successful

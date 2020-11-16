@@ -1,10 +1,10 @@
-var myToken = "test2"; //FIXME remove
+// var myToken = "test2"; //FIXME remove
 
 //get user info from server
 var xmlHttp = new XMLHttpRequest();
 xmlHttp.open("GET", "http://localhost:8888/userInfo", false);
-// xmlHttp.setRequestHeader("Session-Token",getCookie("Session-Token"));
-xmlHttp.setRequestHeader("Session-Token", myToken); //FIXME use correct session-token
+xmlHttp.setRequestHeader("Session-Token",getCookie("Session-Token"));
+// xmlHttp.setRequestHeader("Session-Token", myToken); //FIXME use correct session-token
 xmlHttp.send(null);
 var userData = JSON.parse(xmlHttp.responseText);
 
@@ -125,7 +125,7 @@ function updateCharts(userData) {
 
 // returns true if user has no baseline recommendation (if user never completed profile)
 function isNewUser(userData) {
-  if (!userData.Recommendation[0].NormalDayProtein) {
+  if (userData.Recommendation == null || !userData.Recommendation[0].NormalDayProtein) {
     return true
   } else {
     return false
@@ -186,8 +186,8 @@ function submitForm() {
   //POST JSON to api
   var xmlHttp = new XMLHttpRequest();
   xmlHttp.open( "POST", "http://localhost:8888/userDaily/" + getCurrentWeek(userData.StartDate) + "/" + getCurrentDay(userData.StartDate), false );
-  // xmlHttp.setRequestHeader("Session-Token",getCookie("Session-Token"));
-  xmlHttp.setRequestHeader("Session-Token",myToken); //FIXME use correct session-token
+  xmlHttp.setRequestHeader("Session-Token",getCookie("Session-Token"));
+  // xmlHttp.setRequestHeader("Session-Token",myToken); //FIXME use correct session-token
   xmlHttp.send(jsonData);
   console.log("Server response: " + xmlHttp.responseText);
   //show note that save was successful

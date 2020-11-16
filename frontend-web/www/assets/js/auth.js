@@ -27,11 +27,26 @@ firebase.auth().getRedirectResult().then(function (result) {
       }
     });
   });
-  console.log("redirecting to daily-update... I DONT KNOW WHY THIS SHOULDNT HAPPEN")
-  // window.location.replace('http://localhost:5500/daily-update'); //FIXME remove?
+  console.log("redirecting to homepage... I DONT KNOW WHY THIS SHOULDNT HAPPEN")
+  // window.location.replace('http://localhost:5500/'); //FIXME remove?
 
 }).catch(function (error) {
   // Handle Errors here.
   var errorCode = error.code;
   var errorMessage = error.message;
 });
+
+// enable signOut button
+function authSignOut() {
+  console.log("Signing out...")
+  firebase.auth().signOut().then(function () {
+    // Sign-out successful.
+    // Invalidate "Session-Token" cookie
+    document.cookie = "Session-Token=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+    console.log("Signed out button, redirecting to homepage...")
+    // window.location.replace('http://localhost:5500/');
+  }).catch(function (error) {
+    console.log("Sign out error occurred")
+    // An error happened.
+  });
+}

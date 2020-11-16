@@ -48,8 +48,8 @@ function signOut() {
     // Sign-out successful.
     // Invalidate "Session-Token" cookie
     document.cookie = "Session-Token=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-    console.log("Signed out, redirecting to auth...")
-    // window.location.replace('http://localhost:5500/auth');
+    console.log("Signed out button, redirecting to homepage...")
+    // window.location.replace('http://localhost:5500/');
   }).catch(function (error) {
     console.log("Sign out error occurred")
     // An error happened.

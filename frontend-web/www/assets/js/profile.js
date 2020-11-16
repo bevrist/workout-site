@@ -1,15 +1,18 @@
 //TODO: test flow for brand new users
-var myToken = "test"; //FIXME remove
+// var myToken = "test"; //FIXME remove
 
 //get user profile info from server and prepopulate form
 var xmlHttp = new XMLHttpRequest();
 xmlHttp.open( "GET", "http://localhost:8888/userInfo", false );
-// xmlHttp.setRequestHeader("Session-Token",getCookie("Session-Token"));
-xmlHttp.setRequestHeader("Session-Token",myToken); //FIXME use correct session-token
+xmlHttp.setRequestHeader("Session-Token",getCookie("Session-Token"));
+// xmlHttp.setRequestHeader("Session-Token",myToken); //FIXME use correct session-token
 xmlHttp.send(null);
 var userData = JSON.parse(xmlHttp.responseText);
 
-updateForm(userData);
+// only update form if userData already exists
+if (userData.FirstName != null) {
+  updateForm(userData);
+}
 
 // //get UserProfile json object, call other functions on complete
 // fetch("http://localhost:8888/userInfo", {
@@ -72,13 +75,11 @@ function submitForm() {
   //serialize form to JSON
   var dataObject = serializeProfile(document.getElementById("ProfileForm"));
   var jsonData = JSON.stringify(dataObject);
-  console.log(jsonData);  //FIXME remove
-  //TODO POST json to api
   //POST JSON to api
   var xmlHttp = new XMLHttpRequest();
   xmlHttp.open( "POST", "http://localhost:8888/userInfo", false );
-  // xmlHttp.setRequestHeader("Session-Token",getCookie("Session-Token"));
-  xmlHttp.setRequestHeader("Session-Token",myToken); //FIXME use correct session-token
+  xmlHttp.setRequestHeader("Session-Token",getCookie("Session-Token"));
+  // xmlHttp.setRequestHeader("Session-Token",myToken); //FIXME use correct session-token
   xmlHttp.send(jsonData);
   console.log("Server response: " + xmlHttp.responseText);
   //show note that save was successful
