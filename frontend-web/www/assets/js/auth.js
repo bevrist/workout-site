@@ -18,12 +18,12 @@ firebase.auth().getRedirectResult().then(function (result) {
       //if first name is empty, redirect to profile page
       if (data.FirstName == "") {
         console.log("FirstName blank, redirecting to profile...")
-        // window.location.replace('http://localhost:5500/profile');  //FIXME
+        // window.location.replace('http://localhost:5500/profile');
       }
       else {
         //else redirect to baseline page
         console.log("user profile data found, redirecting to baseline...")
-        // window.location.replace('http://localhost:5500/baseline'); //FIXME
+        // window.location.replace('http://localhost:5500/baseline');
       }
     });
   });

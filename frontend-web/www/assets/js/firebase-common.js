@@ -25,7 +25,7 @@ firebase.auth().onAuthStateChanged(function (user) {
       document.cookie = "Session-Token=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
       console.log("Cookie Invalidated, redirecting to homepage...")
       //TODO: create & redirect to "signed out" page to explain user signed out
-      // window.location.replace('http://localhost:5500/'); //FIXME
+      // window.location.replace('http://localhost:5500/');
     }
   }
 });
@@ -34,7 +34,7 @@ firebase.auth().onAuthStateChanged(function (user) {
 if (document.getElementById("SignOutBtn") != null) {
   if (getCookie("Session-Token") == null || getCookie("Session-Token") == "") {
     console.log("Not Signed In, redirecting to homepage...");
-    // window.location.replace('http://localhost:5500/'); //FIXME
+    // window.location.replace('http://localhost:5500/');
   }
 }
 
@@ -47,7 +47,7 @@ function signOut() {
     // Invalidate "Session-Token" cookie
     document.cookie = "Session-Token=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
     console.log("Signed out, redirecting to homepage...")
-    // window.location.replace('http://localhost:5500/'); //FIXME
+    // window.location.replace('http://localhost:5500/');
   }).catch(function (error) {
     console.log("Sign out error occurred")
     // An error happened.

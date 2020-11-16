@@ -13,7 +13,10 @@ var todayLocalDate = (new Date()).getTimezoneOffset() * 60000;
 var localISOTime = (new Date(Date.now() - todayLocalDate)).toISOString().split('T')[0];
 document.getElementById("TodayDateText").innerHTML = "Today's Date: " + localISOTime;
 
-
+if (isNewUser(userData) == true) {
+  console.log("user baseline missing, redirecting to profile page...");
+  // window.location.replace('http://localhost:5500/profile');
+}
 updateCharts(userData);
 
 //get UserBaseline json object, call other functions on complete
@@ -33,7 +36,7 @@ function updateCharts(userData) {
   // redirect to profile page on empty data
   if (userData.Recommendation[0].NormalDayCalories == 0) {
     console.log("Baseline data blank, redirecting to profile...")
-    // window.location.replace('http://localhost:5500/profile');  //FIXME
+    // window.location.replace('http://localhost:5500/profile');
   }
 
   //remove WaistCirc form field if data has been entered for the current week
@@ -119,6 +122,15 @@ function updateCharts(userData) {
 
 //==================================================
 // Helper Functions
+
+// returns true if user has no baseline recommendation (if user never completed profile)
+function isNewUser(userData) {
+  if (!userData.Recommendation[0].NormalDayProtein) {
+    return true
+  } else {
+    return false
+  }
+}
 
 // returns latest recommendation object that has an "ModifiedDate"
 function getLatestRecommendation(userData) {
