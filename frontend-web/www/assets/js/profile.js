@@ -10,7 +10,7 @@ xmlHttp.send(null);
 var userData = JSON.parse(xmlHttp.responseText);
 
 // only update form if userData already exists
-if (userData.FirstName != null) {
+if (userData.FirstName != "") {
   updateForm(userData);
 }
 
@@ -84,4 +84,5 @@ function submitForm() {
   console.log("Server response: " + xmlHttp.responseText);
   //show note that save was successful
   document.getElementById("SaveConfirmationText").innerHTML = "&nbsp; &nbsp; &nbsp; Saved!";
+  //TODO: update confirmation to link to daily-update page
 }

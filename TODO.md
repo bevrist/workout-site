@@ -1,5 +1,7 @@
 # TODO
 
+- run generate user baseline on first run of profile creation
+
 - do data validation on incoming data
 - double check all API docs
 - finish frontend-api tests

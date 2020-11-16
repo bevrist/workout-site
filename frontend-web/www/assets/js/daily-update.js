@@ -135,10 +135,11 @@ function isNewUser(userData) {
 // returns latest recommendation object that has an "ModifiedDate"
 function getLatestRecommendation(userData) {
   var latestRec = userData.Recommendation.filter(value => Object.keys(value).length !== 0).slice(-1)[0];
-  if (latestRec.ModifiedDate) {
+  if (latestRec == null) {
+    return null
+  } else if (latestRec.ModifiedDate) {
     return latestRec;
-  }
-  else {
+  } else {
     return null
   }
 }
