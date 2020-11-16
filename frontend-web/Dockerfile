@@ -29,17 +29,6 @@ COPY ./nginx.conf /etc/nginx/conf.d/nginx.conf
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log
 
-# before run substitute all API references to http://localhost:8888 with the env var FRONTEND_API_URL (if present)
-# TODO: change api addresses to be handled by nginx reverse proxy instead <API_ADDRESS>
-# RUN printf '#!/bin/sh \n\
-#     if [[ -n "${FRONTEND_API_URL}" ]]; then \n\
-#         find /var/www/ -type f -exec sed -i -e "s,http://localhost:8888,$FRONTEND_API_URL,g" {} \; \n\
-#     fi \n\
-#     echo "frontend-web listening at: 0.0.0.0:80" \n\
-#     echo "\$FRONTEND_API_URL = $FRONTEND_API_URL" \n\
-#     nginx -g "daemon off;" \n\
-#     ' > /start.sh; chmod +x /start.sh
-
 RUN printf '#!/bin/sh \n\
     if [[ -n "${FRONTEND_API_URL}" ]]; then \n\
         sed -i -e "s,<API_ADDRESS>,$FRONTEND_API_URL,g" /etc/nginx/conf.d/nginx.conf \; \n\
