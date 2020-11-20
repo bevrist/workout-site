@@ -15,27 +15,27 @@ jobs:
     runs-on: [self-hosted, docker]
     steps:
     - uses: actions/checkout@v2
-    - run: docker build -t auth:$(git rev-parse --short HEAD) -f ./auth/Dockerfile .
+    - run: docker build -t auth:$(git describe --always) -f ./auth/Dockerfile .
   build-database:
     runs-on: [self-hosted, docker]
     steps:
     - uses: actions/checkout@v2
-    - run: docker build -t database:$(git rev-parse --short HEAD) -f ./database/Dockerfile .
+    - run: docker build -t database:$(git describe --always) -f ./database/Dockerfile .
   build-backend:
     runs-on: [self-hosted, docker]
     steps:
     - uses: actions/checkout@v2
-    - run: docker build -t backend:$(git rev-parse --short HEAD) -f ./backend/Dockerfile .
+    - run: docker build -t backend:$(git describe --always) -f ./backend/Dockerfile .
   build-frontend-api:
     runs-on: [self-hosted, docker]
     steps:
     - uses: actions/checkout@v2
-    - run: docker build -t frontend-api:$(git rev-parse --short HEAD) -f ./frontend-api/Dockerfile .
+    - run: docker build -t frontend-api:$(git describe --always) -f ./frontend-api/Dockerfile .
   build-frontend-web:
     runs-on: [self-hosted, docker]
     steps:
     - uses: actions/checkout@v2
-    - run: docker build -t frontend-web:$(git rev-parse --short HEAD) ./frontend-web
+    - run: docker build -t frontend-web:$(git describe --always) ./frontend-web
 
   ### build test images
   build-auth-test:
@@ -43,36 +43,36 @@ jobs:
     runs-on: [self-hosted, docker]
     steps:
     - uses: actions/checkout@v2
-    - run: docker build -t auth-test:$(git rev-parse --short HEAD) -f ./auth/tests.Dockerfile .
+    - run: docker build -t auth-test:$(git describe --always) -f ./auth/tests.Dockerfile .
   build-database-test:
     needs: build-database
     runs-on: [self-hosted, docker]
     steps:
     - uses: actions/checkout@v2
-    - run: docker build -t database-test:$(git rev-parse --short HEAD) -f ./database/tests.Dockerfile .
+    - run: docker build -t database-test:$(git describe --always) -f ./database/tests.Dockerfile .
   build-mongodb-mock:
     runs-on: [self-hosted, docker]
     steps:
     - uses: actions/checkout@v2
-    - run: docker build -t mongodb-mock-database:$(git rev-parse --short HEAD) -f ./database/mongoDB/Dockerfile .
+    - run: docker build -t mongodb-mock-database:$(git describe --always) -f ./database/mongoDB/Dockerfile .
   build-backend-test:
     needs: build-backend
     runs-on: [self-hosted, docker]
     steps:
     - uses: actions/checkout@v2
-    - run: docker build -t backend-test:$(git rev-parse --short HEAD) -f ./backend/tests.Dockerfile .
+    - run: docker build -t backend-test:$(git describe --always) -f ./backend/tests.Dockerfile .
   build-frontend-api-test:
     needs: build-frontend-api
     runs-on: [self-hosted, docker]
     steps:
     - uses: actions/checkout@v2
-    - run: docker build -t frontend-api-test:$(git rev-parse --short HEAD) -f ./frontend-api/tests.Dockerfile .
+    - run: docker build -t frontend-api-test:$(git describe --always) -f ./frontend-api/tests.Dockerfile .
   build-frontend-web-test:
     needs: build-frontend-web
     runs-on: [self-hosted, docker]
     steps:
     - uses: actions/checkout@v2
-    - run: docker build -t frontend-web-test:$(git rev-parse --short HEAD) -f ./frontend-web/tests.Dockerfile .
+    - run: docker build -t frontend-web-test:$(git describe --always) -f ./frontend-web/tests.Dockerfile .
 
   ### run tests against service images
   test-database:
@@ -87,10 +87,10 @@ jobs:
     - run: sleep 10
     # preparing database integration test
     - run: docker network create --driver bridge database_net
-    - run: docker run --rm -d --name=test-database_mongodb-mock-database --net=database_net -e MONGO_INITDB_ROOT_USERNAME=adminz -e MONGO_INITDB_ROOT_PASSWORD=cheeksbutt mongodb-mock-database:$(git rev-parse --short HEAD)
-    - run: sleep 10 && docker run -d --rm --name=test-database_database-service --net=database_net -e DATABASE_ADDRESS=test-database_mongodb-mock-database:27017 -e DATABASE_LISTEN_ADDRESS=0.0.0.0:80 database:$(git rev-parse --short HEAD)
+    - run: docker run --rm -d --name=test-database_mongodb-mock-database --net=database_net -e MONGO_INITDB_ROOT_USERNAME=adminz -e MONGO_INITDB_ROOT_PASSWORD=cheeksbutt mongodb-mock-database:$(git describe --always)
+    - run: sleep 10 && docker run -d --rm --name=test-database_database-service --net=database_net -e DATABASE_ADDRESS=test-database_mongodb-mock-database:27017 -e DATABASE_LISTEN_ADDRESS=0.0.0.0:80 database:$(git describe --always)
     # testing database
-    - run: sleep 10 && docker run --rm -i --name=database-test --net=database_net -e DATABASE_SERVICE_ADDRESS=test-database_database-service database-test:$(git rev-parse --short HEAD)
+    - run: sleep 10 && docker run --rm -i --name=database-test --net=database_net -e DATABASE_SERVICE_ADDRESS=test-database_database-service database-test:$(git describe --always)
     # cleaning up
     - run: docker stop test-database_mongodb-mock-database
     - run: docker stop test-database_database-service
@@ -107,9 +107,9 @@ jobs:
     - run: sleep 10
     # preparing auth integration test
     - run: docker network create --driver bridge auth_net
-    - run: docker run --rm -d --name=test-auth_auth-service --net=auth_net -e AUTH_FIREBASE_CREDENTIALS='{test}' -e AUTH_LISTEN_ADDRESS=0.0.0.0:80 auth:$(git rev-parse --short HEAD)
+    - run: docker run --rm -d --name=test-auth_auth-service --net=auth_net -e AUTH_FIREBASE_CREDENTIALS='{test}' -e AUTH_LISTEN_ADDRESS=0.0.0.0:80 auth:$(git describe --always)
     # testing auth
-    - run: sleep 10 && docker run --rm -i --name=auth-test --net=auth_net -e AUTH_SERVICE_ADDRESS=test-auth_auth-service auth-test:$(git rev-parse --short HEAD)
+    - run: sleep 10 && docker run --rm -i --name=auth-test --net=auth_net -e AUTH_SERVICE_ADDRESS=test-auth_auth-service auth-test:$(git describe --always)
     # cleaning up
     - run: docker stop test-auth_auth-service
     - run: docker network rm auth_net
@@ -127,11 +127,11 @@ jobs:
     - run: sleep 10
     # preparing backend integration test
     - run: docker network create --driver bridge backend_net
-    - run: docker run --rm -d --name=test-backend_mongodb-mock-database --net=backend_net -e MONGO_INITDB_ROOT_USERNAME=adminz -e MONGO_INITDB_ROOT_PASSWORD=cheeksbutt mongodb-mock-database:$(git rev-parse --short HEAD)
-    - run: sleep 10 && docker run -d --rm --name=test-backend_database-service --net=backend_net -e DATABASE_ADDRESS=test-backend_mongodb-mock-database:27017 -e DATABASE_LISTEN_ADDRESS=0.0.0.0:80 database:$(git rev-parse --short HEAD)
-    - run: sleep 10 && docker run -d --rm --name=test-backend_backend-service --net=backend_net -e DATABASE_ADDRESS=test-backend_database-service -e BACKEND_LISTEN_ADDRESS=0.0.0.0:80 backend:$(git rev-parse --short HEAD)
+    - run: docker run --rm -d --name=test-backend_mongodb-mock-database --net=backend_net -e MONGO_INITDB_ROOT_USERNAME=adminz -e MONGO_INITDB_ROOT_PASSWORD=cheeksbutt mongodb-mock-database:$(git describe --always)
+    - run: sleep 10 && docker run -d --rm --name=test-backend_database-service --net=backend_net -e DATABASE_ADDRESS=test-backend_mongodb-mock-database:27017 -e DATABASE_LISTEN_ADDRESS=0.0.0.0:80 database:$(git describe --always)
+    - run: sleep 10 && docker run -d --rm --name=test-backend_backend-service --net=backend_net -e DATABASE_ADDRESS=test-backend_database-service -e BACKEND_LISTEN_ADDRESS=0.0.0.0:80 backend:$(git describe --always)
     # testing backend
-    - run: sleep 10 && docker run --rm -i --name=backend-test --net=backend_net -e BACKEND_API_SERVICE_ADDRESS=test-backend_backend-service backend-test:$(git rev-parse --short HEAD)
+    - run: sleep 10 && docker run --rm -i --name=backend-test --net=backend_net -e BACKEND_API_SERVICE_ADDRESS=test-backend_backend-service backend-test:$(git describe --always)
     # cleaning up
     - run: docker stop test-backend_backend-service
     - run: docker stop test-backend_database-service
@@ -153,13 +153,13 @@ jobs:
     - run: sleep 10
     # preparing frontend-api integration test
     - run: docker network create --driver bridge frontend-api_net
-    - run: docker run --rm -d --name=test-frontend-api_mongodb-mock-database --net=frontend-api_net -e MONGO_INITDB_ROOT_USERNAME=adminz -e MONGO_INITDB_ROOT_PASSWORD=cheeksbutt mongodb-mock-database:$(git rev-parse --short HEAD)
-    - run: docker run --rm -d --name=test-frontend-api_auth-service --net=frontend-api_net -e AUTH_FIREBASE_CREDENTIALS='{test}' -e AUTH_LISTEN_ADDRESS=0.0.0.0:80 auth:$(git rev-parse --short HEAD)
-    - run: sleep 10 && docker run -d --rm --name=test-frontend-api_database-service --net=frontend-api_net -e DATABASE_ADDRESS=test-frontend-api_mongodb-mock-database:27017 -e DATABASE_LISTEN_ADDRESS=0.0.0.0:80 database:$(git rev-parse --short HEAD)
-    - run: sleep 10 && docker run -d --rm --name=test-frontend-api_backend-service --net=frontend-api_net -e DATABASE_ADDRESS=test-frontend-api_database-service -e BACKEND_LISTEN_ADDRESS=0.0.0.0:80 backend:$(git rev-parse --short HEAD)
-    - run: sleep 10 && docker run -d --rm --name=test-frontend-api_frontend-api-service --net=frontend-api_net -e BACKEND_ADDRESS=test-frontend-api_backend-service -e AUTH_ADDRESS=test-frontend-api_auth-service -e FRONTEND_API_LISTEN_ADDRESS=0.0.0.0:80 frontend-api:$(git rev-parse --short HEAD)
+    - run: docker run --rm -d --name=test-frontend-api_mongodb-mock-database --net=frontend-api_net -e MONGO_INITDB_ROOT_USERNAME=adminz -e MONGO_INITDB_ROOT_PASSWORD=cheeksbutt mongodb-mock-database:$(git describe --always)
+    - run: docker run --rm -d --name=test-frontend-api_auth-service --net=frontend-api_net -e AUTH_FIREBASE_CREDENTIALS='{test}' -e AUTH_LISTEN_ADDRESS=0.0.0.0:80 auth:$(git describe --always)
+    - run: sleep 10 && docker run -d --rm --name=test-frontend-api_database-service --net=frontend-api_net -e DATABASE_ADDRESS=test-frontend-api_mongodb-mock-database:27017 -e DATABASE_LISTEN_ADDRESS=0.0.0.0:80 database:$(git describe --always)
+    - run: sleep 10 && docker run -d --rm --name=test-frontend-api_backend-service --net=frontend-api_net -e DATABASE_ADDRESS=test-frontend-api_database-service -e BACKEND_LISTEN_ADDRESS=0.0.0.0:80 backend:$(git describe --always)
+    - run: sleep 10 && docker run -d --rm --name=test-frontend-api_frontend-api-service --net=frontend-api_net -e BACKEND_ADDRESS=test-frontend-api_backend-service -e AUTH_ADDRESS=test-frontend-api_auth-service -e FRONTEND_API_LISTEN_ADDRESS=0.0.0.0:80 frontend-api:$(git describe --always)
     # testing frontend-api
-    - run: sleep 10 && docker run --rm -i --name=frontend-api-test --net=frontend-api_net -e FRONTEND_API_SERVICE_ADDRESS=test-frontend-api_frontend-api-service frontend-api-test:$(git rev-parse --short HEAD)
+    - run: sleep 10 && docker run --rm -i --name=frontend-api-test --net=frontend-api_net -e FRONTEND_API_SERVICE_ADDRESS=test-frontend-api_frontend-api-service frontend-api-test:$(git describe --always)
     # cleaning up
     - run: docker stop test-frontend-api_frontend-api-service
     - run: docker stop test-frontend-api_auth-service
@@ -185,14 +185,14 @@ jobs:
   #   - run: sleep 10
   #   # preparing frontend-web integration test
   #   - run: docker network create --driver bridge frontend-web_net
-  #   - run: docker run --rm -d --name=test-frontend-web_mongodb-mock-database --net=frontend-web_net -e MONGO_INITDB_ROOT_USERNAME=adminz -e MONGO_INITDB_ROOT_PASSWORD=cheeksbutt mongodb-mock-database:$(git rev-parse --short HEAD)
-  #   - run: docker run --rm -d --name=test-frontend-web_auth-service --net=frontend-web_net -e AUTH_FIREBASE_CREDENTIALS='{test}' -e AUTH_LISTEN_ADDRESS=0.0.0.0:80 auth:$(git rev-parse --short HEAD)
-  #   - run: sleep 10 && docker run -d --rm --name=test-frontend-web_database-service --net=frontend-web_net -e DATABASE_ADDRESS=test-frontend-web_mongodb-mock-database:27017 -e DATABASE_LISTEN_ADDRESS=0.0.0.0:80 database:$(git rev-parse --short HEAD)
-  #   - run: sleep 10 && docker run -d --rm --name=test-frontend-web_backend-service --net=frontend-web_net -e DATABASE_ADDRESS=test-frontend-web_database-service -e BACKEND_LISTEN_ADDRESS=0.0.0.0:80 backend:$(git rev-parse --short HEAD)
-  #   - run: sleep 10 && docker run -d --rm --name=test-frontend-web_frontend-api-service --net=frontend-web_net -e BACKEND_ADDRESS=test-frontend-web_backend-service -e AUTH_ADDRESS=test-frontend-web_auth-service -e FRONTEND_API_LISTEN_ADDRESS=0.0.0.0:80 frontend-api:$(git rev-parse --short HEAD)
-  #   - run: sleep 10 && docker run -d --rm --name=test-frontend-web_frontend-web-service --net=frontend-web_net -e BACKEND_ADDRESS=test-frontend-web_backend-service -e FRONTEND_API_URL=http://test-frontend-web_frontend-api-service:8888 frontend-web:$(git rev-parse --short HEAD)
+  #   - run: docker run --rm -d --name=test-frontend-web_mongodb-mock-database --net=frontend-web_net -e MONGO_INITDB_ROOT_USERNAME=adminz -e MONGO_INITDB_ROOT_PASSWORD=cheeksbutt mongodb-mock-database:$(git describe --always)
+  #   - run: docker run --rm -d --name=test-frontend-web_auth-service --net=frontend-web_net -e AUTH_FIREBASE_CREDENTIALS='{test}' -e AUTH_LISTEN_ADDRESS=0.0.0.0:80 auth:$(git describe --always)
+  #   - run: sleep 10 && docker run -d --rm --name=test-frontend-web_database-service --net=frontend-web_net -e DATABASE_ADDRESS=test-frontend-web_mongodb-mock-database:27017 -e DATABASE_LISTEN_ADDRESS=0.0.0.0:80 database:$(git describe --always)
+  #   - run: sleep 10 && docker run -d --rm --name=test-frontend-web_backend-service --net=frontend-web_net -e DATABASE_ADDRESS=test-frontend-web_database-service -e BACKEND_LISTEN_ADDRESS=0.0.0.0:80 backend:$(git describe --always)
+  #   - run: sleep 10 && docker run -d --rm --name=test-frontend-web_frontend-api-service --net=frontend-web_net -e BACKEND_ADDRESS=test-frontend-web_backend-service -e AUTH_ADDRESS=test-frontend-web_auth-service -e FRONTEND_API_LISTEN_ADDRESS=0.0.0.0:80 frontend-api:$(git describe --always)
+  #   - run: sleep 10 && docker run -d --rm --name=test-frontend-web_frontend-web-service --net=frontend-web_net -e BACKEND_ADDRESS=test-frontend-web_backend-service -e FRONTEND_API_URL=http://test-frontend-web_frontend-api-service:8888 frontend-web:$(git describe --always)
   #   # testing frontend-web
-  #   - run: sleep 10 && docker run --rm -i --name=frontend-web-test --net=frontend-web_net -e FRONTEND_WEB_ADDRESS=http://test-frontend-web_frontend-web-service frontend-api-test:$(git rev-parse --short HEAD)
+  #   - run: sleep 10 && docker run --rm -i --name=frontend-web-test --net=frontend-web_net -e FRONTEND_WEB_ADDRESS=http://test-frontend-web_frontend-web-service frontend-api-test:$(git describe --always)
   #   # cleaning up
   #   - run: docker stop test-frontend-web_frontend-web-service
   #   - run: docker stop test-frontend-web_frontend-api-service
