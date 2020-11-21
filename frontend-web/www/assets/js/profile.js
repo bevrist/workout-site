@@ -83,6 +83,6 @@ function submitForm() {
   xmlHttp.send(jsonData);
   console.log("Server response: " + xmlHttp.responseText);
   //show note that save was successful
-  document.getElementById("SaveConfirmationText").innerHTML = "&nbsp; &nbsp; &nbsp; Saved!";
+  document.getElementById("SaveConfirmationText").innerHTML = "Saved! Go to <a href=/daily-update>Daily-Update</a>";
   //TODO: update confirmation to link to daily-update page
 }
