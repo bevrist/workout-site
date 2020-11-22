@@ -111,6 +111,9 @@ func generateUserBaselineHandler(w http.ResponseWriter, r *http.Request) {
 	newRecommendation.LowDayFat = int(math.Round((lowday * LowDayFat) / 9))
 	newRecommendation.LowDayCarb = int(math.Round((lowday * LowDayCarb) / 4))
 	newRecommendation.LowDayProtein = int(math.Round((lowday * LowDayProtein) / 4))
+	newRecommendation.HighDayCalories = int(math.Round(highday))
+	newRecommendation.NormalDayCalories = int(math.Round(normalday))
+	newRecommendation.LowDayCalories = int(math.Round(lowday))
 
 	userInfo.Recommendation = append(userInfo.Recommendation, newRecommendation)
 

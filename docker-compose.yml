@@ -25,6 +25,7 @@ services:
       ME_CONFIG_MONGODB_ADMINUSERNAME: adminz
       ME_CONFIG_MONGODB_ADMINPASSWORD: cheeksbutt
       ME_CONFIG_MONGODB_SERVER: mock-database_service
+      VCAP_APP_HOST: "0.0.0.0"
     logging:
       driver: none
     restart: on-failure
