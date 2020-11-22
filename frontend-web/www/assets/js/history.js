@@ -195,20 +195,24 @@ function makeWeekChart(weekNum, dayNum) {
       document.getElementById("trainingNo").selected = "selected"
       break;
   }
-  document.getElementById("training").id = "training-" + weekNum+dayNum;
+  document.getElementById("training").id = "training-" + weekNum + dayNum;
   document.getElementById("trainingNo").removeAttribute("id");
   document.getElementById("trainingYes").removeAttribute("id");
 
   document.getElementById("fat").value = userData.Week[weekNum].Day[dayNum].Fat;
-  document.getElementById("fat").id = "fat-" + weekNum+dayNum;
+  document.getElementById("fat").id = "fat-" + weekNum + dayNum;
   document.getElementById("carbs").value = userData.Week[weekNum].Day[dayNum].Carbs;
-  document.getElementById("carbs").id = "carbs-" + weekNum+dayNum;
+  document.getElementById("carbs").id = "carbs-" + weekNum + dayNum;
   document.getElementById("protein").value = userData.Week[weekNum].Day[dayNum].Protein;
-  document.getElementById("protein").id = "protein-" + weekNum+dayNum;
+  document.getElementById("protein").id = "protein-" + weekNum + dayNum;
   document.getElementById("calories").value = userData.Week[weekNum].Day[dayNum].TotalCalories;
-  document.getElementById("calories").id = "calories-" + weekNum+dayNum;
+  document.getElementById("calories").id = "calories-" + weekNum + dayNum;
   document.getElementById("weight").value = userData.Week[weekNum].Day[dayNum].Weight;
-  document.getElementById("weight").id = "weight-" + weekNum+dayNum;
+  document.getElementById("weight").id = "weight-" + weekNum + dayNum;
+  if ("WaistCirc" in userData.Week[weekNum ].Day[dayNum]) {
+    document.getElementById("waist-circ").value = userData.Week[weekNum].Day[dayNum].WaistCirc;
+  }
+  document.getElementById("waist-circ").id = "waist-circ-" + weekNum + dayNum;
   //clone table row
   document.getElementById("tableRow").id = "tableRowNext";
   document.getElementById("tableRowNext").parentElement.appendChild(divClone2);
@@ -249,8 +253,10 @@ function serializeDayForm(weekNum, dayNum) {
     TotalCalories: Number(document.getElementById("calories-" + weekNum+dayNum).value),
     DayCalories: document.getElementById("day-" + weekNum+dayNum).value,
     Cardio: document.getElementById("cardio-" + weekNum+dayNum).value,
-    WeightTraining: document.getElementById("training-" + weekNum+dayNum).value,
-    // WaistCirc: Number(document.getElementById("waistCirc").value),
+    WeightTraining: document.getElementById("training-" + weekNum + dayNum).value,
+  }
+  if (document.getElementById("waist-circ-" + weekNum + dayNum).value != 0) {
+    dayJSON.WaistCirc = Number(document.getElementById("waist-circ-" + weekNum + dayNum).value)
   }
   return dayJSON;
 }
@@ -268,13 +274,8 @@ function submitForm(weekNum) {
   xmlHttp.setRequestHeader("Session-Token",getCookie("Session-Token"));
   // xmlHttp.setRequestHeader("Session-Token",myToken); //FIXME use correct session-token
   xmlHttp.send(jsonData);
+  console.log(jsonData);
   console.log("Server response: " + xmlHttp.responseText);
   //show note that save was successful
   document.getElementById("SaveConfirmationText-" + weekNum).innerHTML = "&nbsp; &nbsp; &nbsp; Week " + weekNum + " Saved!";
 }
-
-// function submitForm() {
-//   //stop from from refreshing page
-//   event.preventDefault();
-//   console.log("hi");
-// }
