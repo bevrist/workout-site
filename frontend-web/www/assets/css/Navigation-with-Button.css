@@ -201,3 +201,8 @@
   background: #269d9d;
 }
 
+mark {
+  background-color: yellow;
+  color: black;
+}
+

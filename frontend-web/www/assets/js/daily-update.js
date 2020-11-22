@@ -11,7 +11,8 @@ var userData = JSON.parse(xmlHttp.responseText);
 // update "Todays Date" text
 var todayLocalDate = (new Date()).getTimezoneOffset() * 60000;
 var localISOTime = (new Date(Date.now() - todayLocalDate)).toISOString().split('T')[0];
-document.getElementById("TodayDateText").innerHTML = "Today's Date: " + localISOTime;
+document.getElementById("TodayDateText").innerHTML = "Today's Date: " + localISOTime; //TODO add note for too early too late users
+//TODO disable form when out of active time <fieldset disabled="disabled">
 
 if (isNewUser(userData) == true) {
   console.log("user baseline missing, redirecting to profile page..."); //FIXME call generate userBaseline
@@ -192,5 +193,5 @@ function submitForm() {
   xmlHttp.send(jsonData);
   console.log("Server response: " + xmlHttp.responseText);
   //show note that save was successful
-  document.getElementById("SaveConfirmationText").innerHTML = "&nbsp; &nbsp; &nbsp; Saved!";
+  document.getElementById("SaveConfirmationText").innerHTML = "&nbsp; &nbsp; &nbsp; Saved!"; //TODO: add note for user too early/late, disable save button
 }

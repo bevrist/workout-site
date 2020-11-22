@@ -149,10 +149,17 @@ function makeWeekChart(weekNum, dayNum) {
   //populate existing week row with data and remove id's
   // calculate date for row
   var currDate = startDate.addDays(dayOffset++);
-  document.getElementById("date").childNodes[0].innerHTML = currDate.getMonth() + 1 + "/" + currDate.getDate();
-  document.getElementById("date").removeAttribute("id");
-  //check if date is current date, set link to jump down to week on page completion
+  // highlight current date on chart when generating, else just display date
   var todayDate = new Date();
+  todaysShortDate = todayDate.getMonth() + 1 + "/" + todayDate.getDate();
+  formShortDate = currDate.getMonth() + 1 + "/" + currDate.getDate();
+  if (todaysShortDate == formShortDate) {
+    document.getElementById("date").childNodes[0].innerHTML = "<mark>"+formShortDate+"</mark>";
+  } else {
+    document.getElementById("date").childNodes[0].innerHTML = formShortDate;
+  }
+  document.getElementById("date").removeAttribute("id");
+  //check if date is current date, set page anchor link to jump down to week on page completion
   if (currDate.toISOString().split('T')[0] == todayDate.toISOString().split('T')[0]) {
     currentWeekLink = "#formLink-" + (weekNum + 1);
   }
