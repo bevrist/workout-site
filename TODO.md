@@ -30,8 +30,6 @@ Fix generateUserBaseline to correctly generate a full recomendation object based
     - check all string inputs for day and recommend are lowercase
 
 ## Backend
-- add modifiedDate and Week parameters to "UpdateRecommendations"
-- TESTS update names of backend-api actions tests
 
 ## frontend-api
 - finish unit tests
@@ -40,26 +38,6 @@ Fix generateUserBaseline to correctly generate a full recomendation object based
     - test marshaling removes invalid extra data
 
 ## frontend-web
-- add WaistCirc to history form
-- history page: 
-    - give dropdowns a default empty option
-    - make highlight on current week
-    - highlight missed days in red
-    - progress page shows weekly data and on weeks recommendation was made shows the recommendation below that week (like a new table inserted)
-- Daily Update page:
-    - make "daily update" page for adding that days data
-- Profile page:
-    - change profile weight/leanmass/waistCirc to "starting waistCirc..."
-
-- Admin:
-    - make 2 versions of weekly history page, edit version that has the current editable tables, and normal version that has simple tables (admin)
-    - make a dedicated weekly recommendation creation page (for admin)
-        - ??? coach adjustment: show baseline info, last coach recomendation, last user week, and form for new recomendation ???
-
-- 3 pages:
-    - profile page (for creating new profile)
-    - daily update page (with user baseline and recommendation and form for entering daily data)
-    - history page:  (showing all previous weeks with ability to issue corrections, and coach recommendations if present)
 
 
 ## Webpage
@@ -73,16 +51,6 @@ Fix generateUserBaseline to correctly generate a full recomendation object based
 
 
 ## Admin
-- create admin page for admin users to view all other users' info?
-
-
-
-# User Usage
-User First Time Use:
-enter profile info -> {app generates baseline data} -> enter first day daily data -> leave
-
-User Daily Usage:
-view baseline and updated recommendation -> enter daily data -> view/edit weekly data(history) | leave
-
-Anthony Dad Usage:
-view user history (looking at latest weekly data) -> update user weekly recommendation -> leave
+- create admin page for admin users to view all other users' info
+    - admin should be able to view list of all users and click on one button to open that users history in new window
+    - click another button to get form for providing user a recommendation for this week

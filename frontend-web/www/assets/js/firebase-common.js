@@ -17,17 +17,12 @@ firebase.analytics();
 firebase.auth().onAuthStateChanged(function (user) {
   if (user) {
     // User is signed in.
-    document.cookie = "Session-Token=" + user._lat;
-    document.cookie = "SameSite=Strict";
-    document.cookie = "path=/";
+    document.cookie = "Session-Token=" + user._lat + "; SameSite=Strict; path=/";
   } else {
     // No user is signed in.
     // check for cookie "Session-Token" and invalidate if exists
     if (getCookie("Session-Token") != null) {
-      document.cookie = "Session-Token=";
-      document.cookie = "expires=Thu, 01 Jan 1970 00:00:00 UTC";
-      document.cookie = "SameSite=Strict";
-      document.cookie = "path=/";
+      document.cookie = "Session-Token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Strict; path=/";
       console.log("Cookie Invalidated, redirecting to homepage...")
       //TODO: create & redirect to "signed out" page to explain user signed out
       // window.location.replace('http://localhost:5500/');
@@ -52,15 +47,11 @@ function signOut() {
   firebase.auth().signOut().then(function () {
     // Sign-out successful.
     // Invalidate "Session-Token" cookie
-    document.cookie = "Session-Token=";
-    document.cookie = "expires=Thu, 01 Jan 1970 00:00:00 UTC";
-    document.cookie = "SameSite=Strict";
-    document.cookie = "path=/";
-    console.log("Signed out button, redirecting to homepage...")
+    document.cookie = "Session-Token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Strict; path=/";
+    console.log("Signed out button, redirecting to homepage...");
     // window.location.replace('http://localhost:5500/');
   }).catch(function (error) {
-    console.log("Sign out error occurred")
-    // An error happened.
+    console.log("Sign out error occurred:" + error);
   });
 }
 

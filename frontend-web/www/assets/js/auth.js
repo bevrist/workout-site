@@ -10,9 +10,7 @@ function signInWithGoogle() {
 
 firebase.auth().getRedirectResult().then(function (result) {
   // set "session-Token" cookie
-  document.cookie = "Session-Token=" + result.user._lat;
-  document.cookie = "SameSite=Strict";
-  document.cookie = "path=/";
+  document.cookie = "Session-Token=" + result.user._lat + "; SameSite=Strict; path=/";
 
   tryRedirect();
 
@@ -65,10 +63,9 @@ function authSignOut() {
     // Sign-out successful.
     // Invalidate "Session-Token" cookie
     document.cookie = "Session-Token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Strict; path=/";
-    console.log("Signed out button, redirecting to homepage...")
+    console.log("Auth signed out button, redirecting to homepage...");
     // window.location.replace('http://localhost:5500/');
   }).catch(function (error) {
-    console.log("Sign out error occurred")
-    // An error happened.
+    console.log("Sign out error occurred:" + error);
   });
 }
