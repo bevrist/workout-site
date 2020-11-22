@@ -1,5 +1,11 @@
 # TODO
 
+
+Fix generateUserBaseline to correctly generate a full recomendation object based off sample data `MISSING CALORIES`
+- {"FirstName":"brett","LastName":"evrist","Weight":12,"WaistCirc":32,"HeightInches":12,"LeanBodyMass":21,"Age":23,"StartDate":"2020-11-21","Gender":"male"}
+
+- fix cookie sign in issue when clicking sign out
+
 - run generate user baseline on first run of profile creation
     - make generateUserBaseline a simple rest call for web to generate baseline as needed
 - code coverage
