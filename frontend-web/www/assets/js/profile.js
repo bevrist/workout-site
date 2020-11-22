@@ -75,14 +75,29 @@ function submitForm() {
   //serialize form to JSON
   var dataObject = serializeProfile(document.getElementById("ProfileForm"));
   var jsonData = JSON.stringify(dataObject);
+  //find endpoint to use based on if userBaseline data exists
+  var apiEndpoint = "userInfo";
+  if (isNewUser(userData) == true) {
+    console.log("generating User Baseline...");
+    apiEndpoint = "generateUserBaseline";
+  }
   //POST JSON to api
   var xmlHttp = new XMLHttpRequest();
-  xmlHttp.open( "POST", "http://localhost:8888/userInfo", false );
+  xmlHttp.open( "POST", "http://localhost:8888/" + apiEndpoint, false );
   xmlHttp.setRequestHeader("Session-Token",getCookie("Session-Token"));
   // xmlHttp.setRequestHeader("Session-Token",myToken); //FIXME use correct session-token
   xmlHttp.send(jsonData);
+  console.log(jsonData);
   console.log("Server response: " + xmlHttp.responseText);
   //show note that save was successful
   document.getElementById("SaveConfirmationText").innerHTML = "Saved! Go to <a href=/daily-update>Daily-Update</a>";
-  //TODO: update confirmation to link to daily-update page
+}
+
+// returns true if user has no baseline recommendation (if user never completed profile)
+function isNewUser(userData) {
+  if (userData.Recommendation == null || !userData.Recommendation[0].NormalDayProtein) {
+    return true
+  } else {
+    return false
+  }
 }

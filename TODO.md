@@ -6,8 +6,6 @@ Fix generateUserBaseline to correctly generate a full recomendation object based
 
 - fix cookie sign in issue when clicking sign out
 
-- run generate user baseline on first run of profile creation
-    - make generateUserBaseline a simple rest call for web to generate baseline as needed
 - code coverage
 - remove "XMLHttpRequest" in javascript
 
