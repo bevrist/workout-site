@@ -1,7 +1,9 @@
 # TODO
 
 - run generate user baseline on first run of profile creation
+    - make generateUserBaseline a simple rest call for web to generate baseline as needed
 - code coverage
+- remove "XMLHttpRequest" in javascript
 
 - do data validation on incoming data
 - double check all API docs

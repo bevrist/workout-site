@@ -14,7 +14,7 @@ var localISOTime = (new Date(Date.now() - todayLocalDate)).toISOString().split('
 document.getElementById("TodayDateText").innerHTML = "Today's Date: " + localISOTime;
 
 if (isNewUser(userData) == true) {
-  console.log("user baseline missing, redirecting to profile page...");
+  console.log("user baseline missing, redirecting to profile page..."); //FIXME call generate userBaseline
   // window.location.replace('http://localhost:5500/profile');
 }
 updateCharts(userData);
