@@ -8,6 +8,8 @@ xmlHttp.setRequestHeader("Session-Token",getCookie("Session-Token"));
 xmlHttp.send(null);
 var userData = JSON.parse(xmlHttp.responseText);
 
+document.title = "Daily Update - " + userData.FirstName + " " + userData.LastName;
+
 // update "Todays Date" text
 var todayLocalDate = (new Date()).getTimezoneOffset() * 60000;
 var localISOTime = (new Date(Date.now() - todayLocalDate)).toISOString().split('T')[0];
@@ -136,7 +138,7 @@ function isNewUser(userData) {
 // returns latest recommendation object that has an "ModifiedDate"
 function getLatestRecommendation(userData) {
   var latestRec = userData.Recommendation.filter(value => Object.keys(value).length !== 0).slice(-1)[0];
-  if (latestRec == null) {
+  if (latestRec == null || latestRec.HIITCurrentCardioSession == null) {
     return null
   } else if (latestRec.ModifiedDate) {
     return latestRec;

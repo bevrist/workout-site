@@ -9,6 +9,8 @@ xmlHttp.setRequestHeader("Session-Token",getCookie("Session-Token"));
 xmlHttp.send(null);
 var userData = JSON.parse(xmlHttp.responseText);
 
+document.title = "Profile - " + userData.FirstName + " " + userData.LastName;
+
 // only update form if userData already exists
 if (userData.FirstName != "") {
   updateForm(userData);

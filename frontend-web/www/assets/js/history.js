@@ -11,9 +11,7 @@ xmlHttp.setRequestHeader("Session-Token",getCookie("Session-Token"));
 xmlHttp.send(null);
 var userData = JSON.parse(xmlHttp.responseText);
 
-
-
-
+document.title = "History - " + userData.FirstName + " " + userData.LastName;
 
 //link to current week
 var currentWeekLink = "#";
@@ -126,10 +124,15 @@ function populateCoachRecChart(weekNum) {
     document.getElementById("coach-LCaloriesRatio").innerHTML = ((coachRec.LowDayProtein + coachRec.LowDayCarb + coachRec.LowDayFat) / coachRec.LowDayCalories).toPrecision(1) + "%";
     document.getElementById("coach-LCaloriesRatio").removeAttribute("id");
     //HIIT
-    document.getElementById("coach-HIITCurrentCardioSession").innerHTML = coachRec.HIITCurrentCardioSession;
-    document.getElementById("coach-HIITCurrentCardioSession").removeAttribute("id");
-    document.getElementById("coach-HIITCurrentCardioIntervals").innerHTML = coachRec.HIITCurrentCardioIntervals;
-    document.getElementById("coach-HIITCurrentCardioIntervals").removeAttribute("id");
+    if (coachRec.HIITCurrentCardioSession == null) {
+      document.getElementById("hiit-row").remove();
+    } else {
+      document.getElementById("hiit-row").removeAttribute("id");
+      document.getElementById("coach-HIITCurrentCardioSession").innerHTML = coachRec.HIITCurrentCardioSession;
+      document.getElementById("coach-HIITCurrentCardioSession").removeAttribute("id");
+      document.getElementById("coach-HIITCurrentCardioIntervals").innerHTML = coachRec.HIITCurrentCardioIntervals;
+      document.getElementById("coach-HIITCurrentCardioIntervals").removeAttribute("id");
+    }
   }
 }
 

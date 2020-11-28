@@ -1,13 +1,9 @@
 # TODO
 
-
-Fix generateUserBaseline to correctly generate a full recomendation object based off sample data `MISSING CALORIES`
-- {"FirstName":"brett","LastName":"evrist","Weight":12,"WaistCirc":32,"HeightInches":12,"LeanBodyMass":21,"Age":23,"StartDate":"2020-11-21","Gender":"male"}
-
 - code coverage
 - remove "XMLHttpRequest" in javascript
 
-- make daily update not function when outside active running time (message for being early or late)
+- make daily update not function when outside active running time (message for being early or late
 
 - do data validation on incoming data
 - double check all API docs
