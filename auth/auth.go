@@ -22,8 +22,8 @@ var apiVersion string = "1.0" //the api version this service implements
 //list of admin UID's (from firebase)
 var Admins []string = []string{"ADMIN-UIDS-HERE"}
 
-var client *auth.Client       //firebase app instance
-var useFirebase bool          //debug flag for using firebase
+var client *auth.Client //firebase app instance
+var useFirebase bool    //debug flag for using firebase
 // env
 var listenAddress string //listen address of this service
 
@@ -89,6 +89,7 @@ func GetUIDHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	//populate environment variables
+	testENV := os.Getenv("TEST")
 	listenAddress = os.Getenv("AUTH_LISTEN_ADDRESS")
 	firebaseCredentials := os.Getenv("AUTH_FIREBASE_CREDENTIALS")
 	//set default environment variables
@@ -105,9 +106,9 @@ func main() {
 		opt = option.WithCredentialsFile("./workout-app-8b023-firebase-adminsdk-jh1ev-bbfc733122.json") //load credentials file
 	} else if firebaseCredentials == "{test}" {
 		useFirebase = false
-		Admins = append(Admins,"testUID")
-		Admins = append(Admins,"test3")
-		} else {
+		Admins = append(Admins, "testUID")
+		Admins = append(Admins, "test3")
+	} else {
 		opt = option.WithCredentialsJSON([]byte(firebaseCredentials))
 	}
 
@@ -126,10 +127,23 @@ func main() {
 
 	//specify routes and start http server
 	r := mux.NewRouter()
+	var handler http.Handler = r
+	s := http.Server{Addr: listenAddress, Handler: handler}
 	r.HandleFunc("/apiVersion", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, `{"apiVersion":`+apiVersion+"}") })
 	r.HandleFunc("/getUID/{SessionToken}", GetUIDHandler).Methods(http.MethodGet, http.MethodHead)
 	r.HandleFunc("/healthz", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "ok") })
-	var handler http.Handler = r
+	if testENV != "" {
+		log.Println("TEST MODE ENABLED: GET '/shutdown' to kill server")
+		r.HandleFunc("/shutdown", func(w http.ResponseWriter, r *http.Request) {
+			w.Write([]byte("200 - Shutting Down Server..."))
+			go func() {
+				s.Shutdown(context.Background())
+			}()
+		})
+	}
 	log.Printf("Auth listening at address " + listenAddress)
-	log.Fatal(http.ListenAndServe(listenAddress, handler))
+	if err := s.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		log.Fatal(err)
+	}
+	log.Printf("Killed...")
 }
