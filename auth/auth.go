@@ -19,6 +19,9 @@ import (
 
 // Global Variables
 var apiVersion string = "1.0" //the api version this service implements
+//list of admin UID's (from firebase)
+var Admins []string = []string{"ADMIN-UIDS-HERE"}
+
 var client *auth.Client       //firebase app instance
 var useFirebase bool          //debug flag for using firebase
 // env
@@ -62,9 +65,17 @@ func GetUIDHandler(w http.ResponseWriter, r *http.Request) {
 	if uid == "" {
 		isValid = false
 	}
+	//check if user is on admins list
+	isAdmin := false
+	for _, admin := range Admins {
+		if admin == uid {
+			isAdmin = true
+			break
+		}
+	}
 
 	//create auth struct
-	auth := structs.Auth{IsValid: isValid, UID: uid}
+	auth := structs.Auth{IsValid: isValid, UID: uid, IsAdmin: isAdmin}
 
 	//marshal auth struct and respond to request
 	out, err := json.Marshal(auth)
@@ -94,7 +105,9 @@ func main() {
 		opt = option.WithCredentialsFile("./workout-app-8b023-firebase-adminsdk-jh1ev-bbfc733122.json") //load credentials file
 	} else if firebaseCredentials == "{test}" {
 		useFirebase = false
-	} else {
+		Admins = append(Admins,"testUID")
+		Admins = append(Admins,"test3")
+		} else {
 		opt = option.WithCredentialsJSON([]byte(firebaseCredentials))
 	}
 

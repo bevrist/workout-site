@@ -4,6 +4,15 @@ package structs
 type Auth struct {
 	IsValid bool
 	UID     string
+	IsAdmin bool
+}
+
+// UserList holds basic info about users for use on Admin Pages
+type UserList struct {
+	UID         string
+	FirstName   string `bson:"first_name"`
+	LastName    string `bson:"last_name"`
+	StartDate   string `bson:"start_date"`
 }
 
 //Client holds user information in the same format as the Mongo database
