@@ -17,7 +17,7 @@ spec:
     spec:
      containers:
       - name: auth
-        image: auth
+        image: 35.236.22.57:5000/auth
         env:
           - name: AUTH_LISTEN_ADDRESS
             value: "0.0.0.0:8070"

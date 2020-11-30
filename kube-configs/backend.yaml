@@ -17,7 +17,7 @@ spec:
     spec:
      containers:
       - name: backend
-        image: backend
+        image: 35.236.22.57:5000/backend
         env:
         - name: DATABASE_ADDRESS
           value: "database-svc:8050"

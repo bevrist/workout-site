@@ -17,7 +17,7 @@ spec:
     spec:
      containers:
       - name: frontend-api
-        image: frontend-api
+        image: 35.236.22.57:5000/frontend-api
         env:
           - name: FRONTEND_LISTEN_ADDRESS
             value: "0.0.0.0:8888"

@@ -17,7 +17,7 @@ spec:
     spec:
      containers:
       - name: frontend-web
-        image: frontend-web
+        image: 35.236.22.57:5000/frontend-web
         env:
           - name: FRONTEND_LISTEN_ADDRESS
             value: 0.0.0.0:80
@@ -57,13 +57,30 @@ metadata:
   name: frontweb-out
   namespace: web
 spec:
-  type: NodePort
   selector:
       svc: frontend-web
   ports:
       # By default and for convenience, the `targetPort` is set to the same value as the `port` field.
     - port: 80
       targetPort: 80
-      # Optional field
-      # By default and for convenience, the Kubernetes control plane will allocate a port from a range (default: 30000-32767)
-      nodePort: 31008
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: frontend-web-ingress
+  annotations:
+    app.kubernetes.io/name: ingress-nginx
+spec:
+  rules:
+    - host: "dreamandachieve.net"
+      http:
+        paths:
+          - path: "/"
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend-web
+                port:
+                  number: 80
