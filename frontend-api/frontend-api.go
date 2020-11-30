@@ -21,7 +21,7 @@ var apiVersion string = "1.0" //the api version this service implements
 var listenAddress, backendAddress, authAddress string
 
 //validateRequest validates session tokens and returns UID
-func validateSessionToken(w http.ResponseWriter, sessionToken string) string {
+func validateSessionToken(w http.ResponseWriter, sessionToken string, isAdmin bool) string {
 	authResp, err := http.Get("http://" + authAddress + "/getUID/" + sessionToken)
 	if err != nil {
 		http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
@@ -31,6 +31,9 @@ func validateSessionToken(w http.ResponseWriter, sessionToken string) string {
 	var authInfo structs.Auth
 	json.Unmarshal(authBody, &authInfo)
 	if authInfo.IsValid == false {
+		return ""
+	}
+	if (isAdmin && authInfo.IsAdmin == false) {
 		return ""
 	}
 	return authInfo.UID
@@ -44,7 +47,7 @@ func GetUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//validate session token
-	UID := validateSessionToken(w, sessionToken)
+	UID := validateSessionToken(w, sessionToken, false)
 	if UID == "" {
 		http.Error(w, "401 Unauthorized.", http.StatusUnauthorized)
 		return
@@ -77,7 +80,7 @@ func UpdateUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//validate session token
-	UID := validateSessionToken(w, sessionToken)
+	UID := validateSessionToken(w, sessionToken, false)
 	if UID == "" {
 		http.Error(w, "401 Unauthorized.", http.StatusUnauthorized)
 		return
@@ -105,7 +108,7 @@ func UpdateUserWeeklyHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//validate session token
-	UID := validateSessionToken(w, sessionToken)
+	UID := validateSessionToken(w, sessionToken, false)
 	if UID == "" {
 		http.Error(w, "401 Unauthorized.", http.StatusUnauthorized)
 		return
@@ -134,7 +137,7 @@ func UpdateUserDailyHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//validate session token
-	UID := validateSessionToken(w, sessionToken)
+	UID := validateSessionToken(w, sessionToken, false)
 	if UID == "" {
 		http.Error(w, "401 Unauthorized.", http.StatusUnauthorized)
 		return
@@ -160,7 +163,7 @@ func GenerateUserBaselineHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//validate session token
-	UID := validateSessionToken(w, sessionToken)
+	UID := validateSessionToken(w, sessionToken, false)
 	if UID == "" {
 		http.Error(w, "401 Unauthorized.", http.StatusUnauthorized)
 		return
@@ -178,27 +181,62 @@ func GenerateUserBaselineHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, string(respBody))
 }
 
-//UpdateUserRecommendationsHandler update the user profile
-func UpdateUserRecommendationsHandler(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	WEEK := vars["week"]
+//AdminGetUserInfoHandler returns the users data
+func AdminGetUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 	sessionToken := r.Header.Get("Session-Token")
+	userUID := r.Header.Get("User-UID")
 	if sessionToken == "" {
 		http.Error(w, "428 Precondition Required - missing Session-Token.", http.StatusPreconditionRequired)
 		return
 	}
-	//validate session token
-	UID := validateSessionToken(w, sessionToken)
+	//validate session token and verify Admin
+	UID := validateSessionToken(w, sessionToken, true)
+	if UID == "" {
+		http.Error(w, "401 Unauthorized.", http.StatusUnauthorized)
+		return
+	}
+	//get user data to return to Admin
+	resp, err := http.Get("http://" + backendAddress + "/userInfo/" + userUID)
+	if err != nil {
+		http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
+		log.Println("ERROR: AdminGetUserInfoHandler - Backend: " + err.Error())
+	}
+	//strip UID field from response
+	reqBody, _ := ioutil.ReadAll(resp.Body)
+	var userInfo structs.Client
+	err = json.Unmarshal(reqBody, &userInfo)
+	if err != nil {
+		http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
+		log.Println("ERROR: AdminGetUserInfoHandler - Backend: " + err.Error())
+		return
+	}
+	userInfo.UID = ""
+	userInfoJSON, _ := json.Marshal(userInfo)
+	fmt.Fprintf(w, string(userInfoJSON))
+}
+
+//AdminUpdateUserRecHandler update the user profile
+func AdminUpdateUserRecHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	WEEK := vars["week"]
+	sessionToken := r.Header.Get("Session-Token")
+	userUID := r.Header.Get("User-UID")
+	if sessionToken == "" {
+		http.Error(w, "428 Precondition Required - missing Session-Token.", http.StatusPreconditionRequired)
+		return
+	}
+	//validate session token and verify Admin
+	UID := validateSessionToken(w, sessionToken, true)
 	if UID == "" {
 		http.Error(w, "401 Unauthorized.", http.StatusUnauthorized)
 		return
 	}
 	//post userInfo data to backend
 	rBody, _ := ioutil.ReadAll(r.Body)
-	resp, err := http.Post("http://"+backendAddress+"/userRecommendation/"+WEEK+"/"+UID, "application/json", bytes.NewBuffer(rBody))
+	resp, err := http.Post("http://"+backendAddress+"/userRecommendation/"+WEEK+"/"+userUID, "application/json", bytes.NewBuffer(rBody))
 	if err != nil {
 		http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
-		log.Println("ERROR: UpdateUserRecommendationsHandler - Backend: " + err.Error())
+		log.Println("ERROR: AdminUpdateUserRecHandler - Backend: " + err.Error())
 		return
 	}
 	//return backend Response
@@ -232,7 +270,10 @@ func main() {
 	r.HandleFunc("/userWeekly/{week}", UpdateUserWeeklyHandler).Methods(http.MethodPost)
 	r.HandleFunc("/userDaily/{week}/{day}", UpdateUserDailyHandler).Methods(http.MethodPost)
 	r.HandleFunc("/generateUserBaseline", GenerateUserBaselineHandler).Methods(http.MethodPost)
-	r.HandleFunc("/userRecommendations/{week}", UpdateUserRecommendationsHandler).Methods(http.MethodPost)
+	// Admin handlers
+	// r.HandleFunc("/admin/listUsers", AdminListUsersHandler).Methods(http.MethodGet, http.MethodHead)
+	r.HandleFunc("/admin/userInfo", AdminGetUserInfoHandler).Methods(http.MethodGet, http.MethodHead)
+	r.HandleFunc("/admin/userRecommendation/{week}", AdminUpdateUserRecHandler).Methods(http.MethodPost)
 	r.HandleFunc("/healthz", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "ok") })
 	var handlers http.Handler = r
 	log.Println("Frontend-api listening at address " + listenAddress)

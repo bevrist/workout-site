@@ -1,6 +1,6 @@
 # TODO
 
-
+- add ability to get list of all users to api
 - Test with real firebase users
 
 - code coverage on tests

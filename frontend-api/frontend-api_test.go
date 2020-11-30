@@ -985,3 +985,56 @@ func TestUpdateUserDailyOverwrite(t *testing.T) {
 // 		t.FailNow()
 // 	}
 // }
+
+func TestAdminGetUserInfo(t *testing.T) {
+	var UID = "test3"
+	var userUID = "testUID"
+	req, _ := http.NewRequest("GET", "http://"+frontendApiAddress+"/admin/userInfo", nil)
+	// set session token header for request
+	req.Header.Set("Session-Token", UID)
+	req.Header.Set("User-UID", userUID)
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		t.Errorf("Connection failed: %v", err)
+		t.FailNow()
+	}
+	//unmarshal response into struct
+	reqBody, _ := ioutil.ReadAll(resp.Body)
+	var reqBackend, expectedBackend structs.Client
+	json.Unmarshal(reqBody, &reqBackend)
+	//check that UID is missing from response
+	if reqBackend.UID != "" {
+		t.Errorf("UID Should not be present: UID=%+v", reqBackend.UID)
+		t.FailNow()
+	}
+	//compare received struct with expected struct
+	EXPECTED := []byte(`{"FirstName":"Anthony","LastName":"Hanna","Weight":215,"WaistCirc":35,"HeightInches":75,"LeanBodyMass":15,"Age":20,"StartDate":"2020-08-15","Gender":"male","Week":[{"Day":[{"WaistCirc":20,"Fat":10,"Carbs":10,"Protein":10,"TotalCalories":30,"DayCalories":"normal","Weight":123,"Cardio":"missed","WeightTraining":"yes"},{"Fat":20,"Carbs":20,"Protein":20,"TotalCalories":32,"DayCalories":"normal","Weight":123,"Cardio":"missed","WeightTraining":"no"},{"Fat":30,"Carbs":30,"Protein":30,"TotalCalories":33,"DayCalories":"high","Weight":123,"Cardio":"missed","WeightTraining":"yes"},{"Fat":40,"Carbs":40,"Protein":40,"TotalCalories":34,"DayCalories":"normal","Weight":123,"Cardio":"missed","WeightTraining":"yes"},{"Fat":10,"Carbs":10,"Protein":10,"TotalCalories":30,"DayCalories":"normal","Weight":123,"Cardio":"missed","WeightTraining":"yes"},{"Fat":10,"Carbs":10,"Protein":10,"TotalCalories":30,"DayCalories":"normal","Weight":123,"Cardio":"missed","WeightTraining":"yes"},{"Fat":100,"Carbs":100,"Protein":100,"TotalCalories":300,"DayCalories":"normal","Weight":321,"Cardio":"missed","WeightTraining":"no"}]},{"Day":[{"Fat":11,"Carbs":11,"Protein":11,"TotalCalories":31,"DayCalories":"normal","Weight":222,"Cardio":"missed","WeightTraining":"yes"},{"WaistCirc":20,"Fat":10,"Carbs":10,"Protein":10,"TotalCalories":30,"DayCalories":"normal","Weight":123,"Cardio":"missed","WeightTraining":"no"},{},{},{},{},{}]},{"Day":[{"Fat":110,"Carbs":110,"Protein":110,"TotalCalories":310,"DayCalories":"normal","Weight":123,"Cardio":"missed","WeightTraining":"yes"},{"Fat":10,"Carbs":10,"Protein":10,"TotalCalories":30,"DayCalories":"normal","Weight":123,"Cardio":"missed","WeightTraining":"yes"},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]}],"Recommendation":[{"HighDayProtein":10,"HighDayCarb":11,"HighDayFat":12,"HighDayCalories":13,"NormalDayProtein":14,"NormalDayCarb":15,"NormalDayFat":16,"NormalDayCalories":17,"LowDayProtein":18,"LowDayCarb":19,"LowDayFat":20,"LowDayCalories":21,"HIITCurrentCardioSession":22,"HIITCurrentCardioIntervals":24},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]}`)
+	json.Unmarshal(EXPECTED, &expectedBackend)
+	if !cmp.Equal(reqBackend, expectedBackend) {
+		t.Errorf("Database returned unexpected body: \ngot -: %+v \nwant -: %+v", string(reqBody), string(EXPECTED))
+		t.FailNow()
+	}
+}
+
+func TestInvalidAdminGetUserInfo(t *testing.T) {
+	var UID = "test2"
+	var userUID = "testUID"
+	req, _ := http.NewRequest("GET", "http://"+frontendApiAddress+"/admin/userInfo", nil)
+	// set session token header for request
+	req.Header.Set("Session-Token", UID)
+	req.Header.Set("User-UID", userUID)
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		t.Errorf("Connection failed: %v", err)
+		t.FailNow()
+	}
+	//compare received struct with expected struct
+	if resp.StatusCode != 401 {
+		t.Errorf("Status Incorrect, should be 401 -: http.StatusCode=%v", resp.StatusCode)
+		t.FailNow()
+	}
+}
+
+//FIXME write tests for /admin/userRecommendation/{week}
