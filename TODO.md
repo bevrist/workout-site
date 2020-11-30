@@ -1,6 +1,9 @@
 # TODO
 
-- code coverage
+
+- Test with real firebase users
+
+- code coverage on tests
 - remove "XMLHttpRequest" in javascript
 
 - make daily update not function when outside active running time (message for being early or late
@@ -15,6 +18,8 @@
     - add error ID to all error messages and ensure error is forwarded to user
 - add prometheus logging?
 - grafana dashboard monitoring
+
+- add gRPC connection type as alternative to REST
 
 
 ## auth

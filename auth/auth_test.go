@@ -9,6 +9,8 @@ import (
 	"testing"
 
 	structs "../common"
+
+	"github.com/google/go-cmp/cmp"
 )
 
 var authAddress string
@@ -26,14 +28,14 @@ func TestApiVersion(t *testing.T) {
 	req, err := http.Get("http://"+authAddress+"/apiVersion")
 	if err != nil {
 		t.Errorf("Connection failed: %v", err)
-		t.Fail()
+		t.FailNow()
 	}
 	// Check the response body is what we expect.
 	EXPECTED := `{"apiVersion":1.0}`
 	respBody, _ := ioutil.ReadAll(req.Body)
 	if string(respBody) != EXPECTED {
 		t.Errorf("Auth returned unexpected body: got %v \nwant %v", string(respBody), EXPECTED)
-		t.Fail()
+		t.FailNow()
 	}
 }
 
@@ -41,18 +43,18 @@ func TestGetUID(t *testing.T) {
 	req, err := http.Get("http://"+authAddress+"/getUID/test")
 	if err != nil {
 		t.Errorf("Connection failed: %v", err)
-		t.Fail()
+		t.FailNow()
 	}
 	//unmarshal response into struct
 	reqBody, _ := ioutil.ReadAll(req.Body)
 	var reqAuth, expectedAuth structs.Auth
 	json.Unmarshal(reqBody, &reqAuth)
 	//compare received struct with expected struct
-	EXPECTED := []byte(`{"IsValid":true, "UID":"testUID"}`)
+	EXPECTED := []byte(`{"IsValid":true,"UID":"testUID","IsAdmin":true}`)
 	json.Unmarshal(EXPECTED, &expectedAuth)
-	if reqAuth != expectedAuth {
-		t.Errorf("Auth returned unexpected body: \ngot  %+v \nwant %+v", reqAuth, expectedAuth)
-		t.Fail()
+	if !cmp.Equal(reqAuth, expectedAuth) {
+		t.Errorf("Database returned unexpected body: \ngot -: %+v \nwant -: %+v", string(reqBody), string(EXPECTED))
+		t.FailNow()
 	}
 }
 
@@ -60,17 +62,37 @@ func TestGetUIDFail(t *testing.T) {
 	req, err := http.Get("http://"+authAddress+"/getUID/testfail")
 	if err != nil {
 		t.Errorf("Connection failed: %v", err)
-		t.Fail()
+		t.FailNow()
 	}
 	//unmarshal response into struct
 	reqBody, _ := ioutil.ReadAll(req.Body)
 	var reqAuth, expectedAuth structs.Auth
 	json.Unmarshal(reqBody, &reqAuth)
 	//compare received struct with expected struct
-	EXPECTED := []byte(`{"IsValid":false,"UID":""}`)
+	EXPECTED := []byte(`{"IsValid":false,"UID":"","IsAdmin":false}`)
 	json.Unmarshal(EXPECTED, &expectedAuth)
-	if reqAuth != expectedAuth {
-		t.Errorf("Auth returned unexpected body: \ngot  %+v \nwant %+v", reqAuth, expectedAuth)
-		t.Fail()
+	if !cmp.Equal(reqAuth, expectedAuth) {
+		t.Errorf("Database returned unexpected body: \ngot -: %+v \nwant -: %+v", string(reqBody), string(EXPECTED))
+		t.FailNow()
+	}
+}
+
+// test for user that does not have admin status
+func TestGetNonAdminStatus(t *testing.T) {
+	req, err := http.Get("http://"+authAddress+"/getUID/test2")
+	if err != nil {
+		t.Errorf("Connection failed: %v", err)
+		t.FailNow()
+	}
+	//unmarshal response into struct
+	reqBody, _ := ioutil.ReadAll(req.Body)
+	var reqAuth, expectedAuth structs.Auth
+	json.Unmarshal(reqBody, &reqAuth)
+	//compare received struct with expected struct
+	EXPECTED := []byte(`{"IsValid":true,"UID":"test2","IsAdmin":false}`)
+	json.Unmarshal(EXPECTED, &expectedAuth)
+	if !cmp.Equal(reqAuth, expectedAuth) {
+		t.Errorf("Database returned unexpected body: \ngot -: %+v \nwant -: %+v", string(reqBody), string(EXPECTED))
+		t.FailNow()
 	}
 }

@@ -4,6 +4,7 @@ package structs
 type Auth struct {
 	IsValid bool
 	UID     string
+	IsAdmin bool
 }
 
 //Client holds user information in the same format as the Mongo database
