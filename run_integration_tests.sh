@@ -104,22 +104,13 @@ docker network rm frontend-api_net
 echo ""
 
 # frontend-web test
-# TODO: fix this, this test only needs to test the web service itself without dependencies
 echo "cleaning up hanging containers..."
-docker stop auth-service || :
-docker stop mongodb-mock-database || :
-docker stop database-service || :
-docker stop backend-service || :
 docker stop frontend-api-service || :
 docker stop frontend-web-service || :
 docker network rm frontend-web_net ||:
 sleep 1
 echo "preparing frontend-web integration test..."
 docker network create --driver bridge frontend-web_net
-docker run --rm -d --name=mongodb-mock-database --net=frontend-web_net -e MONGO_INITDB_ROOT_USERNAME=adminz -e MONGO_INITDB_ROOT_PASSWORD=cheeksbutt mongodb-mock-database:$(git describe --always)
-docker run --rm -d --name=auth-service --net=frontend-web_net -e AUTH_FIREBASE_CREDENTIALS='{test}' -e AUTH_LISTEN_ADDRESS=0.0.0.0:80 auth:$(git describe --always)
-sleep 1 && docker run -d --rm --name=database-service --net=frontend-web_net -e DATABASE_ADDRESS=mongodb-mock-database:27017 -e DATABASE_LISTEN_ADDRESS=0.0.0.0:80 database:$(git describe --always)
-sleep 1 && docker run -d --rm --name=backend-service --net=frontend-web_net -e DATABASE_ADDRESS=database-service -e BACKEND_LISTEN_ADDRESS=0.0.0.0:80 backend:$(git describe --always)
 sleep 1 && docker run -d --rm --name=frontend-api-service --net=frontend-web_net -e BACKEND_ADDRESS=backend-service -e AUTH_ADDRESS=auth-service -e FRONTEND_API_LISTEN_ADDRESS=0.0.0.0:80 frontend-api:$(git describe --always)
 sleep 1 && docker run -d --rm --name=frontend-web-service --net=frontend-web_net -e FRONTEND_API_URL=http://frontend-api-service:8888 frontend-web:$(git describe --always)
 echo "testing frontend-web..."
@@ -127,10 +118,6 @@ sleep 1 && docker run --rm -i --name=frontend-web-test --net=frontend-web_net -e
 echo "cleaning up..."
 docker stop frontend-web-service
 docker stop frontend-api-service
-docker stop auth-service
-docker stop backend-service
-docker stop database-service
-docker stop mongodb-mock-database
 docker network rm frontend-web_net
 echo ""
 
