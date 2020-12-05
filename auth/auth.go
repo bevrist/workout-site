@@ -27,6 +27,13 @@ var useFirebase bool    //debug flag for using firebase
 // env
 var listenAddress string //listen address of this service
 
+var testFlag = false
+// for testing
+func runMain() {
+	testFlag = true
+	main()
+}
+
 //helper function for actually retrieving UID
 func getUID(sessionToken string) string {
 	//TEST hardcoded reply for testing purposes
@@ -89,7 +96,6 @@ func GetUIDHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	//populate environment variables
-	testENV := os.Getenv("TEST")
 	listenAddress = os.Getenv("AUTH_LISTEN_ADDRESS")
 	firebaseCredentials := os.Getenv("AUTH_FIREBASE_CREDENTIALS")
 	//set default environment variables
@@ -104,11 +110,12 @@ func main() {
 	if firebaseCredentials == "{}" {
 		log.Println("Env AUTH_FIREBASE_CREDENTIALS empty, attempting to load from file...")
 		opt = option.WithCredentialsFile("./workout-app-8b023-firebase-adminsdk-jh1ev-bbfc733122.json") //load credentials file
-	} else if firebaseCredentials == "{test}" {
+	} else if firebaseCredentials == "{test}" || testFlag == true {
 		useFirebase = false
 		Admins = append(Admins, "testUID")
 		Admins = append(Admins, "test3")
 	} else {
+		log.Println("Using firebase...")
 		opt = option.WithCredentialsJSON([]byte(firebaseCredentials))
 	}
 
@@ -132,7 +139,7 @@ func main() {
 	r.HandleFunc("/apiVersion", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, `{"apiVersion":`+apiVersion+"}") })
 	r.HandleFunc("/getUID/{SessionToken}", GetUIDHandler).Methods(http.MethodGet, http.MethodHead)
 	r.HandleFunc("/healthz", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "ok") })
-	if testENV != "" {
+	if testFlag == true {
 		log.Println("TEST MODE ENABLED: GET '/shutdown' to kill server")
 		r.HandleFunc("/shutdown", func(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte("200 - Shutting Down Server..."))

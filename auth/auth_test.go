@@ -7,6 +7,7 @@ import (
 	"os"
 	"log"
 	"testing"
+	"time"
 
 	structs "../common"
 
@@ -20,8 +21,21 @@ func TestMain(m *testing.M) {
 	if authAddress == "" {
 		authAddress = "localhost:8070"
 	}
+	if (authAddress == "localhost:8070") {
+		log.Println("Launching Auth for Local Test...")
+		go runMain()
+		defer shutdownAuth()
+		time.Sleep(time.Second)
+	}
 	log.Println("Testing Auth at address: " + authAddress)
     os.Exit(m.Run())
+}
+
+// call to end the local auth service
+func shutdownAuth() {
+	if (os.Getenv("AUTH_SERVICE_ADDRESS") == "localhost:8070") {
+		http.Get("http://"+authAddress+"/shutdown")
+	}
 }
 
 func TestApiVersion(t *testing.T) {
@@ -96,3 +110,7 @@ func TestGetNonAdminStatus(t *testing.T) {
 		t.FailNow()
 	}
 }
+
+
+//TODO try using os.exit to force kill successful test?
+//TODO code coverage report
