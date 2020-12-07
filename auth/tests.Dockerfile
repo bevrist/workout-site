@@ -4,6 +4,11 @@ RUN go get -v firebase.google.com/go firebase.google.com/go/auth github.com/gori
 WORKDIR /auth
 COPY ./auth .
 COPY ./common ../common
-CMD ["go", "test"]
+
+RUN printf '#!/bin/bash \n\
+    go test -coverprofile=coverage.out \n\
+    go tool cover -func=coverage.out \n\
+    ' > /entrypoint.sh && chmod +x /entrypoint.sh
+CMD ["/entrypoint.sh"]
 
 ENV AUTH_SERVICE_ADDRESS="localhost:8070"
