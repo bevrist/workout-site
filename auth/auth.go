@@ -1,4 +1,5 @@
 // Auth provides an api for handling validation of session tokens and retrieving User ID's (UID)
+
 package main
 
 import (
@@ -19,22 +20,13 @@ import (
 
 // Global Variables
 var apiVersion string = "1.0" //the api version this service implements
-//list of admin UID's (from firebase)
+// list of admin UID's (from firebase)
 var Admins []string = []string{"ADMIN-UIDS-HERE"}
 
 var client *auth.Client //firebase app instance
 var useFirebase bool    //debug flag for using firebase
-// env
-var listenAddress string //listen address of this service
 
-var testFlag = false
-// for testing
-func runMain() {
-	testFlag = true
-	main()
-}
-
-//helper function for actually retrieving UID
+//helper function for actually retrieving UID, returns empty string if token is invalid
 func getUID(sessionToken string) string {
 	//TEST hardcoded reply for testing purposes
 	if sessionToken == "test" {
@@ -96,7 +88,7 @@ func GetUIDHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	//populate environment variables
-	listenAddress = os.Getenv("AUTH_LISTEN_ADDRESS")
+	listenAddress := os.Getenv("AUTH_LISTEN_ADDRESS")
 	firebaseCredentials := os.Getenv("AUTH_FIREBASE_CREDENTIALS")
 	//set default environment variables
 	if listenAddress == "" {
@@ -110,7 +102,8 @@ func main() {
 	if firebaseCredentials == "{}" {
 		log.Println("Env AUTH_FIREBASE_CREDENTIALS empty, attempting to load from file...")
 		opt = option.WithCredentialsFile("./workout-app-8b023-firebase-adminsdk-jh1ev-bbfc733122.json") //load credentials file
-	} else if firebaseCredentials == "{test}" || testFlag == true {
+	} else if firebaseCredentials == "{test}" || firebaseCredentials == "" {
+		log.Println("WARNING: Auth_Service not using firebase, all replies will be mirrored...")
 		useFirebase = false
 		Admins = append(Admins, "testUID")
 		Admins = append(Admins, "test3")
@@ -128,29 +121,17 @@ func main() {
 		if err != nil {
 			log.Fatalf("error getting firebase Auth client: %v\n", err)
 		}
-	} else {
-		log.Println("WARNING: Auth_Service not using firebase, all replies will be mirrored...")
 	}
 
 	//specify routes and start http server
-	r := mux.NewRouter()
-	var handler http.Handler = r
-	s := http.Server{Addr: listenAddress, Handler: handler}
-	r.HandleFunc("/apiVersion", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, `{"apiVersion":`+apiVersion+"}") })
-	r.HandleFunc("/getUID/{SessionToken}", GetUIDHandler).Methods(http.MethodGet, http.MethodHead)
-	r.HandleFunc("/healthz", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "ok") })
-	if testFlag == true {
-		log.Println("TEST MODE ENABLED: GET '/shutdown' to kill server")
-		r.HandleFunc("/shutdown", func(w http.ResponseWriter, r *http.Request) {
-			w.Write([]byte("200 - Shutting Down Server..."))
-			go func() {
-				s.Shutdown(context.Background())
-			}()
-		})
-	}
+	var router = mux.NewRouter()
+	var handler http.Handler = router
+	var server = http.Server{Addr: listenAddress, Handler: handler}
+	router.HandleFunc("/apiVersion", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, `{"apiVersion":`+apiVersion+"}") })
+	router.HandleFunc("/getUID/{SessionToken}", GetUIDHandler).Methods(http.MethodGet, http.MethodHead)
+	router.HandleFunc("/healthz", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "ok") })
 	log.Printf("Auth listening at address " + listenAddress)
-	if err := s.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		log.Fatal(err)
 	}
-	log.Printf("Killed...")
 }
