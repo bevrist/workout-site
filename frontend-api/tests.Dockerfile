@@ -1,7 +1,7 @@
 FROM golang:1
 RUN go get -v github.com/gorilla/mux
 RUN go get -v github.com/google/go-cmp/cmp
-ADD https://github.com/golang/go/raw/master/lib/time/zoneinfo.zip /zoneinfo.zip
+RUN wget -O /zoneinfo.zip https://github.com/golang/go/raw/master/lib/time/zoneinfo.zip
 ENV ZONEINFO /zoneinfo.zip
 WORKDIR /frontend-api
 COPY ./common ../common

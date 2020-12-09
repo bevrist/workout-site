@@ -7,9 +7,9 @@ type Auth struct {
 	IsAdmin bool
 }
 
-// UserList holds basic info about users for use on Admin Pages
-type UserList struct {
-	UID         string
+// UserListItem holds basic info about users for listing users on Admin Pages
+type UserListItem struct {
+	UID         string `json:"uid"`
 	FirstName   string `bson:"first_name"`
 	LastName    string `bson:"last_name"`
 	StartDate   string `bson:"start_date"`

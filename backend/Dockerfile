@@ -9,7 +9,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o backend .
 FROM alpine:latest
 RUN apk --no-cache add ca-certificates
 WORKDIR /root/
-ADD https://github.com/golang/go/raw/master/lib/time/zoneinfo.zip /zoneinfo.zip
+RUN wget -O /zoneinfo.zip https://github.com/golang/go/raw/master/lib/time/zoneinfo.zip
 ENV ZONEINFO /zoneinfo.zip
 COPY --from=0 /app .
 CMD ["./backend"]
