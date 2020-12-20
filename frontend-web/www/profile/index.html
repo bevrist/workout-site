@@ -5,22 +5,21 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>Profile</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/css/bootstrap.min.css">
     <link rel="stylesheet" href="../assets/css/Navigation-with-Button.css">
 </head>
 
 <body>
     <nav class="navbar navbar-light navbar-expand-md navigation-clean">
         <div class="container"><a class="navbar-brand" href="#">Dream &amp; Achieve</a><em>Profile</em><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
-            <div
-                class="collapse navbar-collapse" id="navcol-1">
+            <div class="collapse navbar-collapse" id="navcol-1">
                 <ul class="nav navbar-nav ml-auto">
                     <li class="nav-item"><a class="nav-link" href="http://localhost:5500/daily-update">Daily Update</a></li>
                     <li class="nav-item"><a class="nav-link" href="http://localhost:5500/history">History</a></li>
                     <li class="nav-item"><a class="nav-link active" href="http://localhost:5500/profile">Profile</a></li>
                     <li class="nav-item"><button class="btn btn-primary action-button" id="SignOutBtn" type="button">Sign Out</button></li>
                 </ul>
-        </div>
+            </div>
         </div>
     </nav>
     <div class="container" style="padding-bottom: 24px;">
@@ -28,37 +27,45 @@
             <div class="form-row">
                 <div class="col-md-4">
                     <div class="form-group">
-                        <p style="margin: 0px;margin-left: 5px;">First Name</p><input class="form-control" type="text" id="firstName" placeholder="First Name" name="FirstName" required="" minlength="2" pattern="^[a-zA-Z ]+"></div>
+                        <p style="margin: 0px;margin-left: 5px;">First Name</p><input class="form-control" type="text" id="firstName" placeholder="First Name" name="FirstName" required="" minlength="2" pattern="^[a-zA-Z ]+">
+                    </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
-                        <p style="margin: 0px;margin-left: 5px;">Last Name</p><input class="form-control" type="text" id="lastName" placeholder="Last Name" name="LastName" minlength="1" required="" pattern="^[a-zA-Z ]+"></div>
+                        <p style="margin: 0px;margin-left: 5px;">Last Name</p><input class="form-control" type="text" id="lastName" placeholder="Last Name" name="LastName" minlength="1" required="" pattern="^[a-zA-Z ]+">
+                    </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
-                        <p style="margin: 0px;margin-left: 5px;">Start Date</p><input class="form-control" id="StartDate" type="date" name="StartDate"></div>
+                        <p style="margin: 0px;margin-left: 5px;">Start Date</p><input class="form-control" id="StartDate" type="date" name="StartDate">
+                    </div>
                 </div>
             </div>
             <div class="form-row">
                 <div class="col-md-2">
                     <div class="form-group">
-                        <p style="margin: 0px;margin-left: 5px;">Start Weight</p><input class="form-control" type="number" id="weight" placeholder="150" name="Weight" min="10" max="500" required=""></div>
+                        <p style="margin: 0px;margin-left: 5px;">Start Weight</p><input class="form-control" type="number" id="weight" placeholder="150" name="Weight" min="10" max="500" required="">
+                    </div>
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
-                        <p style="margin: 0px;margin-left: 5px;">Height</p><input class="form-control" type="number" id="heightInches" placeholder="70" name="HeightInches" min="10" max="90" required=""></div>
+                        <p style="margin: 0px;margin-left: 5px;">Height</p><input class="form-control" type="number" id="heightInches" placeholder="70" name="HeightInches" min="10" max="90" required="">
+                    </div>
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
-                        <p style="margin: 0px;margin-left: 5px;">Waist Cir.</p><input class="form-control" type="number" id="waistCirc" placeholder="150" name="WaistCirc" min="1" max="100" required=""></div>
+                        <p style="margin: 0px;margin-left: 5px;">Waist Cir.</p><input class="form-control" type="number" id="waistCirc" placeholder="150" name="WaistCirc" min="1" max="100" required="">
+                    </div>
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
-                        <p style="margin: 0px;margin-left: 5px;">Lean Mass</p><input class="form-control" type="number" id="leanBodyMass" placeholder="150" name="leanBodyMass" min="1" max="500" required=""></div>
+                        <p style="margin: 0px;margin-left: 5px;">Lean Mass</p><input class="form-control" type="number" id="leanBodyMass" placeholder="150" name="leanBodyMass" min="1" max="500" required="">
+                    </div>
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
-                        <p style="margin: 0px;margin-left: 5px;">Age</p><input class="form-control" type="number" id="age" placeholder="35" name="age" min="1" max="100" required=""></div>
+                        <p style="margin: 0px;margin-left: 5px;">Age</p><input class="form-control" type="number" id="age" placeholder="35" name="age" min="1" max="100" required="">
+                    </div>
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
@@ -66,7 +73,8 @@
     <option value="" id="genderNone">none</option>
     <option value="male" id="genderMale">Male</option>
     <option value="female" id="genderFemale">Female</option>
-</select></div>
+</select>
+                    </div>
                 </div>
             </div>
             <div class="form-row">
@@ -75,7 +83,7 @@
         </form>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/js/bootstrap.bundle.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-analytics.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-auth.js"></script>

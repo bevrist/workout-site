@@ -1,13 +1,12 @@
 // Your web app's Firebase configuration
 var firebaseConfig = {
-  apiKey: "AIzaSyBPjt5odWGOGfibWvV6R8KpXg06DovhoGc",
-  authDomain: "workout-app-8b023.firebaseapp.com",
-  databaseURL: "https://workout-app-8b023.firebaseio.com",
-  projectId: "workout-app-8b023",
-  storageBucket: "workout-app-8b023.appspot.com",
-  messagingSenderId: "367406151070",
-  appId: "1:367406151070:web:96633b967a09b3a5b3528f",
-  measurementId: "G-V1Z7ZFZ3M2"
+  apiKey: "AIzaSyC5WGP0R1sel4nZFlDBzUdOM-Zu4OGMvAs",
+  authDomain: "workout-app-296422.firebaseapp.com",
+  projectId: "workout-app-296422",
+  storageBucket: "workout-app-296422.appspot.com",
+  messagingSenderId: "382315129211",
+  appId: "1:382315129211:web:d68a587173b35ad51a35de",
+  measurementId: "G-H4GCFPEFYV"
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);

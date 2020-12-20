@@ -101,7 +101,7 @@ func main() {
 	log.Println("AUTH_FIREBASE_CREDENTIALS = '" + firebaseCredentials + "'")
 	if firebaseCredentials == "{}" {
 		log.Println("Env AUTH_FIREBASE_CREDENTIALS empty, attempting to load from file...")
-		opt = option.WithCredentialsFile("./workout-app-8b023-firebase-adminsdk-jh1ev-bbfc733122.json") //load credentials file
+		opt = option.WithCredentialsFile("./workout-app-296422-firebase-adminsdk-3zpuw-72e7bc27c0.json") //load credentials file
 	} else if firebaseCredentials == "{test}" || firebaseCredentials == "" {
 		log.Println("WARNING: Auth_Service not using firebase, all replies will be mirrored...")
 		useFirebase = false
