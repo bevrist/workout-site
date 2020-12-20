@@ -82,6 +82,36 @@ func GetUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(client[0])
 }
 
+//TODO document this
+func ListUsersHandler(w http.ResponseWriter, r *http.Request) {
+	// get all docs
+	filterCursor, err := clientsCollection.Find(ctx, bson.M{})
+	if err != nil {
+		log.Fatal("ERROR: ListUsersHandler: " + err.Error())
+	}
+	// store docs in client struct
+	var client []structs.Client
+	if err = filterCursor.All(ctx, &client); err != nil {
+		log.Println("ERROR: ListUsersHandler: " + err.Error())
+	}
+
+	//extract desired data from client structs
+	var userList []structs.UserListItem
+	for i := range client {
+		newUser := structs.UserListItem{}
+		//get all 4 values
+		newUser.UID = client[i].UID
+		newUser.FirstName = client[i].FirstName
+		newUser.LastName = client[i].LastName
+		newUser.StartDate = client[i].StartDate
+		//append new user to list
+		userList = append(userList, newUser)
+	}
+
+	//return list of users in json form
+	json.NewEncoder(w).Encode(userList)
+}
+
 //updateUserDocument helper function which uploads Client struct to database
 func updateUserDocument(client structs.Client) bool {
 	opts := options.Update().SetUpsert(true) //update or insert document
@@ -291,6 +321,7 @@ func main() {
 	r.HandleFunc("/apiVersion", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "{\"apiVersion\":"+apiVersion+"}") })
 	r.HandleFunc("/userInfo/{UID}", GetUserInfoHandler).Methods(http.MethodGet, http.MethodHead)
 	r.HandleFunc("/userInfo/{UID}", UpdateUserProfileHandler).Methods(http.MethodPost)
+	r.HandleFunc("/listUsers", ListUsersHandler).Methods(http.MethodGet, http.MethodHead)
 	r.HandleFunc("/userWeekly/{week}/{UID}", UpdateUserWeeklylineHandler).Methods(http.MethodPost)
 	r.HandleFunc("/userDaily/{week}/{day}/{UID}", UpdateUserDailyHandler).Methods(http.MethodPost)
 	r.HandleFunc("/userRecommendation/{week}/{UID}", UpdateUserRecommendationsHandler).Methods(http.MethodPost)
