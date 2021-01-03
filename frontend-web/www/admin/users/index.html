@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>History</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/Navigation-with-Button.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-light navbar-expand-md navigation-clean">
+        <div class="container"><a class="navbar-brand" href="#">Dream &amp; Achieve</a><em>Admin/Users</em><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navcol-1">
+                <ul class="nav navbar-nav ml-auto">
+                    <li class="nav-item"><a class="nav-link active" href="http://localhost:5500/admin/users">Admin/Users</a></li>
+                    <li class="nav-item"><button class="btn btn-primary action-button" id="SignOutBtn" type="button">Sign Out</button></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container" id="myContainer" style="padding-bottom: 24px;">
+        <div class="row">
+            <div class="col">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>User Name</th>
+                                <th>Start Date</th>
+                                <th>History</th>
+                                <th>Rec</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="user-list-table">
+                            <tr>
+                                <td>User 1</td>
+                                <td>11-02-2020</td>
+                                <td><a href="http://localhost:5500/admin/users/view">View History</a></td>
+                                <td><a href="http://localhost:5500/admin/users/recommendation">New Rec</a></td>
+                            </tr>
+                            <tr>
+                                <td>Anthony Hanna</td>
+                                <td>12-23-2020</td>
+                                <td><a href="http://localhost:5500/admin/users/view">View History</a></td>
+                                <td><a href="http://localhost:5500/admin/users/recommendation">New Rec</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/js/bootstrap.bundle.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-auth.js"></script>
+    <script src="../../assets/js/firebase-common.js"></script>
+    <script src="../../assets/js/admin.users.js"></script>
+</body>
+
+</html>

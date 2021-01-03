@@ -219,6 +219,7 @@ func main() {
 	r.HandleFunc("/userDaily/{week}/{day}/{UID}", UpdateUserDailyHandler).Methods(http.MethodPost)
 	r.HandleFunc("/generateUserBaseline/{UID}", generateUserBaselineHandler).Methods(http.MethodPost)
 	r.HandleFunc("/userRecommendation/{week}/{UID}", UpdateUserRecommendationsHandler).Methods(http.MethodPost)
+	//TODO: implement /listUsers passthrough
 	r.HandleFunc("/_healthz", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "ok") })
 	var handler http.Handler = r
 	log.Printf("Backend listening at address " + listenAddress)

@@ -630,3 +630,6 @@ func TestUpdateNewWeekDay2(t *testing.T) {
 		t.Fail()
 	}
 }
+
+//TODO: test /listUsers endpoint
+// Response: [{"uid":"testUID","FirstName":"Anthony","LastName":"Hanna","StartDate":"2020-08-15"},{"uid":"test2","FirstName":"Brett","LastName":"Evrist","StartDate":"2020-10-01"},{"uid":"test3","FirstName":"Maxed","LastName":"Out","StartDate":"2020-10-02"}]

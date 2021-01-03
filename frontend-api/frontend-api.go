@@ -33,7 +33,7 @@ func validateSessionToken(w http.ResponseWriter, sessionToken string, isAdmin bo
 	if authInfo.IsValid == false {
 		return ""
 	}
-	if (isAdmin && authInfo.IsAdmin == false) {
+	if isAdmin && authInfo.IsAdmin == false {
 		return ""
 	}
 	return authInfo.UID
@@ -181,7 +181,7 @@ func GenerateUserBaselineHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, string(respBody))
 }
 
-//AdminGetUserInfoHandler returns the users data
+//AdminGetUserInfoHandler returns a users data for an admin request
 func AdminGetUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 	sessionToken := r.Header.Get("Session-Token")
 	userUID := r.Header.Get("User-UID")
@@ -271,7 +271,7 @@ func main() {
 	r.HandleFunc("/userDaily/{week}/{day}", UpdateUserDailyHandler).Methods(http.MethodPost)
 	r.HandleFunc("/generateUserBaseline", GenerateUserBaselineHandler).Methods(http.MethodPost)
 	// Admin handlers
-	// r.HandleFunc("/admin/listUsers", AdminListUsersHandler).Methods(http.MethodGet, http.MethodHead)
+	// r.HandleFunc("/admin/listUsers", AdminListUsersHandler).Methods(http.MethodGet, http.MethodHead) //TODO: implement this
 	r.HandleFunc("/admin/userInfo", AdminGetUserInfoHandler).Methods(http.MethodGet, http.MethodHead)
 	r.HandleFunc("/admin/userRecommendation/{week}", AdminUpdateUserRecHandler).Methods(http.MethodPost)
 	r.HandleFunc("/healthz", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "ok") })

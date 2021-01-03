@@ -82,7 +82,7 @@ func GetUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(client[0])
 }
 
-//TODO document this
+//TODO document and test this
 func ListUsersHandler(w http.ResponseWriter, r *http.Request) {
 	// get all docs
 	filterCursor, err := clientsCollection.Find(ctx, bson.M{})
