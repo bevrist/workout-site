@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Admin View</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../../assets/css/Navigation-with-Button.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-light navbar-expand-md navigation-clean">
+        <div class="container"><a class="navbar-brand" href="#">Dream &amp; Achieve</a><em>Admin/View</em><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navcol-1">
+                <ul class="nav navbar-nav ml-auto">
+                    <li class="nav-item"><a class="nav-link" href="http://localhost:5500/admin/users">Admin/Users</a></li>
+                    <li class="nav-item"><button class="btn btn-primary action-button" id="SignOutBtn" type="button">Sign Out</button></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <h4 id="UserNameText" style="color: rgba(33,37,41,0.7);">Viewing User: LOADING...</h4>
+    </div>
+    <div class="container" id="myContainer" style="padding-bottom: 24px;">
+        <form id="formWeek-0"><a id="formLink-0" name="formAnchor"></a>
+            <h4 id="weekHeading-0">Week 0</h4>
+            <div class="form-row">
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Fat(g)</th>
+                                    <th>Carbs(g)</th>
+                                    <th>Protein(g)</th>
+                                    <th>Calories</th>
+                                    <th>Day</th>
+                                    <th>Weight(lbs)</th>
+                                    <th>WaistCirc.</th>
+                                    <th>Cardio</th>
+                                    <th style="padding: 10px;">Training</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr id="tableRow">
+                                    <td id="date" style="padding: 7px;" rowspan="date1week"><strong>00/00</strong></td>
+                                    <td style="padding: 0px;"><input class="form-control" type="number" id="fat" placeholder="0" name="fat"></td>
+                                    <td style="padding: 0px;"><input class="form-control" type="number" id="carbs" placeholder="0" name="carbs"></td>
+                                    <td style="padding: 0px;"><input class="form-control" type="number" id="protein" placeholder="0" name="protein"></td>
+                                    <td style="padding: 0px;"><input class="form-control" type="number" id="calories" placeholder="0" name="calories"></td>
+                                    <td style="padding: 0px;"><select class="form-control" style="width:85px;" name="day" id="day">
+    <option id="dayNorm">normal</option>
+    <option id="dayLow">low</option>
+    <option id="dayHigh">high</option>
+</select></td>
+                                    <td style="padding: 0px;"><input class="form-control" type="number" id="weight" placeholder="0" name="weight"></td>
+                                    <td style="padding: 0px;"><input class="form-control" type="number" id="waist-circ" placeholder="-" name="waist-circ"></td>
+                                    <td style="padding: 0px;"><select class="form-control" style="width:83px;" name="cardio" id="cardio">
+    <option id="cardioMiss">miss</option>
+    <option id="cardioHit">hit</option>
+</select></td>
+                                    <td style="padding: 0px;"><select class="form-control" style="width:83px;" name="training" id="training">
+    <option id="trainingNo">no</option>
+    <option id="trainingYes">yes</option>
+</select></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="form-row" style="margin: 0px;">
+                        <div class="col" style="padding: 0px 1px;"><button class="btn btn-primary" id="formSaveButton-0" type="submit" onclick="submitForm()">Save Week #</button><em id="SaveConfirmationText-0">&nbsp; &nbsp;Week # Saved!</em></div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div id="CoachRecContainer-0" style="background: #dddddd;margin: 5px;padding: 15px;">
+            <div class="row">
+                <div class="col-md-8">
+                    <h1 id="CoachRecHeading" style="padding-top: 6px;">Coach Recommendation</h1>
+                </div>
+                <div class="col-md-4 my-auto"><span id="updateDateText">Last Updated: &lt;DATE&gt;</span></div>
+            </div>
+            <hr style="margin: 0px;">
+            <div class="row">
+                <div class="col-md-4" style="padding: 0px;padding-top: 10px;padding-right: 3px;padding-bottom: 3px;">
+                    <h2 style="padding-left: 10px;">Normal Day</h2>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Grams</th>
+                                    <th>Ratio</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Protein</td>
+                                    <td id="coach-NProteinAmount"></td>
+                                    <td id="coach-NProteinRatio">%</td>
+                                </tr>
+                                <tr>
+                                    <td>Carbs</td>
+                                    <td id="coach-NCarbAmount"></td>
+                                    <td id="coach-NCarbRatio">%</td>
+                                </tr>
+                                <tr>
+                                    <td>Fat</td>
+                                    <td id="coach-NFatAmount"></td>
+                                    <td id="coach-NFatRatio">%</td>
+                                </tr>
+                                <tr>
+                                    <td>Calories</td>
+                                    <td id="coach-NCalories"></td>
+                                    <td id="coach-NCaloriesRatio">%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-md-4" style="padding: 0px;padding-top: 10px;padding-right: 3px;padding-bottom: 3px;">
+                    <h2 style="padding-left: 10px;">High Day</h2>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Grams</th>
+                                    <th>Ratio</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Protein</td>
+                                    <td id="coach-HProteinAmount"></td>
+                                    <td id="coach-HProteinRatio">%</td>
+                                </tr>
+                                <tr>
+                                    <td>Carbs</td>
+                                    <td id="coach-HCarbAmount"></td>
+                                    <td id="coach-HCarbRatio">%</td>
+                                </tr>
+                                <tr>
+                                    <td>Fat</td>
+                                    <td id="coach-HFatAmount"></td>
+                                    <td id="coach-HFatRatio">%</td>
+                                </tr>
+                                <tr>
+                                    <td>Calories</td>
+                                    <td id="coach-HCalories"></td>
+                                    <td id="coach-HCaloriesRatio">%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-md-4" style="padding: 0px;padding-top: 10px;padding-right: 3px;padding-bottom: 3px;">
+                    <h2 style="padding-left: 10px;">Low Day</h2>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Grams</th>
+                                    <th>Ratio</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Protein</td>
+                                    <td id="coach-LProteinAmount"></td>
+                                    <td id="coach-LProteinRatio">%</td>
+                                </tr>
+                                <tr>
+                                    <td>Carbs</td>
+                                    <td id="coach-LCarbAmount"></td>
+                                    <td id="coach-LCarbRatio">%</td>
+                                </tr>
+                                <tr>
+                                    <td>Fat</td>
+                                    <td id="coach-LFatAmount"></td>
+                                    <td id="coach-LFatRatio">%</td>
+                                </tr>
+                                <tr>
+                                    <td>Calories</td>
+                                    <td id="coach-LCalories"></td>
+                                    <td id="coach-LCaloriesRatio">%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row" id="hiit-row" style="margin-top: -20px;">
+                <div class="col-md-4 offset-md-0" style="padding: 0px;padding-top: 10px;padding-right: 3px;padding-bottom: 3px;background: #d2d2d2;">
+                    <h4 style="padding-left: 10px;">High Intensity Interval Training:</h4>
+                </div>
+                <div class="col-md-4 offset-md-0" style="padding: 0px;padding-top: 10px;padding-right: 3px;padding-bottom: 3px;background: #d2d2d2;"><span style="padding-left: 10px;">HIITCurrentCardioSession:&nbsp;</span><span id="coach-HIITCurrentCardioSession" style="padding-left: 10px; display: inline-block;">####</span></div>
+                <div class="col-md-4 offset-md-0" style="padding: 0px;padding-top: 10px;padding-right: 3px;padding-bottom: 10px;background: #d2d2d2;"><span style="padding-left: 10px;">HIITCurrentCardioIntervals:</span><span id="coach-HIITCurrentCardioIntervals" style="padding-left: 10px; display: inline-block;">####</span></div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/js/bootstrap.bundle.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-auth.js"></script>
+    <script src="../../../assets/js/firebase-common.js"></script>
+    <script src="../../../assets/js/admin.users.view.js"></script>
+</body>
+
+</html>

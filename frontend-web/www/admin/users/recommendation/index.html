@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>History</title>
+    <title>Admin Rec</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/css/bootstrap.min.css">
     <link rel="stylesheet" href="../../../assets/css/Navigation-with-Button.css">
 </head>
@@ -14,38 +14,117 @@
         <div class="container"><a class="navbar-brand" href="#">Dream &amp; Achieve</a><em>Admin/Recommendation</em><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="navcol-1">
                 <ul class="nav navbar-nav ml-auto">
-                    <li class="nav-item"><a class="nav-link" href="http://localhost:5500/admin/users">Admin/Users</a></li>
+                    <li class="nav-item"><a class="nav-link" href="http://localhost:5500/history">Admin/Users</a></li>
                     <li class="nav-item"><button class="btn btn-primary action-button" id="SignOutBtn" type="button">Sign Out</button></li>
                 </ul>
             </div>
         </div>
     </nav>
-    <div class="container" id="myContainer" style="padding-bottom: 24px;">
-        <div class="row">
-            <div class="col">
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Recommendation</th>
-                                <th>Start Date</th>
-                                <th>History</th>
-                                <th>Rec</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody id="user-list-table">
-                            <tr>
-                                <td>User 1</td>
-                                <td>11-02-2020</td>
-                                <td><a href="http://localhost:5500/admin/users/view">View History</a></td>
-                                <td><a href="http://localhost:5500/admin/users/recommendation">New Rec</a></td>
-                            </tr>
-                        </tbody>
-                    </table>
+    <div class="container" style="padding-bottom: 24px;">
+        <form id="ProfileForm" onsubmit="return false">
+            <h1>Coach Recommendation</h1>
+            <div class="form-row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <p style="margin: 0px;margin-left: 5px;">Week Number</p><input class="form-control" type="number" id="week-number" placeholder="1" name="Weight" min="0" max="24" required="">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <p style="margin: 0px;margin-left: 5px;">HIITCurrentCardioSession</p><input class="form-control" type="number" id="hiit-session" placeholder="70" name="HeightInches" min="10" max="90" required="">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <p style="margin: 0px;margin-left: 5px;">HIITCurrentCardioIntervals</p><input class="form-control" type="number" id="hiit-intervals" placeholder="150" name="WaistCirc" min="1" max="100" required="">
+                    </div>
                 </div>
             </div>
-        </div>
+            <div class="form-row">
+                <div class="col">
+                    <h5 style="margin-bottom: 0;">High Day</h5>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <p style="margin: 0px;margin-left: 5px;">Protein</p><input class="form-control" type="number" id="h-protein" placeholder="150" name="Weight" min="10" max="500" required="">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <p style="margin: 0px;margin-left: 5px;">Carbs</p><input class="form-control" type="number" id="h-carbs" placeholder="70" name="HeightInches" min="10" max="90" required="">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <p style="margin: 0px;margin-left: 5px;">Fat</p><input class="form-control" type="number" id="h-fat" placeholder="150" name="WaistCirc" min="1" max="100" required="">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <p style="margin: 0px;margin-left: 5px;">Calories</p><input class="form-control" type="number" id="h-calories" placeholder="150" name="leanBodyMass" min="1" max="500" required="">
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col">
+                    <h5 style="margin-bottom: 0;">Medium Day</h5>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <p style="margin: 0px;margin-left: 5px;">Protein</p><input class="form-control" type="number" id="m-protein" placeholder="150" name="Weight" min="10" max="500" required="">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <p style="margin: 0px;margin-left: 5px;">Carbs</p><input class="form-control" type="number" id="m-carbs" placeholder="70" name="HeightInches" min="10" max="90" required="">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <p style="margin: 0px;margin-left: 5px;">Fat</p><input class="form-control" type="number" id="m-fat" placeholder="150" name="WaistCirc" min="1" max="100" required="">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <p style="margin: 0px;margin-left: 5px;">Calories</p><input class="form-control" type="number" id="m-calories" placeholder="150" name="leanBodyMass" min="1" max="500" required="">
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col">
+                    <h5 style="margin-bottom: 0;">Low Day</h5>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <p style="margin: 0px;margin-left: 5px;">Protein</p><input class="form-control" type="number" id="l-protein" placeholder="150" name="Weight" min="10" max="500" required="">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <p style="margin: 0px;margin-left: 5px;">Carbs</p><input class="form-control" type="number" id="l-carbs" placeholder="70" name="HeightInches" min="10" max="90" required="">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <p style="margin: 0px;margin-left: 5px;">Fat</p><input class="form-control" type="number" id="l-fat" placeholder="150" name="WaistCirc" min="1" max="100" required="">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <p style="margin: 0px;margin-left: 5px;">Calories</p><input class="form-control" type="number" id="l-calories" placeholder="150" name="leanBodyMass" min="1" max="500" required="">
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-12"><button class="btn btn-primary" id="SaveBtn" type="submit" onclick="submitForm()">Save Recommendation</button><em>&nbsp; &nbsp;</em><em id="SaveConfirmationText" style="display: inline-block;"></em></div>
+            </div>
+        </form>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/js/bootstrap.bundle.min.js"></script>
