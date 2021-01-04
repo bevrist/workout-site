@@ -36,6 +36,19 @@ func GetUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, string(reqBody))
 }
 
+func ListUsersHandler(w http.ResponseWriter, r *http.Request) {
+	resp, err := http.Get("http://" + databaseAddress + "/listUsers")
+	if err != nil {
+		http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
+		log.Println("ListUsersHandler: " + err.Error())
+		return
+	}
+
+	reqBody, _ := ioutil.ReadAll(resp.Body)
+
+	fmt.Fprintf(w, string(reqBody))
+}
+
 func UpdateUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	UID := vars["UID"]
@@ -214,6 +227,7 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/apiVersion", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "{\"apiVersion\":"+apiVersion+"}") })
 	r.HandleFunc("/userInfo/{UID}", GetUserInfoHandler).Methods(http.MethodGet, http.MethodHead)
+	r.HandleFunc("/listUsers", ListUsersHandler).Methods(http.MethodGet, http.MethodHead)
 	r.HandleFunc("/userInfo/{UID}", UpdateUserInfoHandler).Methods(http.MethodPost)
 	r.HandleFunc("/userWeekly/{week}/{UID}", UpdateUserWeeklylineHandler).Methods(http.MethodPost)
 	r.HandleFunc("/userDaily/{week}/{day}/{UID}", UpdateUserDailyHandler).Methods(http.MethodPost)

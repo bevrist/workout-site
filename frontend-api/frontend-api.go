@@ -213,6 +213,30 @@ func AdminGetUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 	userInfo.UID = ""
 	userInfoJSON, _ := json.Marshal(userInfo)
 	fmt.Fprintf(w, string(userInfoJSON))
+
+}
+
+//AdminGetUserInfoHandler returns a users data for an admin request
+func ListUsersHandler(w http.ResponseWriter, r *http.Request) {
+	sessionToken := r.Header.Get("Session-Token")
+	if sessionToken == "" {
+		http.Error(w, "428 Precondition Required - missing Session-Token.", http.StatusPreconditionRequired)
+		return
+	}
+	//validate session token and verify Admin
+	UID := validateSessionToken(w, sessionToken, true)
+	if UID == "" {
+		http.Error(w, "401 Unauthorized.", http.StatusUnauthorized)
+		return
+	}
+	//get user data to return to Admin
+	resp, err := http.Get("http://" + backendAddress + "/listUsers")
+	if err != nil {
+		http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
+		log.Println("ERROR: ListUsersHandler - Backend: " + err.Error())
+	}
+	reqBody, _ := ioutil.ReadAll(resp.Body)
+	fmt.Fprintf(w, string(reqBody))
 }
 
 //AdminUpdateUserRecHandler update the user profile
@@ -271,7 +295,7 @@ func main() {
 	r.HandleFunc("/userDaily/{week}/{day}", UpdateUserDailyHandler).Methods(http.MethodPost)
 	r.HandleFunc("/generateUserBaseline", GenerateUserBaselineHandler).Methods(http.MethodPost)
 	// Admin handlers
-	// r.HandleFunc("/admin/listUsers", AdminListUsersHandler).Methods(http.MethodGet, http.MethodHead) //TODO: implement this
+	r.HandleFunc("/admin/listUsers", ListUsersHandler).Methods(http.MethodGet, http.MethodHead)
 	r.HandleFunc("/admin/userInfo", AdminGetUserInfoHandler).Methods(http.MethodGet, http.MethodHead)
 	r.HandleFunc("/admin/userRecommendation/{week}", AdminUpdateUserRecHandler).Methods(http.MethodPost)
 	r.HandleFunc("/healthz", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "ok") })
