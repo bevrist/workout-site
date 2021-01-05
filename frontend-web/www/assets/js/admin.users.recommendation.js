@@ -19,8 +19,8 @@ var userData = JSON.parse(xmlHttp.responseText);
 updateForm(userData);
 // update week-number on form to current week for user
 function updateForm(userData) {
-  //calculate current week num from user profile.startDate
-  var startDate = new Date(userData.StartDate);//TODO: complete this
+  //calculate current week from user profile.startDate
+  var startDate = new Date(userData.StartDate);
   var currentDate = new Date();
   weeksSinceStart = (Math.round((currentDate - startDate) / (7 * 24 * 60 * 60 * 1000)))+1;
   document.getElementById("week-number").value = weeksSinceStart;
