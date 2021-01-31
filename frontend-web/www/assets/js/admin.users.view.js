@@ -1,5 +1,3 @@
-
-//FIXME update this
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 const userUid = urlParams.get('uid')
@@ -12,8 +10,8 @@ if (userUid == "") {
 var xmlHttp = new XMLHttpRequest();
 xmlHttp.open("GET", "http://localhost:8888/admin/userInfo", false);
 xmlHttp.setRequestHeader("User-UID",userUid);
-// xmlHttp.setRequestHeader("Session-Token",getCookie("Session-Token"));
-xmlHttp.setRequestHeader("Session-Token", "testUID"); //FIXME use correct session-token
+xmlHttp.setRequestHeader("Session-Token",getCookie("Session-Token"));
+// xmlHttp.setRequestHeader("Session-Token", "testUID"); //FIXME use correct session-token
 xmlHttp.send(null);
 var userData = JSON.parse(xmlHttp.responseText);
 //abort if data is invalid
@@ -249,58 +247,3 @@ for (var i = 1; i <= userData.Week.length; i++) {
   cloneForm(i);
 }
 document.getElementById("myContainer").remove(); // delete empty clone form at end
-
-// //serialize form fields into json object
-// function serializeWeekForm(weekNum) {
-//   let DayArr = [
-//     serializeDayForm(weekNum, 0),
-//     serializeDayForm(weekNum, 1),
-//     serializeDayForm(weekNum, 2),
-//     serializeDayForm(weekNum, 3),
-//     serializeDayForm(weekNum, 4),
-//     serializeDayForm(weekNum, 5),
-//     serializeDayForm(weekNum, 6),
-//   ];
-//   var formJSON = {
-//     Day: DayArr,
-//   }
-//   // console.log(formJSON);
-//   return formJSON;
-// }
-
-// //serialize a day object in the form
-// function serializeDayForm(weekNum, dayNum) {
-//   var dayJSON = {
-//     Fat: Number(document.getElementById("fat-" + weekNum+dayNum).value),
-//     Carbs: Number(document.getElementById("carbs-" + weekNum+dayNum).value),
-//     Protein: Number(document.getElementById("protein-" + weekNum+dayNum).value),
-//     Weight: Number(document.getElementById("weight-" + weekNum+dayNum).value),
-//     TotalCalories: Number(document.getElementById("calories-" + weekNum+dayNum).value),
-//     DayCalories: document.getElementById("day-" + weekNum+dayNum).value,
-//     Cardio: document.getElementById("cardio-" + weekNum+dayNum).value,
-//     WeightTraining: document.getElementById("training-" + weekNum + dayNum).value,
-//   }
-//   if (document.getElementById("waist-circ-" + weekNum + dayNum).value != 0) {
-//     dayJSON.WaistCirc = Number(document.getElementById("waist-circ-" + weekNum + dayNum).value)
-//   }
-//   return dayJSON;
-// }
-
-// //submit form as JSON on "save" button click
-// function submitForm(weekNum) {
-//   //stop from from refreshing page
-//   event.preventDefault(); //FIXME see if can remove
-//   //serialize form to JSON
-//   var dataObject = serializeWeekForm(weekNum-1);
-//   var jsonData = JSON.stringify(dataObject);
-//   //POST JSON to api
-//   var xmlHttp = new XMLHttpRequest();
-//   xmlHttp.open( "POST", "http://localhost:8888/userWeekly/" + (weekNum-1), false );
-//   xmlHttp.setRequestHeader("Session-Token",getCookie("Session-Token"));
-//   // xmlHttp.setRequestHeader("Session-Token",myToken); //FIXME use correct session-token
-//   xmlHttp.send(jsonData);
-//   console.log(jsonData);
-//   console.log("Server response: " + xmlHttp.responseText);
-//   //show note that save was successful
-//   document.getElementById("SaveConfirmationText-" + weekNum).innerHTML = "&nbsp; &nbsp; &nbsp; Week " + weekNum + " Saved!";
-// }

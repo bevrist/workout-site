@@ -45,7 +45,7 @@ function tryRedirect() {
     });
   });
   // console.log("redirecting to daily-update... I DONT KNOW WHY THIS SHOULDNT HAPPEN") //FIXME remove?
-  // window.location.replace('http://localhost:5500/'); //FIXME remove?
+  //// window.location.replace('http://localhost:5500/'); //FIXME remove?
 
   // //check if user profile info is populated
   // var xmlHttp = new XMLHttpRequest();
