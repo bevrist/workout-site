@@ -1,4 +1,6 @@
 FROM golang:1
+
+ENV GO111MODULE=off
 RUN go get -v github.com/gorilla/mux
 RUN go get -v github.com/google/go-cmp/cmp
 WORKDIR /frontend-web

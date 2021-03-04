@@ -1,5 +1,6 @@
 FROM golang:1
 
+ENV GO111MODULE=off
 RUN go get -v firebase.google.com/go firebase.google.com/go/auth github.com/gorilla/mux google.golang.org/api/option
 WORKDIR /auth
 COPY ./auth .

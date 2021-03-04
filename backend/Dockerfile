@@ -1,5 +1,7 @@
 FROM golang:1
 WORKDIR /app
+
+ENV GO111MODULE=off
 RUN go get -v github.com/gorilla/mux
 COPY ./common ../common
 COPY ./backend/backend.go .

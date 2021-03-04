@@ -1,4 +1,6 @@
 FROM golang:1
+
+ENV GO111MODULE=off
 RUN go get -v github.com/gorilla/mux
 WORKDIR /app
 COPY ./frontend-api/frontend-api.go .

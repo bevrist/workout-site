@@ -13,13 +13,13 @@ RUN find ./ -type f -exec sed -i -e "s,http://localhost:8888/,/api/,g" {} \;
 # compile all web files into optimized and minified versions
 RUN find ./ -type f -name "*.js" -exec google-closure-compiler --js {} --js_output_file {}.min \; -exec mv {}.min {} \; \
     && find ./ -type f -name "*.css" -exec csso {} -o {}.min \; -exec mv {}.min {} \; \
-    && find ./ -type f -name "*.html" -exec html-minifier --collapse-whitespace --remove-comments --remove-optional-tags --remove-redundant-attributes --remove-script-type-attributes --remove-tag-whitespace --use-short-doctype --minify-css true --minify-js true {} -o {}.min \; -exec mv {}.min {} \;
+    && find ./ -type f -name "*.html" -exec html-minifier --collapse-whitespace --remove-comments --remove-optional-tags --remove-script-type-attributes --remove-tag-whitespace --use-short-doctype --minify-css true --minify-js true {} -o {}.min \; -exec mv {}.min {} \;
 
 
 FROM alpine:latest
 # install nginx
 RUN mkdir -p /run/nginx
-RUN apk add nginx
+RUN apk add nginx tini
 # remove default site
 RUN rm -rf /var/www/*
 RUN rm -rf /etc/nginx/conf.d/*
@@ -39,7 +39,7 @@ RUN printf '#!/bin/sh \n\
     nginx -g "daemon off;" \n\
     ' > /start.sh; chmod +x /start.sh
 
-CMD ["/bin/sh", "/start.sh"]
+CMD ["tini", "--", "/start.sh"]
 
 EXPOSE 80
 ENV FRONTEND_API_URL=http://localhost:8888
