@@ -192,6 +192,8 @@ jobs:
   docker-hub-push-images:
     needs: [test-database, test-auth, test-backend, test-frontend-api, test-frontend-web]
     runs-on: [self-hosted, docker]
+    # master branch only
+    if: github.ref == 'refs/heads/master'
     steps:
     - uses: actions/checkout@v2
     # login to docker after all tests pass
