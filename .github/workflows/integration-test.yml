@@ -188,3 +188,29 @@ jobs:
     - run: docker stop test-frontend-web_frontend-web-service
     - run: docker stop test-frontend-web_frontend-api-service
     - run: docker network rm frontend-web_net
+
+  docker-login:
+    needs: [test-database, test-auth, test-backend, test-frontend-api, test-frontend-web]
+    runs-on: [self-hosted, docker]
+    steps:
+    - uses: actions/checkout@v2
+    # login to docker after all tests pass
+    - run: docker login --username "${{ secrets.DOCKER_USERNAME }}" -p "${{ secrets.DOCKER_PASSWORD }}"
+
+  docker-hub-push-images:
+    needs: [docker-login]
+    runs-on: [self-hosted, docker]
+    steps:
+    - uses: actions/checkout@v2
+    # re-tag all built images
+    - run: docker tag auth:$(git describe --always) "${{ secrets.DOCKER_USERNAME }}"/workout-app-auth
+    - run: docker tag backend:$(git describe --always) "${{ secrets.DOCKER_USERNAME }}"/workout-app-backend
+    - run: docker tag database:$(git describe --always) "${{ secrets.DOCKER_USERNAME }}"/workout-app-database
+    - run: docker tag frontend-api:$(git describe --always) "${{ secrets.DOCKER_USERNAME }}"/workout-app-frontend-api
+    - run: docker tag frontend-web:$(git describe --always) "${{ secrets.DOCKER_USERNAME }}"/workout-app-frontend-web
+    # push all images
+    - run: docker push "${{ secrets.DOCKER_USERNAME }}/workout-app-auth
+    - run: docker push "${{ secrets.DOCKER_USERNAME }}/workout-app-backend
+    - run: docker push "${{ secrets.DOCKER_USERNAME }}/workout-app-database
+    - run: docker push "${{ secrets.DOCKER_USERNAME }}/workout-app-frontend-api
+    - run: docker push "${{ secrets.DOCKER_USERNAME }}/workout-app-frontend-web
