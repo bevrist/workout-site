@@ -190,7 +190,7 @@ jobs:
     - run: docker network rm frontend-web_net
 
   docker-hub-push-images:
-    needs: [docker-login]
+    needs: [test-database, test-auth, test-backend, test-frontend-api, test-frontend-web]
     runs-on: [self-hosted, docker]
     steps:
     - uses: actions/checkout@v2
