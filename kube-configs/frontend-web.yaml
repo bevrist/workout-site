@@ -17,12 +17,12 @@ spec:
     spec:
      containers:
       - name: frontend-web
-        image: 35.236.22.57:5000/frontend-web
+        image: aduckonquack/workout-app-frontend-web
         env:
           - name: FRONTEND_LISTEN_ADDRESS
             value: 0.0.0.0:80
           - name: FRONTEND_WEBSITE_URL
-            value: workout-site.com
+            value: dreamandachieve.net
         imagePullPolicy: IfNotPresent
         ports:
         - name: web-port
@@ -34,7 +34,6 @@ spec:
           requests:
             cpu: "400m"
             memory: "200Mi"
-
 ---
 apiVersion: v1
 kind: Service
@@ -48,39 +47,31 @@ spec:
     protocol: TCP
   selector:
     svc: frontend-web
-
 ---
-
-apiVersion: v1
-kind: Service
-metadata:
-  name: frontweb-out
-  namespace: web
-spec:
-  selector:
-      svc: frontend-web
-  ports:
-      # By default and for convenience, the `targetPort` is set to the same value as the `port` field.
-    - port: 80
-      targetPort: 80
-
----
-
-apiVersion: networking.k8s.io/v1
+apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: frontend-web-ingress
+  name: fwi
+  namespace: web
   annotations:
+    cert-manager.io/issuer: rancher
+    cert-manager.io/issuer-kind: Issuer
     app.kubernetes.io/name: ingress-nginx
+    ingress.kubernetes.io/force-ssl-redirect: "true"
+status:
+ loadBalancer:
+   ingress:
+   - hostname: dreamachieve.net
 spec:
+  tls:
+  - hosts:
+    - dreamandachieve.net
+    secretName: workout-app-tls
   rules:
-    - host: "dreamandachieve.net"
-      http:
-        paths:
-          - path: "/"
-            pathType: Prefix
-            backend:
-              service:
-                name: frontend-web
-                port:
-                  number: 80
+  - host: "dreamandachieve.net"
+    http:
+     paths:
+      - path:
+        backend:
+          serviceName: frontend-web
+          servicePort: 80
