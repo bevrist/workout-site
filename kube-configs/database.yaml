@@ -17,8 +17,8 @@ spec:
         svc: database-svc
     spec:
      containers:
-      - name: database
-        image: 35.236.22.57:5000/database
+      - name: database-svc
+        image: aduckonquack/workout-app-database
         env:
          - name: DATABASE_LISTEN_ADDRESS
            value: "0.0.0.0:8050"

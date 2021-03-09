@@ -17,12 +17,12 @@ spec:
     spec:
      containers:
       - name: auth
-        image: 35.236.22.57:5000/auth
+        image: aduckonquack/workout-app-auth
         env:
           - name: AUTH_LISTEN_ADDRESS
             value: "0.0.0.0:8070"
           - name: AUTH_FIREBASE_CREDENTIALS
-            value: '{test}'
+            value: '{"type": "service_account","project_id": "workout-app-8b023","private_key_id": "bbfc733122f1dd459c9b89c447499f45fb4d43ed","private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDIRx9ZjsaHvHWd\ntMS2oINusb48754vpvr+rYpXqZsfDGjDc+ek9B9Qmp87Uo9+V3/6rcEOh00vk++0\nzoPnWZ+aJ0Ql6zcuJZYIQOiIlRMZ/OuXJn4xZgsTyp03FRH++GyeG4pLH2Yrffvj\nQE5NJKRu0iZK1tHaVY/dnRyNabW2iK07yEzrexSpNYvxKEOo6JAp686qu9j7H5Za\nUqdAXebsVMGG3Z8oHnOFyPKe8OZkaKHejYlMGHq+EIn/KqwaqLrJISFUbqI7Nuqa\nECvVEyXChNezUsizZGwr5yc9ycv/E7jneZ7KivMtTrt9YaXsI+DN4RDHYJt644r0\nD7hLEOjPAgMBAAECggEAAnETicT62KbMjEqq50sXrx7NofKN7CjOAJLfD+iKcpt1\nH4TnOxSa2SG5dUCxbSnl7ol1xBaUM1NLZdnqs8Rc9MUryIaQmqhsptcbvqaKoBN8\nT9BxU2raEbizp/tCx+gBcwAE9JuCZF9Z1dBv4/LhalR3kQwDbPUEFwCWW4cBZyNH\n6Pl0YosCuxYu+7Ssu8FRI7r/J8asPVFH19371xhaeF5eu9xAnr9xx4ec7TzNwTVb\nT20VnOOaJRTxR7dqA7p/11QRhRINDhl7YYpf8JfA/gER4vsCBYPUVkUo8SUfmmWi\nqGOQDjjWfYNE5/I3ovh63+2eplWPB8zC0mKqtAKRSQKBgQDxqakOT2DjwBUSmbxv\nUOSMAYOpdysWoLd3B0/cFxaRU0PK9yd9c+fQWCI7+oE8whlXf7xBybjdS6Ebl/iQ\npaSfYrwuzc+iMyjiAsJCgDWOYt2JqFVpqJVmqfXY81Qf38sLj/K0fMe72ZvpwG+w\n6HvNyJhjAN74mVdl8tOpwicBqwKBgQDUKOnxZN3eN1T/Tes1SZTe+eeziDTMm+wT\nbA69/+KMJ7IXfSHz4vihlafZSyF8xiitH5J35fL9BxK4NFmaSjz0r8uGL5wThxTt\nq5Fcr6MXSny6AHNHKkFzsYXnWDdGY3Pp48qyn3+0K7m74cBtvrurFIE0W78JS1iu\naONHB2KZbQKBgAjhGv0TnZPAswWD8JCGgF9EjvnjDwo9zX/qHN0RXBrq3ErQ2fqa\nD6JwGpHpmmYJG7VDVD92kfxPkxPYeaGW9H2GuzNdDIwBJTdosoqO+2jH6Svtq3W+\nY/7pr8bQ6f5h0qwSFfDbxNr6G+hy0afGYwYkoLTCi27G85cjXPOX1qcRAoGANXq6\nvea3JrS78D8r8xrBNBO6nD7RUGJdd+fdL3e5G6tF8TXRwTCNi+21iciugE1TI5C5\n0w9b2PxXc6d+jq33/5Xwr7qAlUuPsvl0gvCjI9Pa7OgAJwg3x3oQTuilxlB7f5G0\nHqKmBjyfbQTTBNb3Z4CbsR8PYMBlclFuORFbgWECgYEA2PKDSVWuoz+K2TgriwIE\nNYoAN74brqbESfZQrWxwzNgw5ovOlVPCS6n5V28IGIV3lmTAgG33x6d7xKlzfcBr\nEAVukaoC0pUXexiqdW5R6t+gOyvssrKwbIeWag5lEvsNqNr3i1W81DxocqdrpjDK\nnY71lmNZ3XZ7cNER7Mb3Fys=\n-----END PRIVATE KEY-----\n","client_email": "firebase-adminsdk-jh1ev@workout-app-8b023.iam.gserviceaccount.com","client_id": "108677179887513833648","auth_uri": "https://accounts.google.com/o/oauth2/auth","token_uri": "https://oauth2.googleapis.com/token","auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs","client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-jh1ev%40workout-app-8b023.iam.gserviceaccount.com"}'
         imagePullPolicy: IfNotPresent
         ports:
         - name: auth-port
