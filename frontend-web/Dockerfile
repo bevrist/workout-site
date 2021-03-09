@@ -5,15 +5,15 @@ RUN npm install --global google-closure-compiler html-minifier csso-cli
 WORKDIR /app
 COPY ./www .
 # replace all commented redirects (// window.location.replace) with uncommented versions
-RUN find ./ -type f -exec sed -i -e "s,// window.location.replace,window.location.replace,g" {} \;
+# RUN find ./ -type f -exec sed -i -e "s@// window.location.replace@window.location.replace@g" {} \;
 # replace all hardcoded test addresses (http://localhost:5500) with relative addresses
 RUN find ./ -type f -exec sed -i -e "s,http://localhost:5500/,/,g" {} \;
 # replace all hardcoded test addresses (http://localhost:8888) with relative API addresses /api/page
 RUN find ./ -type f -exec sed -i -e "s,http://localhost:8888/,/api/,g" {} \;
 # compile all web files into optimized and minified versions
-RUN find ./ -type f -name "*.js" -exec google-closure-compiler --js {} --js_output_file {}.min \; -exec mv {}.min {} \; \
-    && find ./ -type f -name "*.css" -exec csso {} -o {}.min \; -exec mv {}.min {} \; \
-    && find ./ -type f -name "*.html" -exec html-minifier --collapse-whitespace --remove-comments --remove-optional-tags --remove-script-type-attributes --remove-tag-whitespace --use-short-doctype --minify-css true --minify-js true {} -o {}.min \; -exec mv {}.min {} \;
+# RUN find ./ -type f -name "*.js" -exec google-closure-compiler --js {} --js_output_file {}.min \; -exec mv {}.min {} \; \
+#     && find ./ -type f -name "*.css" -exec csso {} -o {}.min \; -exec mv {}.min {} \; \
+#     && find ./ -type f -name "*.html" -exec html-minifier --collapse-whitespace --remove-comments --remove-optional-tags --remove-script-type-attributes --remove-tag-whitespace --use-short-doctype --minify-css true --minify-js true {} -o {}.min \; -exec mv {}.min {} \;
 
 
 FROM alpine:latest
