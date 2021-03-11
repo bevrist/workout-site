@@ -19,10 +19,8 @@ spec:
       - name: frontend-web
         image: aduckonquack/workout-app-frontend-web
         env:
-          - name: FRONTEND_LISTEN_ADDRESS
-            value: 0.0.0.0:80
-          - name: FRONTEND_WEBSITE_URL
-            value: dreamandachieve.net
+          - name: FRONTEND_API_URL
+            value: "frontend-api:8888"
         imagePullPolicy: IfNotPresent
         ports:
         - name: web-port
