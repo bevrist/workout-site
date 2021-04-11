@@ -1,5 +1,9 @@
 # Workout-site
 
+This project is a monorepo of all of the services which power this site. 
+A workout tracking application for helping users track optimal intake and workout sessions when working with a trainer.
+
+
 # Running Instructions:
 > Run all commands from root folder of project  
 
@@ -20,6 +24,8 @@ to run a simple local instance, run: `docker-compose down && docker-compose up -
 
 ---
 **mongoDB:** `docker build -t mongodb-test -f ./database/mongoDB/Dockerfile . && docker run --rm -it -e MONGO_INITDB_ROOT_USERNAME=adminz -e MONGO_INITDB_ROOT_PASSWORD=cheeksbutt -p 27017:27017 --net=host mongodb-test`
+
+**Redis:** `docker run --rm -it -p 6379:6379 redis redis-server`
 ---
 
 # Tests:

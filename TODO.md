@@ -1,5 +1,27 @@
 # TODO
 
+# AUTH REVAMP
+- [ ] remove firebase dependency
+- [ ] add goth 
+    - [ ] change goth example to have decent looking sign in page
+    - [ ] change response to extract email. generate token, store token in redis, redirect to /daily-update
+    - [ ] add /logout which deletes current token from redis and browser, then redirects to homepage
+
+- [ ] add /validate endpoint that takes tokens and returns auth object
+
+- [ ] make browser store "Authentication" session token with HttpOnly header
+
+- [ ] fix frontend-web to perform appropriate redirects
+
+## REDIS
+- [ ] make redis container
+- [ ] add redis instructions to readme
+- [ ] add redis data persistence
+
+
+
+
+==========================================================
 - add ability to get list of all users to api
 - Test with real firebase users
 - complete FIXMES

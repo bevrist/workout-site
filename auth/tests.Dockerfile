@@ -1,7 +1,12 @@
 FROM golang:1
 
 ENV GO111MODULE=off
-RUN go get -v firebase.google.com/go firebase.google.com/go/auth github.com/gorilla/mux google.golang.org/api/option
+RUN go get -v github.com/google/go-cmp/cmp
+RUN go get -v github.com/go-redis/redis/v8
+RUN go get -v github.com/gorilla/mux github.com/gorilla/pat github.com/markbates/goth github.com/markbates/goth/gothic
+RUN go get -v github.com/markbates/goth/providers/google github.com/markbates/goth/providers/github
+RUN wget -O /zoneinfo.zip https://github.com/golang/go/raw/master/lib/time/zoneinfo.zip
+ENV ZONEINFO /zoneinfo.zip
 WORKDIR /auth
 COPY ./auth .
 COPY ./common ../common

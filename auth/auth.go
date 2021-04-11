@@ -10,10 +10,8 @@ import (
 	"net/http"
 	"os"
 
-	firebase "firebase.google.com/go"
-	"firebase.google.com/go/auth"
+	"github.com/go-redis/redis/v8"
 	"github.com/gorilla/mux"
-	"google.golang.org/api/option"
 
 	structs "../common"
 )
@@ -38,6 +36,7 @@ func getUID(sessionToken string) string {
 	}
 
 	//validate session token and return UID, failure will return empty string
+	// FIXME: replace with redis based search
 	token, err := client.VerifyIDTokenAndCheckRevoked(context.Background(), sessionToken)
 	if err != nil {
 		if err.Error() == "ID token has been revoked" {
@@ -89,7 +88,7 @@ func GetUIDHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	//populate environment variables
 	listenAddress := os.Getenv("AUTH_LISTEN_ADDRESS")
-	firebaseCredentials := os.Getenv("AUTH_FIREBASE_CREDENTIALS")
+	// firebaseCredentials := os.Getenv("AUTH_FIREBASE_CREDENTIALS")
 	//set default environment variables
 	if listenAddress == "" {
 		listenAddress = "0.0.0.0:8070"
