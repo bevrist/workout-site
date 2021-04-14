@@ -18,11 +18,14 @@ import (
 
 // Global Variables
 var apiVersion string = "1.0" //the api version this service implements
-// list of admin UID's (from firebase)
+// list of admin UID's
 var Admins []string = []string{"ADMIN-UIDS-HERE"}
+var test = true
 
-var client *auth.Client //firebase app instance
-var useFirebase bool    //debug flag for using firebase
+// var client *auth.Client //firebase app instance
+// var useFirebase bool    //debug flag for using firebase
+var ctx = context.Background()
+var rdb = &redis.Client{}
 
 //helper function for actually retrieving UID, returns empty string if token is invalid
 func getUID(sessionToken string) string {
@@ -31,24 +34,24 @@ func getUID(sessionToken string) string {
 		return "testUID"
 	} else if sessionToken == "testfail" {
 		return ""
-	} else if useFirebase == false {
+	} else if test == true {
 		return sessionToken
 	}
 
-	//validate session token and return UID, failure will return empty string
-	// FIXME: replace with redis based search
-	token, err := client.VerifyIDTokenAndCheckRevoked(context.Background(), sessionToken)
-	if err != nil {
-		if err.Error() == "ID token has been revoked" {
-			// Token is revoked. Inform the user to re-authenticate or signOut() the user.
-			log.Println("Token revoked: " + sessionToken)
-			return ""
-		}
-		// Token is invalid
-		log.Println("Token Invalid: " + sessionToken)
-		return ""
-	}
-	return token.UID
+	// //validate session token and return UID, failure will return empty string
+	// // FIXME: replace with redis based search
+	// token, err := client.VerifyIDTokenAndCheckRevoked(context.Background(), sessionToken)
+	// if err != nil {
+	// 	if err.Error() == "ID token has been revoked" {
+	// 		// Token is revoked. Inform the user to re-authenticate or signOut() the user.
+	// 		log.Println("Token revoked: " + sessionToken)
+	// 		return ""
+	// 	}
+	// 	// Token is invalid
+	// 	log.Println("Token Invalid: " + sessionToken)
+	// 	return ""
+	// }
+	// return token.UID
 }
 
 // GetUIDHandler validates session token and returns UID
@@ -88,39 +91,50 @@ func GetUIDHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	//populate environment variables
 	listenAddress := os.Getenv("AUTH_LISTEN_ADDRESS")
-	// firebaseCredentials := os.Getenv("AUTH_FIREBASE_CREDENTIALS")
+	redisConnectionString := os.Getenv("REDIS_CONNECTION_STRING")
 	//set default environment variables
 	if listenAddress == "" {
 		listenAddress = "0.0.0.0:8070"
 	}
+	if redisConnectionString == "" {
+		// redisConnectionString = "redis://user:pass:@localhost:6379/0"
+		redisConnectionString = "redis://localhost:6379/0"
+	}
 
-	useFirebase = true
+	//create new redis client
+	opt, err := redis.ParseURL(redisConnectionString)
+	if err != nil {
+		panic(err)
+	}
+	rdb = redis.NewClient(opt)
+
+	// useFirebase = true
 	//initialize firebase app connection
-	var opt option.ClientOption
-	log.Println("AUTH_FIREBASE_CREDENTIALS = '" + firebaseCredentials + "'")
-	if firebaseCredentials == "{}" {
-		log.Println("Env AUTH_FIREBASE_CREDENTIALS empty, attempting to load from file...")
-		opt = option.WithCredentialsFile("./workout-app-296422-firebase-adminsdk-3zpuw-72e7bc27c0.json") //load credentials file
-	} else if firebaseCredentials == "{test}" || firebaseCredentials == "" {
-		log.Println("WARNING: Auth_Service not using firebase, all replies will be mirrored...")
-		useFirebase = false
-		Admins = append(Admins, "testUID")
-		Admins = append(Admins, "test3")
-	} else {
-		log.Println("Using firebase...")
-		opt = option.WithCredentialsJSON([]byte(firebaseCredentials))
-	}
+	// var opt option.ClientOption
+	// log.Println("AUTH_FIREBASE_CREDENTIALS = '" + firebaseCredentials + "'")
+	// if firebaseCredentials == "{}" {
+	// 	log.Println("Env AUTH_FIREBASE_CREDENTIALS empty, attempting to load from file...")
+	// 	opt = option.WithCredentialsFile("./workout-app-296422-firebase-adminsdk-3zpuw-72e7bc27c0.json") //load credentials file
+	// } else if firebaseCredentials == "{test}" || firebaseCredentials == "" {
+	// 	log.Println("WARNING: Auth_Service not using firebase, all replies will be mirrored...")
+	// 	useFirebase = false
+	// 	Admins = append(Admins, "testUID")
+	// 	Admins = append(Admins, "test3")
+	// } else {
+	// 	log.Println("Using firebase...")
+	// 	opt = option.WithCredentialsJSON([]byte(firebaseCredentials))
+	// }
 
-	if useFirebase == true {
-		app, err := firebase.NewApp(context.Background(), nil, opt)
-		if err != nil {
-			log.Fatalf("error initializing firebase app: %v\n", err)
-		}
-		client, err = app.Auth(context.Background())
-		if err != nil {
-			log.Fatalf("error getting firebase Auth client: %v\n", err)
-		}
-	}
+	// if useFirebase == true {
+	// 	app, err := firebase.NewApp(context.Background(), nil, opt)
+	// 	if err != nil {
+	// 		log.Fatalf("error initializing firebase app: %v\n", err)
+	// 	}
+	// 	client, err = app.Auth(context.Background())
+	// 	if err != nil {
+	// 		log.Fatalf("error getting firebase Auth client: %v\n", err)
+	// 	}
+	// }
 
 	//specify routes and start http server
 	var router = mux.NewRouter()

@@ -3,9 +3,9 @@ package main
 import (
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
-	"log"
 	"testing"
 	"time"
 
@@ -15,23 +15,24 @@ import (
 )
 
 var authAddress string
+
 // get service address from env
 func TestMain(m *testing.M) {
 	authAddress = os.Getenv("AUTH_SERVICE_ADDRESS")
 	if authAddress == "" {
 		authAddress = "localhost:8070"
 	}
-	if (authAddress == "localhost:8070") {
+	if authAddress == "localhost:8070" {
 		log.Println("Launching Auth for Local Test...")
 		go main()
 		time.Sleep(time.Second)
 	}
 	log.Println("Testing Auth at address: " + authAddress)
-    os.Exit(m.Run())
+	os.Exit(m.Run())
 }
 
 func TestApiVersion(t *testing.T) {
-	req, err := http.Get("http://"+authAddress+"/apiVersion")
+	req, err := http.Get("http://" + authAddress + "/apiVersion")
 	if err != nil {
 		t.Errorf("Connection failed: %v", err)
 		t.FailNow()
@@ -46,7 +47,7 @@ func TestApiVersion(t *testing.T) {
 }
 
 func TestGetUID(t *testing.T) {
-	req, err := http.Get("http://"+authAddress+"/getUID/test")
+	req, err := http.Get("http://" + authAddress + "/getUID/test")
 	if err != nil {
 		t.Errorf("Connection failed: %v", err)
 		t.FailNow()
@@ -65,7 +66,7 @@ func TestGetUID(t *testing.T) {
 }
 
 func TestGetUIDFail(t *testing.T) {
-	req, err := http.Get("http://"+authAddress+"/getUID/testfail")
+	req, err := http.Get("http://" + authAddress + "/getUID/testfail")
 	if err != nil {
 		t.Errorf("Connection failed: %v", err)
 		t.FailNow()
@@ -85,7 +86,7 @@ func TestGetUIDFail(t *testing.T) {
 
 // test for user that does not have admin status
 func TestGetNonAdminStatus(t *testing.T) {
-	req, err := http.Get("http://"+authAddress+"/getUID/test2")
+	req, err := http.Get("http://" + authAddress + "/getUID/test2")
 	if err != nil {
 		t.Errorf("Connection failed: %v", err)
 		t.FailNow()

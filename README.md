@@ -16,6 +16,7 @@ to run a simple local instance, run: `docker-compose down && docker-compose up -
 
 **Frontend-api:** `docker build -t frontend-api -f ./frontend-api/Dockerfile . && docker run -p 8080:8080 --net=host --rm -it -e FRONTEND_API_LISTEN_ADDRESS="0.0.0.0:8888" -e BACKEND_ADDRESS="localhost:8090" -e AUTH_ADDRESS="localhost:8070" frontend-api`
 
+<!-- FIXME: update this command env vars -->
 **Auth:** `docker build -t auth -f ./auth/Dockerfile . && docker run -p 8070:8070 --net=host --rm -it -e AUTH_LISTEN_ADDRESS="0.0.0.0:8070" -e AUTH_FIREBASE_CREDENTIALS='{}' auth`
 
 **Backend:** `docker build -t backend -f ./backend/Dockerfile . && docker run -p 8090:8090 --net=host --rm -it -e BACKEND_LISTEN_ADDRESS="0.0.0.0:8090" -e DATABASE_ADDRESS="localhost:8050" backend`
@@ -25,7 +26,7 @@ to run a simple local instance, run: `docker-compose down && docker-compose up -
 ---
 **mongoDB:** `docker build -t mongodb-test -f ./database/mongoDB/Dockerfile . && docker run --rm -it -e MONGO_INITDB_ROOT_USERNAME=adminz -e MONGO_INITDB_ROOT_PASSWORD=cheeksbutt -p 27017:27017 --net=host mongodb-test`
 
-**Redis:** `docker run --rm -it -p 6379:6379 redis redis-server`
+**Redis:** `docker build -t redis-test auth/redis && docker run --rm -it -p 6379:6379 redis-test redis-server`
 ---
 
 # Tests:

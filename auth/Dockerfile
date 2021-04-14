@@ -1,12 +1,12 @@
 FROM golang:1
 
-ENV GO111MODULE=off
+# ENV GO111MODULE=off
 RUN go get -v github.com/go-redis/redis/v8
 RUN go get -v github.com/gorilla/mux github.com/gorilla/pat github.com/markbates/goth github.com/markbates/goth/gothic
 RUN go get -v github.com/markbates/goth/providers/google github.com/markbates/goth/providers/github
 WORKDIR /app
 COPY ./common ../common
-COPY ./auth/auth.go .
+COPY ./auth/ .
 # RUN go get -d -v ./...
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o auth .
 
