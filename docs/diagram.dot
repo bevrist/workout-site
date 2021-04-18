@@ -4,22 +4,33 @@ digraph G {
     rankdir = LR;
     label = "Workout App Diagram";
     Client [shape=Mcircle];
-    Firebase [shape=Msquare];
+    Redis [shape=Msquare];
     FrontendApi;
     FrontendWeb;
     Backend;
     Database;
     Auth;
-    MongoDB [shape=square];
+    MongoDB [shape=Msquare];
 
     subgraph cluster_0 {
         color = white;
         label = "";
-        Client -> Firebase, FrontendApi, FrontendWeb;
-        FrontendWeb -> FrontendApi;
-        FrontendApi -> Backend, Auth;
-        Backend -> Database;
-        Database -> MongoDB[minlen=0.5];
-        Auth -> Firebase;
+        Client -> FrontendWeb [style=dotted];
+        FrontendWeb -> FrontendApi, Auth [style=dotted];
+        FrontendApi -> Backend, Auth [style=dashed];
+        Backend -> Database [style=dashed];
+        Database -> MongoDB [minlen=0.5];
+        Auth -> Redis [minlen=0.5 style=bold];
+    }
+
+    subgraph cluster_legend {
+        label="Legend";
+        internet_users [shape=Mcircle label="Users"];
+        stateless_service [label="Stateless\nService"];
+        persistent_database [shape=Msquare label="Persistent\nDatabase"];
+
+        internet_users -> stateless_service [label="External\nUser\nTraffic" style=dotted];
+        stateless_service -> persistent_database [label="Database\nTraffic"];
+        stateless_service -> stateless_service [label="Internal\nREST" style=dashed];
     }
 }

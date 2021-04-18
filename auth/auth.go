@@ -26,7 +26,7 @@ import (
 // Global Variables
 var apiVersion string = "1.0" //the api version this service implements
 // list of admin UID's
-var Admins []string = []string{"testUID", "ADMIN-UIDS-HERE"}
+var Admins []string = []string{"testUID", "test3", "ADMIN-UIDS-HERE"}
 var test = false
 
 // var client *auth.Client //firebase app instance
