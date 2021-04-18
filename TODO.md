@@ -2,12 +2,13 @@
 
 # AUTH REVAMP
 - [x] remove firebase dependency
-- [ ] add goth 
+- [x] have auth check for existing valid bearer token and redirect if exists, else delete token and continue login sequence
+- [x] add goth 
     - [ ] change goth example to have decent looking sign in page
-    - [ ] change response to extract email. generate token, store token in redis, redirect to /daily-update
-    - [ ] add /logout which deletes current token from redis and browser, then redirects to homepage
+    - [x] change response to extract email. generate token, store token in redis, redirect to /daily-update
+    - [x] add /logout which deletes current token from redis and browser, then redirects to homepage
 
-- [ ] make browser store "Authentication" session token with HttpOnly header
+- [x] make browser store "Authentication" session token with HttpOnly header
 
 - [ ] fix frontend-web to perform appropriate redirects
 
@@ -17,7 +18,7 @@
 - [ ] add redis data persistence
 
 
-
+- [ ] update docker-compose
 
 ==========================================================
 - complete FIXMES

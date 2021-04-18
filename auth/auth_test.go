@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	structs "../common"
+	structs "local/common"
 
 	"github.com/google/go-cmp/cmp"
 )
