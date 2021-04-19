@@ -26,7 +26,7 @@ import (
 // Global Variables
 var apiVersion string = "1.0" //the api version this service implements
 // list of admin UID's
-var Admins []string = []string{"testUID", "test3", "ADMIN-UIDS-HERE"}
+var admins []string
 var test = false
 
 // var client *auth.Client //firebase app instance
@@ -49,7 +49,7 @@ func GetUIDHandler(res http.ResponseWriter, req *http.Request) {
 	}
 	//check if user is on admins list
 	isAdmin := false
-	for _, admin := range Admins {
+	for _, admin := range admins {
 		if admin == uid {
 			isAdmin = true
 			break
@@ -80,27 +80,30 @@ func validateSessionToken(token string) string {
 		return token
 	}
 	// regex confirm token is valid (no funny or extra characters)
-	reg := regexp.MustCompile(`^[a-zA-Z0-9]{10,}$`)
+	reg := regexp.MustCompile(`^[a-zA-Z0-9=_-]{20,}$`)
 	if reg.MatchString(token) == false {
+		log.Println("REGEX FAIL: " + token) //FIXME remove
 		return ""
 	}
 	// if token doesnt exist in db, this will return ""
 	val, err := rdb.Get(ctx, token).Result()
-	if err != nil {
-		log.Println("WARN: get token fail: " + err.Error())
+	if err != nil && err != redis.Nil {
+		log.Println("ERROR: get token fail: " + err.Error())
 	}
+	log.Println("DB RETURN: " + val) //FIXME remove
 	return val
 }
 
 // extract user info from oauth, generate session token, store in redis, store cookie, redirect to /daily-update
 func completeLogin(gothUser goth.User, res http.ResponseWriter) {
-	newSessionToken := randSeq(64)
+	newSessionToken := randSeq(240) + "=="
 	// set token which expires in one day
 	err := rdb.Set(ctx, newSessionToken, gothUser.Email, time.Hour*24).Err()
 	if err != nil {
 		log.Println("ERROR: Setting Session Token Failed: " + gothUser.Email + "; " + err.Error())
 	}
-	res.Header().Set("Set-Cookie", "Authorization="+newSessionToken+"; HttpOnly; SameSite=Lax")
+	res.Header().Set("Set-Cookie", "Authorization="+newSessionToken+"; HttpOnly; Path=/; SameSite=Lax")
+	res.Header().Add("Set-Cookie", "_gothic_session=; HttpOnly; Path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT") //not using goth session.
 	res.Header().Set("Location", "/daily-update")
 	res.WriteHeader(http.StatusTemporaryRedirect)
 	fmt.Fprint(res, `<h2>Login Successful!</h2><br><a href="/daily-update">Go to Daily Update</a>`)
@@ -109,11 +112,14 @@ func completeLogin(gothUser goth.User, res http.ResponseWriter) {
 // handles logging out of application, delete session token, delete cookie, redirect home
 func authLogoutHandler(res http.ResponseWriter, req *http.Request) {
 	gothic.Logout(res, req)
-	err := rdb.Del(ctx, req.Header.Get("Authorization")).Err()
-	if err != nil {
-		log.Println("ERROR: Deleting Session Token Failed: " + err.Error())
+	authCookie, err := req.Cookie("Authorization")
+	if err == nil {
+		err := rdb.Del(ctx, authCookie.Value).Err()
+		if err != nil {
+			log.Println("ERROR: Deleting Session Token Failed: " + err.Error())
+		}
 	}
-	res.Header().Set("Set-Cookie", "Authorization=0; HttpOnly; expires=Thu, 01 Jan 1970 00:00:00 GMT")
+	res.Header().Set("Set-Cookie", "Authorization=; HttpOnly; Path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT")
 	res.Header().Set("Location", "/")
 	res.WriteHeader(http.StatusTemporaryRedirect)
 }
@@ -128,27 +134,34 @@ func authCallbackHandler(res http.ResponseWriter, req *http.Request) {
 	completeLogin(gothUser, res)
 }
 
-// realistically this just redirects user to oauth callback
+// run oauth login sequence
 func authProviderHandler(res http.ResponseWriter, req *http.Request) {
-	// try to get the user without re-authenticating (fails, no goth session exists)
-	if gothUser, err := gothic.CompleteUserAuth(res, req); err == nil {
-		completeLogin(gothUser, res)
-	} else {
-		gothic.BeginAuthHandler(res, req)
-	}
+	gothic.BeginAuthHandler(res, req)
 }
 
-//show login page
+//show login page if no valid token present
 func authLoginHandler(res http.ResponseWriter, req *http.Request) {
-	// if user auth token is invalid, delete token from browser
-	if validateSessionToken(req.Header.Get("Authorization")) == "" {
-		res.Header().Set("Set-Cookie", "Authorization=0; HttpOnly; expires=Thu, 01 Jan 1970 00:00:00 GMT")
-	} else { //redirect to /daily-update if valid token
-		res.Header().Set("Location", "/")
-		res.WriteHeader(http.StatusTemporaryRedirect)
+	dbPing := rdb.Ping(ctx).Err()
+	if dbPing != nil {
+		log.Println("ERROR: redis ping failed: " + dbPing.Error())
+		http.Error(res, "500 - Internal Auth Server Error.", http.StatusInternalServerError)
+		return
 	}
+	//check for existing auth token to avoid sign in if possible
+	authCookie, err := req.Cookie("Authorization")
+	if err == nil {
+		if validateSessionToken(authCookie.Value) == "" { // if user auth token is invalid, delete token from browser
+			log.Println("Invalid Session Found!") //FIXME: remove
+			res.Header().Set("Set-Cookie", "Authorization=; HttpOnly; Path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT")
+		} else { //redirect to /daily-update if valid token
+			log.Println("Valid Session Found! redirecting...") //FIXME: remove
+			res.Header().Set("Location", "/daily-update")
+			res.WriteHeader(http.StatusTemporaryRedirect)
+		}
+	}
+	//show login page
 	// TODO: swap this "page" with html file embedded
-	fmt.Fprint(res, `<h1>Login</h1><a href="/auth/github">login with github</a><br><a href="/auth/google">login with google</a>`)
+	fmt.Fprint(res, `<h1>Login</h1><br><a href="/auth/github">login with github</a>`)
 }
 
 //generate random string of n length
@@ -165,6 +178,7 @@ func main() {
 	//populate environment variables
 	listenAddress := os.Getenv("AUTH_LISTEN_ADDRESS")
 	redisConnectionString := os.Getenv("REDIS_CONNECTION_STRING")
+	adminsEnv := os.Getenv("ADMINS")
 	testEnv := os.Getenv("TEST")
 	//set default values for missing env vars
 	if listenAddress == "" {
@@ -174,10 +188,16 @@ func main() {
 		// redisConnectionString = "redis://user:pass:@localhost:6379/0"
 		redisConnectionString = "redis://localhost:6379/0"
 	}
+	if adminsEnv == "" {
+		log.Println(`WARN: No ADMINS provided, list expected in the form "ADMINS='testUID,test3,test@example.com'"`)
+	}
 	if strings.ToLower(testEnv) == "true" || testEnv == "1" {
 		log.Println("WARN: TEST MODE ENABLED!")
 		test = true
 	}
+
+	//get properly formatted slice of admin users from env var
+	admins = strings.Split(strings.ReplaceAll(adminsEnv, " ", ""), ",")
 
 	//die if provider key and secret not provided, instantiate goth providers
 	if test != true {

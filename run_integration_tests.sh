@@ -88,7 +88,7 @@ sleep 1
 echo "preparing frontend-api integration test..."
 docker network create --driver bridge frontend-api_net
 docker run --rm -d --name=mongodb-mock-database --net=frontend-api_net -e MONGO_INITDB_ROOT_USERNAME=adminz -e MONGO_INITDB_ROOT_PASSWORD=cheeksbutt mongodb-mock-database:$(git describe --always)
-docker run --rm -d --name=auth-service --net=frontend-api_net -e TEST=1 -e AUTH_LISTEN_ADDRESS="0.0.0.0:80" auth:$(git describe --always)
+docker run --rm -d --name=auth-service --net=frontend-api_net -e TEST=1 -e AUTH_LISTEN_ADDRESS="0.0.0.0:80" -e ADMINS='testUID,test3' auth:$(git describe --always)
 sleep 1 && docker run -d --rm --name=database-service --net=frontend-api_net -e DATABASE_ADDRESS=mongodb-mock-database:27017 -e DATABASE_LISTEN_ADDRESS=0.0.0.0:80 database:$(git describe --always)
 sleep 1 && docker run -d --rm --name=backend-service --net=frontend-api_net -e DATABASE_ADDRESS=database-service -e BACKEND_LISTEN_ADDRESS=0.0.0.0:80 backend:$(git describe --always)
 sleep 1 && docker run -i --rm --name=frontend-api-service --net=frontend-api_net -e BACKEND_ADDRESS=backend-service -e AUTH_ADDRESS=auth-service -e FRONTEND_API_LISTEN_ADDRESS=0.0.0.0:80 frontend-api:$(git describe --always) &

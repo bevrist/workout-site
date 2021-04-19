@@ -20,4 +20,5 @@ CMD ["/entrypoint.sh"]
 ENV AUTH_SERVICE_ADDRESS="localhost:8070"
 ENV AUTH_LISTEN_ADDRESS="localhost:8070"
 ENV REDIS_CONNECTION_STRING="redis://localhost:6379/0"
+ENV ADMINS='testUID,test3'
 ENV TEST=1
