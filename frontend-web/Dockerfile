@@ -34,8 +34,12 @@ RUN printf '#!/bin/sh \n\
     if [[ -n "${FRONTEND_API_URL}" ]]; then \n\
         sed -i -e "s,<API_ADDRESS>,$FRONTEND_API_URL,g" /etc/nginx/conf.d/nginx.conf \n\
     fi \n\
+    if [[ -n "${AUTH_URL}" ]]; then \n\
+        sed -i -e "s,<AUTH_ADDRESS>,$AUTH_URL,g" /etc/nginx/conf.d/nginx.conf \n\
+    fi \n\
     echo "frontend-web listening at: 0.0.0.0:80" \n\
     echo "forwarding api requests to: $FRONTEND_API_URL" \n\
+    echo "forwarding auth requests to: $AUTH_URL" \n\
     nginx -g "daemon off;" \n\
     ' > /start.sh; chmod +x /start.sh
 
@@ -43,3 +47,4 @@ CMD ["tini", "--", "/start.sh"]
 
 EXPOSE 80
 ENV FRONTEND_API_URL=http://localhost:8888
+ENV AUTH_URL=http://localhost:8070

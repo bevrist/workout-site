@@ -12,7 +12,7 @@ to run a simple local instance, run: `docker-compose down && docker-compose up -
 
 
 ## Individual Containers
-**Frontend-Web:** `docker build -t frontend-web ./frontend-web && docker run --rm -it -e FRONTEND_API_URL="http://localhost:8888" -p 80:80 frontend-web`
+**Frontend-Web:** `docker build -t frontend-web ./frontend-web && docker run --rm -it -e FRONTEND_API_URL="http://localhost:8888" -e AUTH_URL="http://localhost:8070" -p 80:80 frontend-web`
 
 **Frontend-api:** `docker build -t frontend-api -f ./frontend-api/Dockerfile . && docker run -p 8080:8080 --net=host --rm -it -e FRONTEND_API_LISTEN_ADDRESS="0.0.0.0:8888" -e BACKEND_ADDRESS="localhost:8090" -e AUTH_ADDRESS="localhost:8070" frontend-api`
 
