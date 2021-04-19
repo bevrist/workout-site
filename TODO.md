@@ -1,16 +1,14 @@
 # TODO
 
 # AUTH REVAMP
-- [x] remove firebase dependency
-- [x] have auth check for existing valid bearer token and redirect if exists, else delete token and continue login sequence
-- [x] add goth 
-    - [ ] change goth example to have decent looking sign in page
-    - [x] change response to extract email. generate token, store token in redis, redirect to /daily-update
-    - [x] add /logout which deletes current token from redis and browser, then redirects to homepage
-
-- [x] make browser store "Authentication" session token with HttpOnly header
+ - [ ] change goth example to have decent looking sign in page
 
 - [ ] fix frontend-web to perform appropriate redirects
+- [ ] fix frontend web to use Auth header instead of Session-Token
+
+- [ ] fix website to use correct auth login/logout urls
+- [ ] fix website to no longer use session-token
+- [ ] fix website to redirect to /auth on 401 errors
 
 ## REDIS
 - [ ] make redis container

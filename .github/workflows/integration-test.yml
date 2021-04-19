@@ -152,7 +152,7 @@ jobs:
     # preparing frontend-api integration test
     - run: docker network create --driver bridge frontend-api_net
     - run: docker run --rm -d --name=test-frontend-api_mongodb-mock-database --net=frontend-api_net -e MONGO_INITDB_ROOT_USERNAME=adminz -e MONGO_INITDB_ROOT_PASSWORD=cheeksbutt mongodb-mock-database:$(git describe --always)
-    - run: docker run --rm -d --name=test-frontend-api_auth-service --net=frontend-api_net -e TEST=1 -e AUTH_LISTEN_ADDRESS="0.0.0.0:80" auth:$(git describe --always)
+    - run: docker run --rm -d --name=test-frontend-api_auth-service --net=frontend-api_net -e TEST=1 -e AUTH_LISTEN_ADDRESS="0.0.0.0:80" -e ADMINS='testUID,test3' auth:$(git describe --always)
     - run: sleep 10 && docker run -d --rm --name=test-frontend-api_database-service --net=frontend-api_net -e DATABASE_ADDRESS=test-frontend-api_mongodb-mock-database:27017 -e DATABASE_LISTEN_ADDRESS=0.0.0.0:80 database:$(git describe --always)
     - run: sleep 10 && docker run -d --rm --name=test-frontend-api_backend-service --net=frontend-api_net -e DATABASE_ADDRESS=test-frontend-api_database-service -e BACKEND_LISTEN_ADDRESS=0.0.0.0:80 backend:$(git describe --always)
     - run: sleep 10 && docker run -d --rm --name=test-frontend-api_frontend-api-service --net=frontend-api_net -e BACKEND_ADDRESS=test-frontend-api_backend-service -e AUTH_ADDRESS=test-frontend-api_auth-service -e FRONTEND_API_LISTEN_ADDRESS=0.0.0.0:80 frontend-api:$(git describe --always)
