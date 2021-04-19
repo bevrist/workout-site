@@ -31,12 +31,12 @@ func TestGetHtmlFiles(t *testing.T) {
 		t.Fail()
 	}
 
-	URL = frontendWebAddress + "/auth"
-	req, err = http.Get(URL)
-	if req.StatusCode != 200 {
-		t.Errorf("Bad Response (not 200 OK) %v - %v on URL: %v", req.StatusCode, http.StatusText(req.StatusCode), URL)
-		t.Fail()
-	}
+	// URL = frontendWebAddress + "/auth"
+	// req, err = http.Get(URL)
+	// if req.StatusCode != 200 {
+	// 	t.Errorf("Bad Response (not 200 OK) %v - %v on URL: %v", req.StatusCode, http.StatusText(req.StatusCode), URL)
+	// 	t.Fail()
+	// }
 
 	URL = frontendWebAddress + "/history"
 	req, err = http.Get(URL)
