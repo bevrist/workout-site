@@ -46,7 +46,7 @@ func TestGetUserInfo(t *testing.T) {
 	var UID = "testUID"
 	req, _ := http.NewRequest("GET", "http://"+frontendApiAddress+"/userInfo", nil)
 	// set session token header for request
-	req.Header.Set("Session-Token", UID)
+	req.AddCookie(&http.Cookie{Name: "Authorization", Value: UID})
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
@@ -76,7 +76,7 @@ func TestGetInvalidUserInfo(t *testing.T) {
 	var UID = "testfail"
 	req, _ := http.NewRequest("GET", "http://"+frontendApiAddress+"/userInfo", nil)
 	// set session token header for request
-	req.Header.Set("Session-Token", UID)
+	req.AddCookie(&http.Cookie{Name: "Authorization", Value: UID})
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
@@ -97,7 +97,7 @@ func TestCreateNewSimpleUser(t *testing.T) {
 	var jsonStr = []byte(`{"FirstName":"Anthony1","LastName":"Hanna1","Weight":2151,"WaistCirc":35.51,"HeightInches":751,"LeanBodyMass":151,"Age":201,"Gender":"female"}`)
 	req, _ := http.NewRequest("POST", "http://"+frontendApiAddress+"/userInfo", bytes.NewBuffer(jsonStr))
 	// set session token header for request
-	req.Header.Set("Session-Token", UID)
+	req.AddCookie(&http.Cookie{Name: "Authorization", Value: UID})
 	req.Header.Set("Content-Type", "application/json")
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -115,7 +115,7 @@ func TestCreateNewSimpleUser(t *testing.T) {
 	//Validate UserInfo is correct
 	req2, _ := http.NewRequest("GET", "http://"+frontendApiAddress+"/userInfo", nil)
 	// set session token header for request
-	req2.Header.Set("Session-Token", UID)
+	req2.AddCookie(&http.Cookie{Name: "Authorization", Value: UID})
 	client2 := &http.Client{}
 	resp2, err := client2.Do(req2)
 	if err != nil {
@@ -147,7 +147,7 @@ func TestCreateNewSimpleUser2(t *testing.T) {
 	var jsonStr = []byte(`{"FirstName":"Anthony1-2","LastName":"Hanna1-2","StartDate":"2222-08-15","Weight":2151,"WaistCirc":35.51,"HeightInches":751,"LeanBodyMass":151,"Age":201,"Gender":"female"}`)
 	req, _ := http.NewRequest("POST", "http://"+frontendApiAddress+"/userInfo", bytes.NewBuffer(jsonStr))
 	// set session token header for request
-	req.Header.Set("Session-Token", UID)
+	req.AddCookie(&http.Cookie{Name: "Authorization", Value: UID})
 	req.Header.Set("Content-Type", "application/json")
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -165,7 +165,7 @@ func TestCreateNewSimpleUser2(t *testing.T) {
 	//Validate UserInfo is correct
 	req2, _ := http.NewRequest("GET", "http://"+frontendApiAddress+"/userInfo", nil)
 	// set session token header for request
-	req2.Header.Set("Session-Token", UID)
+	req2.AddCookie(&http.Cookie{Name: "Authorization", Value: UID})
 	client2 := &http.Client{}
 	resp2, err := client2.Do(req2)
 	if err != nil {
@@ -197,7 +197,7 @@ func TestUpdateUserInfo(t *testing.T) {
 	var jsonStr = []byte(`{"FirstName":"Anthony1-data","LastName":"Hanna","Weight":100,"WaistCirc":55.5,"HeightInches":55,"LeanBodyMass":55,"Age":55,"Gender":"male","StartDate":"2020-10-30","Week":[{"Day":[{},{},{},{},{},{"Fat":1000,"Carbs":1000,"Protein":100,"TotalCalories":300,"DayCalories":"normal","Weight":321,"Cardio":"missed","WeightTraining":"no"},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{"Fat":1010,"Carbs":1010,"Protein":1010,"TotalCalories":1010,"DayCalories":"normal","Weight":10,"Cardio":"missed","WeightTraining":"yes"},{}]}],"Recommendation":[{"HighDayProtein":50,"HighDayCarb":11,"HighDayFat":12,"HighDayCalories":13,"NormalDayProtein":14,"NormalDayCarb":15,"NormalDayFat":16,"NormalDayCalories":17,"LowDayProtein":18,"LowDayCarb":19,"LowDayFat":20,"LowDayCalories":21,"HIITCurrentCardioSession":22,"HIITChangeCardioSession":23,"HIITCurrentCardioIntervals":24,"HIITChangeCardioIntervals":25,"ModifiedDate":"2020-09-15"},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]}`)
 	req, _ := http.NewRequest("POST", "http://"+frontendApiAddress+"/userInfo", bytes.NewBuffer(jsonStr))
 	// set session token header for request
-	req.Header.Set("Session-Token", UID)
+	req.AddCookie(&http.Cookie{Name: "Authorization", Value: UID})
 	req.Header.Set("Content-Type", "application/json")
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -216,7 +216,7 @@ func TestUpdateUserInfo(t *testing.T) {
 	var jsonStrNew = []byte(`{"FirstName":"Anthony1-333","LastName":"Hanna","Weight":100,"WaistCirc":55.5,"HeightInches":55,"LeanBodyMass":55,"Age":55,"Gender":"male","StartDate":"2033-10-30"}`)
 	reqNew, _ := http.NewRequest("POST", "http://"+frontendApiAddress+"/userInfo", bytes.NewBuffer(jsonStrNew))
 	// set session token header for request
-	reqNew.Header.Set("Session-Token", UID)
+	reqNew.AddCookie(&http.Cookie{Name: "Authorization", Value: UID})
 	reqNew.Header.Set("Content-Type", "application/json")
 	clientNew := &http.Client{}
 	respNew, err := clientNew.Do(reqNew)
@@ -234,7 +234,7 @@ func TestUpdateUserInfo(t *testing.T) {
 	//Validate UserInfo is correct
 	req2, _ := http.NewRequest("GET", "http://"+frontendApiAddress+"/userInfo", nil)
 	// set session token header for request
-	req2.Header.Set("Session-Token", UID)
+	req2.AddCookie(&http.Cookie{Name: "Authorization", Value: UID})
 	client2 := &http.Client{}
 	resp2, err := client2.Do(req2)
 	if err != nil {
@@ -266,7 +266,7 @@ func TestUpdateUserInfoDate(t *testing.T) {
 	var jsonStr = []byte(`{"FirstName":"Anthony1-date","LastName":"Hanna","Weight":100,"WaistCirc":55.5,"HeightInches":55,"LeanBodyMass":55,"Age":55,"Gender":"male","StartDate":"2020-10-30","Week":[{"Day":[{},{},{},{},{},{"Fat":1000,"Carbs":1000,"Protein":100,"TotalCalories":300,"DayCalories":"normal","Weight":321,"Cardio":"missed","WeightTraining":"no"},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{"Fat":1010,"Carbs":1010,"Protein":1010,"TotalCalories":1010,"DayCalories":"normal","Weight":10,"Cardio":"missed","WeightTraining":"yes"},{}]}],"Recommendation":[{"HighDayProtein":50,"HighDayCarb":11,"HighDayFat":12,"HighDayCalories":13,"NormalDayProtein":14,"NormalDayCarb":15,"NormalDayFat":16,"NormalDayCalories":17,"LowDayProtein":18,"LowDayCarb":19,"LowDayFat":20,"LowDayCalories":21,"HIITCurrentCardioSession":22,"HIITChangeCardioSession":23,"HIITCurrentCardioIntervals":24,"HIITChangeCardioIntervals":25,"ModifiedDate":"2020-09-15"},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]}`)
 	req, _ := http.NewRequest("POST", "http://"+frontendApiAddress+"/userInfo", bytes.NewBuffer(jsonStr))
 	// set session token header for request
-	req.Header.Set("Session-Token", UID)
+	req.AddCookie(&http.Cookie{Name: "Authorization", Value: UID})
 	req.Header.Set("Content-Type", "application/json")
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -285,7 +285,7 @@ func TestUpdateUserInfoDate(t *testing.T) {
 	var jsonStrNew = []byte(`{"StartDate":"3333-10-30"}`)
 	reqNew, _ := http.NewRequest("POST", "http://"+frontendApiAddress+"/userInfo", bytes.NewBuffer(jsonStrNew))
 	// set session token header for request
-	reqNew.Header.Set("Session-Token", UID)
+	reqNew.AddCookie(&http.Cookie{Name: "Authorization", Value: UID})
 	reqNew.Header.Set("Content-Type", "application/json")
 	clientNew := &http.Client{}
 	respNew, err := clientNew.Do(reqNew)
@@ -303,7 +303,7 @@ func TestUpdateUserInfoDate(t *testing.T) {
 	//Validate UserInfo is correct
 	req2, _ := http.NewRequest("GET", "http://"+frontendApiAddress+"/userInfo", nil)
 	// set session token header for request
-	req2.Header.Set("Session-Token", UID)
+	req2.AddCookie(&http.Cookie{Name: "Authorization", Value: UID})
 	client2 := &http.Client{}
 	resp2, err := client2.Do(req2)
 	if err != nil {
@@ -335,7 +335,7 @@ func TestCreateNewComplexUser(t *testing.T) {
 	var jsonStr = []byte(`{"FirstName":"Anthony2","LastName":"Hanna2","Weight":2152,"WaistCirc":35.52,"HeightInches":75,"LeanBodyMass":15,"Age":20,"Gender":"male","Week":[{"Day":[{},{},{"Fat":30,"Carbs":30,"Protein":30,"TotalCalories":33,"DayCalories":"high","Weight":123,"Cardio":"missed","WeightTraining":"yes"},{},{},{},{}]},{"Day":[{"Fat":112,"Carbs":112,"Protein":112,"TotalCalories":312,"DayCalories":"normal","Weight":2222,"Cardio":"missed","WeightTraining":"yes"},{},{},{},{},{},{}]},{"Day":[{},{"Fat":10,"Carbs":10,"Protein":10,"TotalCalories":30,"DayCalories":"normal","Weight":123,"Cardio":"missed","WeightTraining":"yes"},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]}],"Recommendation":[{},{"HighDayProtein":102,"HighDayCarb":112,"HighDayFat":122,"HighDayCalories":132,"NormalDayProtein":142,"NormalDayCarb":152,"NormalDayFat":16,"NormalDayCalories":17,"LowDayProtein":182,"LowDayCarb":192,"LowDayFat":202,"LowDayCalories":212,"HIITCurrentCardioSession":22,"HIITChangeCardioSession":23,"HIITCurrentCardioIntervals":242,"HIITChangeCardioIntervals":252,"ModifiedDate":"2020-09-12"},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]}`)
 	req, _ := http.NewRequest("POST", "http://"+frontendApiAddress+"/userInfo", bytes.NewBuffer(jsonStr))
 	// set session token header for request
-	req.Header.Set("Session-Token", UID)
+	req.AddCookie(&http.Cookie{Name: "Authorization", Value: UID})
 	req.Header.Set("Content-Type", "application/json")
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -353,7 +353,7 @@ func TestCreateNewComplexUser(t *testing.T) {
 	//Validate UserInfo is correct
 	req2, _ := http.NewRequest("GET", "http://"+frontendApiAddress+"/userInfo", nil)
 	// set session token header for request
-	req2.Header.Set("Session-Token", UID)
+	req2.AddCookie(&http.Cookie{Name: "Authorization", Value: UID})
 	client2 := &http.Client{}
 	resp2, err := client2.Do(req2)
 	if err != nil {
@@ -385,7 +385,7 @@ func TestUpdateUserWeekly(t *testing.T) {
 	var jsonStr = []byte(`{"FirstName":"Anthony3","LastName":"Hanna","Weight":215,"WaistCirc":35.5,"HeightInches":75,"LeanBodyMass":15,"Age":20,"Gender":"male","Week":[{"Day":[{"Fat":10,"Carbs":10,"Protein":10,"TotalCalories":30,"DayCalories":"normal","Weight":123,"Cardio":"missed","WeightTraining":"yes"},{"Fat":20,"Carbs":20,"Protein":20,"TotalCalories":32,"DayCalories":"normal","Weight":123,"Cardio":"missed","WeightTraining":"no"},{"Fat":30,"Carbs":30,"Protein":30,"TotalCalories":33,"DayCalories":"high","Weight":123,"Cardio":"missed","WeightTraining":"yes"},{"Fat":40,"Carbs":40,"Protein":40,"TotalCalories":34,"DayCalories":"normal","Weight":123,"Cardio":"missed","WeightTraining":"yes"},{"Fat":10,"Carbs":10,"Protein":10,"TotalCalories":30,"DayCalories":"normal","Weight":123,"Cardio":"missed","WeightTraining":"yes"},{"Fat":10,"Carbs":10,"Protein":10,"TotalCalories":30,"DayCalories":"normal","Weight":123,"Cardio":"missed","WeightTraining":"yes"},{"Fat":100,"Carbs":100,"Protein":100,"TotalCalories":300,"DayCalories":"normal","Weight":321,"Cardio":"missed","WeightTraining":"no"}]},{"Day":[{"Fat":11,"Carbs":11,"Protein":11,"TotalCalories":31,"DayCalories":"normal","Weight":222,"Cardio":"missed","WeightTraining":"yes"},{"Fat":10,"Carbs":10,"Protein":10,"TotalCalories":30,"DayCalories":"normal","Weight":123,"Cardio":"missed","WeightTraining":"no"},{},{},{},{},{}]},{"Day":[{"Fat":110,"Carbs":110,"Protein":110,"TotalCalories":310,"DayCalories":"normal","Weight":123,"Cardio":"missed","WeightTraining":"yes"},{"Fat":10,"Carbs":10,"Protein":10,"TotalCalories":30,"DayCalories":"normal","Weight":123,"Cardio":"missed","WeightTraining":"yes"},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]}],"Recommendation":[{"HighDayProtein":10,"HighDayCarb":11,"HighDayFat":12,"HighDayCalories":13,"NormalDayProtein":14,"NormalDayCarb":15,"NormalDayFat":16,"NormalDayCalories":17,"LowDayProtein":18,"LowDayCarb":19,"LowDayFat":20,"LowDayCalories":21,"HIITCurrentCardioSession":22,"HIITChangeCardioSession":23,"HIITCurrentCardioIntervals":24,"HIITChangeCardioIntervals":25,"ModifiedDate":"2020-09-13"},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]}`)
 	req, _ := http.NewRequest("POST", "http://"+frontendApiAddress+"/userInfo", bytes.NewBuffer(jsonStr))
 	// set session token header for request
-	req.Header.Set("Session-Token", UID)
+	req.AddCookie(&http.Cookie{Name: "Authorization", Value: UID})
 	req.Header.Set("Content-Type", "application/json")
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -404,7 +404,7 @@ func TestUpdateUserWeekly(t *testing.T) {
 	var jsonStrNew = []byte(`{"Day":[{},{},{},{"Fat":333,"Carbs":333,"Protein":333,"TotalCalories":333,"DayCalories":"normal","Weight":333,"Cardio":"missed","WeightTraining":"no"},{},{"Fat":3333,"Carbs":3333,"Protein":3333,"TotalCalories":3333,"DayCalories":"normal","Weight":3333,"Cardio":"missed","WeightTraining":"no"},{}]}`)
 	reqNew, _ := http.NewRequest("POST", "http://"+frontendApiAddress+"/userWeekly/2", bytes.NewBuffer(jsonStrNew))
 	// set session token header for request
-	reqNew.Header.Set("Session-Token", UID)
+	reqNew.AddCookie(&http.Cookie{Name: "Authorization", Value: UID})
 	reqNew.Header.Set("Content-Type", "application/json")
 	clientNew := &http.Client{}
 	respNew, err := clientNew.Do(reqNew)
@@ -422,7 +422,7 @@ func TestUpdateUserWeekly(t *testing.T) {
 	//Validate UserInfo is correct
 	req2, _ := http.NewRequest("GET", "http://"+frontendApiAddress+"/userInfo", nil)
 	// set session token header for request
-	req2.Header.Set("Session-Token", UID)
+	req2.AddCookie(&http.Cookie{Name: "Authorization", Value: UID})
 	client2 := &http.Client{}
 	resp2, err := client2.Do(req2)
 	if err != nil {
@@ -454,7 +454,7 @@ func TestUpdateUserWeekly2(t *testing.T) {
 	var jsonStr = []byte(`{"FirstName":"Anthony4","LastName":"Hanna","Weight":215,"WaistCirc":35.5,"HeightInches":75,"LeanBodyMass":15,"Age":20,"Gender":"male","Week":[{"Day":[{},{},{},{},{},{"Fat":100,"Carbs":100,"Protein":100,"TotalCalories":300,"DayCalories":"normal","Weight":321,"Cardio":"missed","WeightTraining":"no"},{}]},{"Day":[{"Fat":11,"Carbs":11,"Protein":11,"TotalCalories":31,"DayCalories":"normal","Weight":222,"Cardio":"missed","WeightTraining":"yes"},{"Fat":10,"Carbs":10,"Protein":10,"TotalCalories":30,"DayCalories":"normal","Weight":123,"Cardio":"missed","WeightTraining":"no"},{},{},{},{},{}]},{"Day":[{},{},{},{"Fat":123,"Carbs":333,"Protein":333,"TotalCalories":333,"DayCalories":"normal","Weight":333,"Cardio":"missed","WeightTraining":"no"},{},{"Fat":3333,"Carbs":3333,"Protein":3333,"TotalCalories":3333,"DayCalories":"normal","Weight":3333,"Cardio":"missed","WeightTraining":"no"},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{"Fat":1010,"Carbs":1010,"Protein":1010,"TotalCalories":1010,"DayCalories":"normal","Weight":10,"Cardio":"missed","WeightTraining":"yes"},{}]}],"Recommendation":[{"HighDayProtein":10,"HighDayCarb":11,"HighDayFat":12,"HighDayCalories":13,"NormalDayProtein":14,"NormalDayCarb":15,"NormalDayFat":16,"NormalDayCalories":17,"LowDayProtein":18,"LowDayCarb":19,"LowDayFat":20,"LowDayCalories":21,"HIITCurrentCardioSession":22,"HIITChangeCardioSession":23,"HIITCurrentCardioIntervals":24,"HIITChangeCardioIntervals":25,"ModifiedDate":"2020-09-13"},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]}`)
 	req, _ := http.NewRequest("POST", "http://"+frontendApiAddress+"/userInfo", bytes.NewBuffer(jsonStr))
 	// set session token header for request
-	req.Header.Set("Session-Token", UID)
+	req.AddCookie(&http.Cookie{Name: "Authorization", Value: UID})
 	req.Header.Set("Content-Type", "application/json")
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -473,7 +473,7 @@ func TestUpdateUserWeekly2(t *testing.T) {
 	var jsonStrNew = []byte(`{"Day":[{},{"Fat":444,"Carbs":444,"Protein":444,"TotalCalories":444,"DayCalories":"normal","Weight":444,"Cardio":"missed","WeightTraining":"yes"},{},{"Fat":333,"Carbs":333,"Protein":333,"TotalCalories":333,"DayCalories":"normal","Weight":333,"Cardio":"missed","WeightTraining":"no"},{},{},{"Fat":3333,"Carbs":3333,"Protein":3333,"TotalCalories":3333,"DayCalories":"normal","Weight":3333,"Cardio":"missed","WeightTraining":"no"}]}`)
 	reqNew, _ := http.NewRequest("POST", "http://"+frontendApiAddress+"/userWeekly/23", bytes.NewBuffer(jsonStrNew))
 	// set session token header for request
-	reqNew.Header.Set("Session-Token", UID)
+	reqNew.AddCookie(&http.Cookie{Name: "Authorization", Value: UID})
 	reqNew.Header.Set("Content-Type", "application/json")
 	clientNew := &http.Client{}
 	respNew, err := clientNew.Do(reqNew)
@@ -491,7 +491,7 @@ func TestUpdateUserWeekly2(t *testing.T) {
 	//Validate UserInfo is correct
 	req2, _ := http.NewRequest("GET", "http://"+frontendApiAddress+"/userInfo", nil)
 	// set session token header for request
-	req2.Header.Set("Session-Token", UID)
+	req2.AddCookie(&http.Cookie{Name: "Authorization", Value: UID})
 	client2 := &http.Client{}
 	resp2, err := client2.Do(req2)
 	if err != nil {
@@ -523,7 +523,7 @@ func TestUpdateUserDaily(t *testing.T) {
 	var jsonStr = []byte(`{"FirstName":"Anthony5","LastName":"Hanna","Weight":555,"WaistCirc":55.5,"HeightInches":55,"LeanBodyMass":55,"Age":55,"Gender":"male","Week":[{"Day":[{},{},{},{},{},{"Fat":500,"Carbs":500,"Protein":500,"TotalCalories":300,"DayCalories":"normal","Weight":321,"Cardio":"missed","WeightTraining":"no"},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{"Fat":5050,"Carbs":5050,"Protein":5050,"TotalCalories":5050,"DayCalories":"normal","Weight":10,"Cardio":"missed","WeightTraining":"yes"},{}]}],"Recommendation":[{"HighDayProtein":50,"HighDayCarb":11,"HighDayFat":12,"HighDayCalories":13,"NormalDayProtein":14,"NormalDayCarb":15,"NormalDayFat":16,"NormalDayCalories":17,"LowDayProtein":18,"LowDayCarb":19,"LowDayFat":20,"LowDayCalories":21,"HIITCurrentCardioSession":22,"HIITChangeCardioSession":23,"HIITCurrentCardioIntervals":24,"HIITChangeCardioIntervals":25,"ModifiedDate":"2020-09-15"},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]}`)
 	req, _ := http.NewRequest("POST", "http://"+frontendApiAddress+"/userInfo", bytes.NewBuffer(jsonStr))
 	// set session token header for request
-	req.Header.Set("Session-Token", UID)
+	req.AddCookie(&http.Cookie{Name: "Authorization", Value: UID})
 	req.Header.Set("Content-Type", "application/json")
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -542,7 +542,7 @@ func TestUpdateUserDaily(t *testing.T) {
 	var jsonStrNew = []byte(`{"Fat":555,"Carbs":555,"Protein":555,"TotalCalories":555,"DayCalories":"normal","Weight":555,"Cardio":"missed","WeightTraining":"no"}`)
 	reqNew, _ := http.NewRequest("POST", "http://"+frontendApiAddress+"/userDaily/1/1", bytes.NewBuffer(jsonStrNew))
 	// set session token header for request
-	reqNew.Header.Set("Session-Token", UID)
+	reqNew.AddCookie(&http.Cookie{Name: "Authorization", Value: UID})
 	reqNew.Header.Set("Content-Type", "application/json")
 	clientNew := &http.Client{}
 	respNew, err := clientNew.Do(reqNew)
@@ -560,7 +560,7 @@ func TestUpdateUserDaily(t *testing.T) {
 	//Validate UserInfo is correct
 	req2, _ := http.NewRequest("GET", "http://"+frontendApiAddress+"/userInfo", nil)
 	// set session token header for request
-	req2.Header.Set("Session-Token", UID)
+	req2.AddCookie(&http.Cookie{Name: "Authorization", Value: UID})
 	client2 := &http.Client{}
 	resp2, err := client2.Do(req2)
 	if err != nil {
@@ -592,7 +592,7 @@ func TestUpdateUserDailyNext(t *testing.T) {
 	var jsonStr = []byte(`{"FirstName":"Anthony6","LastName":"Hanna","Weight":555,"WaistCirc":55.5,"HeightInches":55,"LeanBodyMass":55,"Age":55,"Gender":"male","Week":[{"Day":[{},{},{},{},{},{"Fat":500,"Carbs":500,"Protein":500,"TotalCalories":300,"DayCalories":"normal","Weight":321,"Cardio":"missed","WeightTraining":"no"},{}]},{"Day":[{},{"Fat":555,"Carbs":555,"Protein":555,"TotalCalories":555,"DayCalories":"normal","Weight":555,"Cardio":"missed","WeightTraining":"no"},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{"Fat":5050,"Carbs":5050,"Protein":5050,"TotalCalories":5050,"DayCalories":"normal","Weight":10,"Cardio":"missed","WeightTraining":"yes"},{}]}],"Recommendation":[{"HighDayProtein":50,"HighDayCarb":11,"HighDayFat":12,"HighDayCalories":13,"NormalDayProtein":14,"NormalDayCarb":15,"NormalDayFat":16,"NormalDayCalories":17,"LowDayProtein":18,"LowDayCarb":19,"LowDayFat":20,"LowDayCalories":21,"HIITCurrentCardioSession":22,"HIITChangeCardioSession":23,"HIITCurrentCardioIntervals":24,"HIITChangeCardioIntervals":25,"ModifiedDate":"2020-09-15"},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]}`)
 	req, _ := http.NewRequest("POST", "http://"+frontendApiAddress+"/userInfo", bytes.NewBuffer(jsonStr))
 	// set session token header for request
-	req.Header.Set("Session-Token", UID)
+	req.AddCookie(&http.Cookie{Name: "Authorization", Value: UID})
 	req.Header.Set("Content-Type", "application/json")
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -611,7 +611,7 @@ func TestUpdateUserDailyNext(t *testing.T) {
 	var jsonStrNew = []byte(`{"Fat":666,"Carbs":666,"Protein":666,"TotalCalories":666,"DayCalories":"normal","Weight":666,"Cardio":"missed","WeightTraining":"yes"}`)
 	reqNew, _ := http.NewRequest("POST", "http://"+frontendApiAddress+"/userDaily/1/2", bytes.NewBuffer(jsonStrNew))
 	// set session token header for request
-	reqNew.Header.Set("Session-Token", UID)
+	reqNew.AddCookie(&http.Cookie{Name: "Authorization", Value: UID})
 	reqNew.Header.Set("Content-Type", "application/json")
 	clientNew := &http.Client{}
 	respNew, err := clientNew.Do(reqNew)
@@ -629,7 +629,7 @@ func TestUpdateUserDailyNext(t *testing.T) {
 	//Validate UserInfo is correct
 	req2, _ := http.NewRequest("GET", "http://"+frontendApiAddress+"/userInfo", nil)
 	// set session token header for request
-	req2.Header.Set("Session-Token", UID)
+	req2.AddCookie(&http.Cookie{Name: "Authorization", Value: UID})
 	client2 := &http.Client{}
 	resp2, err := client2.Do(req2)
 	if err != nil {
@@ -661,7 +661,7 @@ func TestUpdateUserDailyOverwrite(t *testing.T) {
 	var jsonStr = []byte(`{"FirstName":"Anthony7","LastName":"Hanna","Weight":555,"WaistCirc":55.5,"HeightInches":55,"LeanBodyMass":55,"Age":55,"Gender":"male","Week":[{"Day":[{},{},{},{},{},{"Fat":500,"Carbs":500,"Protein":500,"TotalCalories":300,"DayCalories":"normal","Weight":321,"Cardio":"missed","WeightTraining":"no"},{}]},{"Day":[{},{"Fat":555,"Carbs":555,"Protein":555,"TotalCalories":555,"DayCalories":"normal","Weight":555,"Cardio":"missed","WeightTraining":"no"},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{"Fat":5050,"Carbs":5050,"Protein":5050,"TotalCalories":5050,"DayCalories":"normal","Weight":10,"Cardio":"missed","WeightTraining":"yes"},{"Fat":9999,"Carbs":9999,"Protein":9999,"TotalCalories":9999,"DayCalories":"low","Weight":9999,"Cardio":"missed","WeightTraining":"no"}]}],"Recommendation":[{"HighDayProtein":50,"HighDayCarb":11,"HighDayFat":12,"HighDayCalories":13,"NormalDayProtein":14,"NormalDayCarb":15,"NormalDayFat":16,"NormalDayCalories":17,"LowDayProtein":18,"LowDayCarb":19,"LowDayFat":20,"LowDayCalories":21,"HIITCurrentCardioSession":22,"HIITChangeCardioSession":23,"HIITCurrentCardioIntervals":24,"HIITChangeCardioIntervals":25,"ModifiedDate":"2020-09-15"},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]}`)
 	req, _ := http.NewRequest("POST", "http://"+frontendApiAddress+"/userInfo", bytes.NewBuffer(jsonStr))
 	// set session token header for request
-	req.Header.Set("Session-Token", UID)
+	req.AddCookie(&http.Cookie{Name: "Authorization", Value: UID})
 	req.Header.Set("Content-Type", "application/json")
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -680,7 +680,7 @@ func TestUpdateUserDailyOverwrite(t *testing.T) {
 	var jsonStrNew = []byte(`{"Fat":777,"Carbs":777,"Protein":777,"TotalCalories":777,"DayCalories":"normal","Weight":777,"Cardio":"missed","WeightTraining":"no"}`)
 	reqNew, _ := http.NewRequest("POST", "http://"+frontendApiAddress+"/userDaily/23/6", bytes.NewBuffer(jsonStrNew))
 	// set session token header for request
-	reqNew.Header.Set("Session-Token", UID)
+	reqNew.AddCookie(&http.Cookie{Name: "Authorization", Value: UID})
 	reqNew.Header.Set("Content-Type", "application/json")
 	clientNew := &http.Client{}
 	respNew, err := clientNew.Do(reqNew)
@@ -698,7 +698,7 @@ func TestUpdateUserDailyOverwrite(t *testing.T) {
 	//Validate UserInfo is correct
 	req2, _ := http.NewRequest("GET", "http://"+frontendApiAddress+"/userInfo", nil)
 	// set session token header for request
-	req2.Header.Set("Session-Token", UID)
+	req2.AddCookie(&http.Cookie{Name: "Authorization", Value: UID})
 	client2 := &http.Client{}
 	resp2, err := client2.Do(req2)
 	if err != nil {
@@ -731,7 +731,7 @@ func TestUpdateUserDailyOverwrite(t *testing.T) {
 // 	var jsonStrNew = []byte(`{"FirstName":"Anthony8","LastName":"Hanna","Weight":250,"WaistCirc":50.5,"HeightInches":120,"LeanBodyMass":100,"Age":26,"Gender":"male"}`)
 // 	reqNew, _ := http.NewRequest("POST", "http://" + frontendApiAddress + "/generateUserBaseline", bytes.NewBuffer(jsonStrNew))
 // 	// set session token header for request
-// 	reqNew.Header.Set("Session-Token", UID)
+// 	reqNew.AddCookie(&http.Cookie{Name: "Authorization", Value: UID})
 // 	reqNew.Header.Set("Content-Type", "application/json")
 // 	clientNew := &http.Client{}
 // 	respNew, err := clientNew.Do(reqNew)
@@ -749,7 +749,7 @@ func TestUpdateUserDailyOverwrite(t *testing.T) {
 // 	//Validate UserInfo is correct
 // 	req2, _ := http.NewRequest("GET", "http://" + frontendApiAddress + "/userInfo", nil)
 // 	// set session token header for request
-// 	req2.Header.Set("Session-Token", UID)
+// 	req2.AddCookie(&http.Cookie{Name: "Authorization", Value: UID})
 // 	client2 := &http.Client{}
 // 	resp2, err := client2.Do(req2)
 // 	if err != nil {
@@ -782,7 +782,7 @@ func TestUpdateUserDailyOverwrite(t *testing.T) {
 // 	var jsonStr = []byte(`{"FirstName":"Anthony9","LastName":"Hanna","Weight":555,"WaistCirc":55.5,"HeightInches":55,"LeanBodyMass":55,"Age":55,"Gender":"male","Week":[{"Day":[{},{},{},{},{},{"Fat":500,"Carbs":500,"Protein":500,"TotalCalories":300,"DayCalories":"normal","Weight":321,"Cardio":"missed","WeightTraining":"no"},{}]},{"Day":[{},{"Fat":555,"Carbs":555,"Protein":555,"TotalCalories":555,"DayCalories":"normal","Weight":555,"Cardio":"missed","WeightTraining":"no"},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{"Fat":5050,"Carbs":5050,"Protein":5050,"TotalCalories":5050,"DayCalories":"normal","Weight":10,"Cardio":"missed","WeightTraining":"yes"},{}]}],"Recommendation":[{"HighDayProtein":1111,"HighDayCarb":1111,"HighDayFat":1211,"HighDayCalories":1311,"NormalDayProtein":1411,"NormalDayCarb":1511,"NormalDayFat":1611,"NormalDayCalories":1711,"LowDayProtein":1811,"LowDayCarb":1911,"LowDayFat":2011,"LowDayCalories":2111,"HIITCurrentCardioSession":22,"HIITChangeCardioSession":23,"HIITCurrentCardioIntervals":24,"HIITChangeCardioIntervals":25,"ModifiedDate":"2020-09-111"},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{"HighDayProtein":99,"HighDayCarb":99,"HighDayFat":99,"HighDayCalories":99,"NormalDayProtein":14,"NormalDayCarb":15,"NormalDayFat":16,"NormalDayCalories":17,"LowDayProtein":18,"LowDayCarb":19,"LowDayFat":20,"LowDayCalories":21,"HIITCurrentCardioSession":22,"HIITChangeCardioSession":23,"HIITCurrentCardioIntervals":99,"HIITChangeCardioIntervals":99,"ModifiedDate":"2020-09-99"},{},{},{}]}`)
 // 	req, _ := http.NewRequest("POST", "http://" + frontendApiAddress + "/userInfo", bytes.NewBuffer(jsonStr))
 // 	// set session token header for request
-// 	req.Header.Set("Session-Token", UID)
+// 	req.AddCookie(&http.Cookie{Name: "Authorization", Value: UID})
 // 	req.Header.Set("Content-Type", "application/json")
 // 	client := &http.Client{}
 // 	resp, err := client.Do(req)
@@ -801,7 +801,7 @@ func TestUpdateUserDailyOverwrite(t *testing.T) {
 // 	var jsonStrNew = []byte(`{"FirstName":"Anthony99","LastName":"Hanna","Weight":251,"WaistCirc":50.5,"HeightInches":120,"LeanBodyMass":100,"Age":26,"Gender":"male"}`)
 // 	reqNew, _ := http.NewRequest("POST", "http://" + frontendApiAddress + "/generateUserBaseline", bytes.NewBuffer(jsonStrNew))
 // 	// set session token header for request
-// 	reqNew.Header.Set("Session-Token", UID)
+// 	reqNew.AddCookie(&http.Cookie{Name: "Authorization", Value: UID})
 // 	reqNew.Header.Set("Content-Type", "application/json")
 // 	clientNew := &http.Client{}
 // 	respNew, err := clientNew.Do(reqNew)
@@ -819,7 +819,7 @@ func TestUpdateUserDailyOverwrite(t *testing.T) {
 // 	//Validate UserInfo is correct
 // 	req2, _ := http.NewRequest("GET", "http://" + frontendApiAddress + "/userInfo", nil)
 // 	// set session token header for request
-// 	req2.Header.Set("Session-Token", UID)
+// 	req2.AddCookie(&http.Cookie{Name: "Authorization", Value: UID})
 // 	client2 := &http.Client{}
 // 	resp2, err := client2.Do(req2)
 // 	if err != nil {
@@ -852,7 +852,7 @@ func TestUpdateUserDailyOverwrite(t *testing.T) {
 // 	var jsonStr = []byte(`{"FirstName":"Anthony10","LastName":"Hanna","Weight":100,"WaistCirc":55.5,"HeightInches":55,"LeanBodyMass":55,"Age":55,"Gender":"male","Week":[{"Day":[{},{},{},{},{},{"Fat":1000,"Carbs":1000,"Protein":100,"TotalCalories":300,"DayCalories":"normal","Weight":321,"Cardio":"missed","WeightTraining":"no"},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{"Fat":1010,"Carbs":1010,"Protein":1010,"TotalCalories":1010,"DayCalories":"normal","Weight":10,"Cardio":"missed","WeightTraining":"yes"},{}]}],"Recommendation":[{"HighDayProtein":50,"HighDayCarb":11,"HighDayFat":12,"HighDayCalories":13,"NormalDayProtein":14,"NormalDayCarb":15,"NormalDayFat":16,"NormalDayCalories":17,"LowDayProtein":18,"LowDayCarb":19,"LowDayFat":20,"LowDayCalories":21,"HIITCurrentCardioSession":22,"HIITChangeCardioSession":23,"HIITCurrentCardioIntervals":24,"HIITChangeCardioIntervals":25,"ModifiedDate":"2020-09-15"},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]}`)
 // 	req, _ := http.NewRequest("POST", "http://" + frontendApiAddress + "/userInfo", bytes.NewBuffer(jsonStr))
 // 	// set session token header for request
-// 	req.Header.Set("Session-Token", UID)
+// 	req.AddCookie(&http.Cookie{Name: "Authorization", Value: UID})
 // 	req.Header.Set("Content-Type", "application/json")
 // 	client := &http.Client{}
 // 	resp, err := client.Do(req)
@@ -871,7 +871,7 @@ func TestUpdateUserDailyOverwrite(t *testing.T) {
 // 	var jsonStrNew = []byte(`{"HighDayProtein":1009,"HighDayCarb":100,"HighDayFat":100,"HighDayCalories":100,"NormalDayProtein":1004,"NormalDayCarb":1005,"NormalDayFat":1006,"NormalDayCalories":1007,"LowDayProtein":18,"LowDayCarb":19,"LowDayFat":20,"LowDayCalories":21,"HIITCurrentCardioSession":22,"HIITChangeCardioSession":23,"HIITCurrentCardioIntervals":1001,"HIITChangeCardioIntervals":25,"ModifiedDate":"2020-09-1009"}`)
 // 	reqNew, _ := http.NewRequest("POST", "http://" + frontendApiAddress + "/userRecommendations/0", bytes.NewBuffer(jsonStrNew))
 // 	// set session token header for request
-// 	reqNew.Header.Set("Session-Token", UID)
+// 	reqNew.AddCookie(&http.Cookie{Name: "Authorization", Value: UID})
 // 	reqNew.Header.Set("Content-Type", "application/json")
 // 	clientNew := &http.Client{}
 // 	respNew, err := clientNew.Do(reqNew)
@@ -889,7 +889,7 @@ func TestUpdateUserDailyOverwrite(t *testing.T) {
 // 	//Validate UserInfo is correct
 // 	req2, _ := http.NewRequest("GET", "http://" + frontendApiAddress + "/userInfo", nil)
 // 	// set session token header for request
-// 	req2.Header.Set("Session-Token", UID)
+// 	req2.AddCookie(&http.Cookie{Name: "Authorization", Value: UID})
 // 	client2 := &http.Client{}
 // 	resp2, err := client2.Do(req2)
 // 	if err != nil {
@@ -922,7 +922,7 @@ func TestUpdateUserDailyOverwrite(t *testing.T) {
 // 	var jsonStr = []byte(`{"FirstName":"Anthony11","LastName":"Hanna","Weight":100,"WaistCirc":55.5,"HeightInches":55,"LeanBodyMass":55,"Age":55,"Gender":"male","Week":[{"Day":[{},{},{},{},{},{"Fat":1000,"Carbs":1000,"Protein":100,"TotalCalories":300,"DayCalories":"normal","Weight":321,"Cardio":"missed","WeightTraining":"no"},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{},{}]},{"Day":[{},{},{},{},{},{"Fat":1010,"Carbs":1010,"Protein":1010,"TotalCalories":1010,"DayCalories":"normal","Weight":10,"Cardio":"missed","WeightTraining":"yes"},{}]}],"Recommendation":[{"HighDayProtein":1009,"HighDayCarb":100,"HighDayFat":100,"HighDayCalories":100,"NormalDayProtein":1004,"NormalDayCarb":1005,"NormalDayFat":1006,"NormalDayCalories":1007,"LowDayProtein":18,"LowDayCarb":19,"LowDayFat":20,"LowDayCalories":21,"HIITCurrentCardioSession":22,"HIITChangeCardioSession":23,"HIITCurrentCardioIntervals":1001,"HIITChangeCardioIntervals":25,"Week":1000,"ModifiedDate":"2020-09-1009"},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]}`)
 // 	req, _ := http.NewRequest("POST", "http://" + frontendApiAddress + "/userInfo", bytes.NewBuffer(jsonStr))
 // 	// set session token header for request
-// 	req.Header.Set("Session-Token", UID)
+// 	req.AddCookie(&http.Cookie{Name: "Authorization", Value: UID})
 // 	req.Header.Set("Content-Type", "application/json")
 // 	client := &http.Client{}
 // 	resp, err := client.Do(req)
@@ -941,7 +941,7 @@ func TestUpdateUserDailyOverwrite(t *testing.T) {
 // 	var jsonStrNew = []byte(`{"HighDayProtein":11,"HighDayCarb":11,"HighDayFat":11,"HighDayCalories":11,"NormalDayProtein":11,"NormalDayCarb":1005,"NormalDayFat":1006,"NormalDayCalories":1007,"LowDayProtein":18,"LowDayCarb":19,"LowDayFat":20,"LowDayCalories":21,"HIITCurrentCardioSession":22,"HIITChangeCardioSession":23,"HIITCurrentCardioIntervals":1001,"HIITChangeCardioIntervals":25}`)
 // 	reqNew, _ := http.NewRequest("POST", "http://" + frontendApiAddress + "/userRecommendations/2", bytes.NewBuffer(jsonStrNew))
 // 	// set session token header for request
-// 	reqNew.Header.Set("Session-Token", UID)
+// 	reqNew.AddCookie(&http.Cookie{Name: "Authorization", Value: UID})
 // 	reqNew.Header.Set("Content-Type", "application/json")
 // 	clientNew := &http.Client{}
 // 	respNew, err := clientNew.Do(reqNew)
@@ -959,7 +959,7 @@ func TestUpdateUserDailyOverwrite(t *testing.T) {
 // 	//Validate UserInfo is correct
 // 	req2, _ := http.NewRequest("GET", "http://" + frontendApiAddress + "/userInfo", nil)
 // 	// set session token header for request
-// 	req2.Header.Set("Session-Token", UID)
+// 	req2.AddCookie(&http.Cookie{Name: "Authorization", Value: UID})
 // 	client2 := &http.Client{}
 // 	resp2, err := client2.Do(req2)
 // 	if err != nil {
@@ -991,7 +991,7 @@ func TestAdminGetUserInfo(t *testing.T) {
 	var userUID = "testUID"
 	req, _ := http.NewRequest("GET", "http://"+frontendApiAddress+"/admin/userInfo", nil)
 	// set session token header for request
-	req.Header.Set("Session-Token", UID)
+	req.AddCookie(&http.Cookie{Name: "Authorization", Value: UID})
 	req.Header.Set("User-UID", userUID)
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -1022,7 +1022,7 @@ func TestInvalidAdminGetUserInfo(t *testing.T) {
 	var userUID = "testUID"
 	req, _ := http.NewRequest("GET", "http://"+frontendApiAddress+"/admin/userInfo", nil)
 	// set session token header for request
-	req.Header.Set("Session-Token", UID)
+	req.AddCookie(&http.Cookie{Name: "Authorization", Value: UID})
 	req.Header.Set("User-UID", userUID)
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -1031,8 +1031,8 @@ func TestInvalidAdminGetUserInfo(t *testing.T) {
 		t.FailNow()
 	}
 	//compare received struct with expected struct
-	if resp.StatusCode != 401 {
-		t.Errorf("Status Incorrect, should be 401 -: http.StatusCode=%v", resp.StatusCode)
+	if resp.StatusCode != 403 {
+		t.Errorf("Status Incorrect, should be 403 -: http.StatusCode=%v", resp.StatusCode)
 		t.FailNow()
 	}
 }

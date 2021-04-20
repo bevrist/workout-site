@@ -41,13 +41,14 @@ func validateSessionToken(w http.ResponseWriter, sessionToken string, isAdmin bo
 
 //GetUserInfoHandler returns the users data
 func GetUserInfoHandler(w http.ResponseWriter, r *http.Request) {
-	sessionToken := r.Header.Get("Session-Token")
-	if sessionToken == "" {
-		http.Error(w, "428 Precondition Required - missing Session-Token.", http.StatusPreconditionRequired)
+	authCookie, err := r.Cookie("Authorization")
+	//check auth token exists
+	if err != nil {
+		http.Error(w, "401 - unauthorized", http.StatusUnauthorized)
 		return
 	}
 	//validate session token
-	UID := validateSessionToken(w, sessionToken, false)
+	UID := validateSessionToken(w, authCookie.Value, false)
 	if UID == "" {
 		http.Error(w, "401 Unauthorized.", http.StatusUnauthorized)
 		return
@@ -74,13 +75,14 @@ func GetUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 
 //UpdateUserInfoHandler update the user profile
 func UpdateUserInfoHandler(w http.ResponseWriter, r *http.Request) {
-	sessionToken := r.Header.Get("Session-Token")
-	if sessionToken == "" {
-		http.Error(w, "428 Precondition Required - missing Session-Token.", http.StatusPreconditionRequired)
+	authCookie, err := r.Cookie("Authorization")
+	//check auth token exists
+	if err != nil {
+		http.Error(w, "401 - unauthorized", http.StatusUnauthorized)
 		return
 	}
 	//validate session token
-	UID := validateSessionToken(w, sessionToken, false)
+	UID := validateSessionToken(w, authCookie.Value, false)
 	if UID == "" {
 		http.Error(w, "401 Unauthorized.", http.StatusUnauthorized)
 		return
@@ -102,13 +104,14 @@ func UpdateUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 func UpdateUserWeeklyHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	WEEK := vars["week"]
-	sessionToken := r.Header.Get("Session-Token")
-	if sessionToken == "" {
-		http.Error(w, "428 Precondition Required - missing Session-Token.", http.StatusPreconditionRequired)
+	authCookie, err := r.Cookie("Authorization")
+	//check auth token exists
+	if err != nil {
+		http.Error(w, "401 - unauthorized", http.StatusUnauthorized)
 		return
 	}
 	//validate session token
-	UID := validateSessionToken(w, sessionToken, false)
+	UID := validateSessionToken(w, authCookie.Value, false)
 	if UID == "" {
 		http.Error(w, "401 Unauthorized.", http.StatusUnauthorized)
 		return
@@ -131,13 +134,14 @@ func UpdateUserDailyHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	WEEK := vars["week"]
 	DAY := vars["day"]
-	sessionToken := r.Header.Get("Session-Token")
-	if sessionToken == "" {
-		http.Error(w, "428 Precondition Required - missing Session-Token.", http.StatusPreconditionRequired)
+	authCookie, err := r.Cookie("Authorization")
+	//check auth token exists
+	if err != nil {
+		http.Error(w, "401 - unauthorized", http.StatusUnauthorized)
 		return
 	}
 	//validate session token
-	UID := validateSessionToken(w, sessionToken, false)
+	UID := validateSessionToken(w, authCookie.Value, false)
 	if UID == "" {
 		http.Error(w, "401 Unauthorized.", http.StatusUnauthorized)
 		return
@@ -157,13 +161,14 @@ func UpdateUserDailyHandler(w http.ResponseWriter, r *http.Request) {
 
 //GenerateUserBaselineHandler update the user profile
 func GenerateUserBaselineHandler(w http.ResponseWriter, r *http.Request) {
-	sessionToken := r.Header.Get("Session-Token")
-	if sessionToken == "" {
-		http.Error(w, "428 Precondition Required - missing Session-Token.", http.StatusPreconditionRequired)
+	authCookie, err := r.Cookie("Authorization")
+	//check auth token exists
+	if err != nil {
+		http.Error(w, "401 - unauthorized", http.StatusUnauthorized)
 		return
 	}
 	//validate session token
-	UID := validateSessionToken(w, sessionToken, false)
+	UID := validateSessionToken(w, authCookie.Value, false)
 	if UID == "" {
 		http.Error(w, "401 Unauthorized.", http.StatusUnauthorized)
 		return
@@ -183,16 +188,17 @@ func GenerateUserBaselineHandler(w http.ResponseWriter, r *http.Request) {
 
 //AdminGetUserInfoHandler returns a users data for an admin request
 func AdminGetUserInfoHandler(w http.ResponseWriter, r *http.Request) {
-	sessionToken := r.Header.Get("Session-Token")
 	userUID := r.Header.Get("User-UID")
-	if sessionToken == "" {
-		http.Error(w, "428 Precondition Required - missing Session-Token.", http.StatusPreconditionRequired)
+	authCookie, err := r.Cookie("Authorization")
+	//check auth token exists
+	if err != nil {
+		http.Error(w, "401 - unauthorized", http.StatusUnauthorized)
 		return
 	}
 	//validate session token and verify Admin
-	UID := validateSessionToken(w, sessionToken, true)
+	UID := validateSessionToken(w, authCookie.Value, true)
 	if UID == "" {
-		http.Error(w, "401 Unauthorized.", http.StatusUnauthorized)
+		http.Error(w, "403 Forbidden.", http.StatusForbidden)
 		return
 	}
 	//get user data to return to Admin
@@ -218,15 +224,16 @@ func AdminGetUserInfoHandler(w http.ResponseWriter, r *http.Request) {
 
 //AdminGetUserInfoHandler returns a users data for an admin request
 func ListUsersHandler(w http.ResponseWriter, r *http.Request) {
-	sessionToken := r.Header.Get("Session-Token")
-	if sessionToken == "" {
-		http.Error(w, "428 Precondition Required - missing Session-Token.", http.StatusPreconditionRequired)
+	authCookie, err := r.Cookie("Authorization")
+	//check auth token exists
+	if err != nil {
+		http.Error(w, "401 - unauthorized", http.StatusUnauthorized)
 		return
 	}
 	//validate session token and verify Admin
-	UID := validateSessionToken(w, sessionToken, true)
+	UID := validateSessionToken(w, authCookie.Value, true)
 	if UID == "" {
-		http.Error(w, "401 Unauthorized.", http.StatusUnauthorized)
+		http.Error(w, "403 Forbidden.", http.StatusForbidden)
 		return
 	}
 	//get user data to return to Admin
@@ -243,16 +250,17 @@ func ListUsersHandler(w http.ResponseWriter, r *http.Request) {
 func AdminUpdateUserRecHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	WEEK := vars["week"]
-	sessionToken := r.Header.Get("Session-Token")
 	userUID := r.Header.Get("User-UID")
-	if sessionToken == "" {
-		http.Error(w, "428 Precondition Required - missing Session-Token.", http.StatusPreconditionRequired)
+	authCookie, err := r.Cookie("Authorization")
+	//check auth token exists
+	if err != nil {
+		http.Error(w, "401 - unauthorized", http.StatusUnauthorized)
 		return
 	}
 	//validate session token and verify Admin
-	UID := validateSessionToken(w, sessionToken, true)
+	UID := validateSessionToken(w, authCookie.Value, true)
 	if UID == "" {
-		http.Error(w, "401 Unauthorized.", http.StatusUnauthorized)
+		http.Error(w, "403 Forbidden.", http.StatusForbidden)
 		return
 	}
 	//post userInfo data to backend
