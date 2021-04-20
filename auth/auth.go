@@ -195,6 +195,10 @@ func main() {
 		log.Println("WARN: TEST MODE ENABLED!")
 		test = true
 	}
+	// remove redis username/password from log output
+	reg := regexp.MustCompile(`.*@|.*\/\/`)
+	cleanRedisConnString := reg.ReplaceAllString(redisConnectionString, "${1}")
+	log.Println("Connected to Redis at: " + cleanRedisConnString)
 
 	//get properly formatted slice of admin users from env var
 	admins = strings.Split(strings.ReplaceAll(adminsEnv, " ", ""), ",")
@@ -202,10 +206,10 @@ func main() {
 	//die if provider key and secret not provided, instantiate goth providers
 	if test != true {
 		if os.Getenv("PROVIDER_KEY") == "" {
-			log.Fatalln("FATAL: PROVIDER_KEY not set.")
+			log.Fatalln("FATAL: PROVIDER_KEY env var not set.")
 		}
 		if os.Getenv("PROVIDER_SECRET") == "" {
-			log.Fatalln("FATAL: PROVIDER_SECRET not set.")
+			log.Fatalln("FATAL: PROVIDER_SECRET env var not set.")
 		}
 		// instantiate goth providers
 		goth.UseProviders(
