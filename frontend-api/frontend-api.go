@@ -26,6 +26,7 @@ func validateSessionToken(w http.ResponseWriter, sessionToken string, isAdmin bo
 	if err != nil {
 		http.Error(w, "500 Internal Server Error.", http.StatusInternalServerError)
 		log.Println("ERROR: - Auth: " + err.Error())
+		return ""
 	}
 	authBody, _ := ioutil.ReadAll(authResp.Body)
 	var authInfo structs.Auth

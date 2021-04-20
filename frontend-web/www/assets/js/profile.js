@@ -7,11 +7,10 @@ fetch("http://localhost:8888/userInfo").then(function (response) {
   if (response.status === 401) {
     //redirect to sign in on auth failure
     console.log("auth fail. redirecting...")
-    window.location.href = "http://localhost:8888/auth";
+    window.location.href = "http://localhost:5500/auth";
   } else {
-    response.json().then(function (data) {
+    response.json().then(function (userData) {
       // only update form if data already exists
-      userData = JSON.parse(data);
       if (userData.FirstName != "") {
         document.title =
           "Profile - " + userData.FirstName + " " + userData.LastName;

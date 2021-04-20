@@ -1,5 +1,5 @@
 # Docker compose for quick local instance of workout app
-# run with `PROVIDER_SECRET="<SECRET>" PROVIDER_KEY="<KEY>" docker-compose up --build`
+# run with `docker-compose down && PROVIDER_SECRET="<SECRET>" PROVIDER_KEY="<KEY>" docker-compose up --build`
 
 version: "3"
 
@@ -99,6 +99,7 @@ services:
       - 80:80
     environment:
       FRONTEND_API_URL: "http://frontend-api_service:8888"
+      AUTH_URL: http://auth_service:8070
     logging:
       driver: none
     restart: on-failure
