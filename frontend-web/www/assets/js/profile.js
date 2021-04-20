@@ -1,31 +1,25 @@
-//TODO: test flow for brand new users
-// var myToken = "test"; //FIXME remove
+document.title = "Profile";
 
-//get user profile info from server and prepopulate form
-var xmlHttp = new XMLHttpRequest();
-xmlHttp.open( "GET", "http://localhost:8888/userInfo", false );
-xmlHttp.setRequestHeader("Session-Token",getCookie("Session-Token"));
-// xmlHttp.setRequestHeader("Session-Token",myToken); //FIXME use correct session-token
-xmlHttp.send(null);
-var userData = JSON.parse(xmlHttp.responseText);
+var userData = "";
 
-document.title = "Profile - " + userData.FirstName + " " + userData.LastName;
-
-// only update form if userData already exists
-if (userData.FirstName != "") {
-  updateForm(userData);
-}
-
-// //get UserProfile json object, call other functions on complete
-// fetch("http://localhost:8888/userInfo", {
-//   headers: {
-//     'Session-Token': getCookie("Session-Token"),
-//   }
-// }).then(function (response) {
-//   response.json().then(function (data) {
-//     updateForm(data);
-//   });
-// });
+//get UserProfile json object from server, call other functions on complete
+fetch("http://localhost:8888/userInfo").then(function (response) {
+  if (response.status === 401) {
+    //redirect to sign in on auth failure
+    console.log("auth fail. redirecting...")
+    window.location.href = "http://localhost:8888/auth";
+  } else {
+    response.json().then(function (data) {
+      // only update form if data already exists
+      userData = JSON.parse(data);
+      if (userData.FirstName != "") {
+        document.title =
+          "Profile - " + userData.FirstName + " " + userData.LastName;
+        updateForm(userData);
+      }
+    });
+  }
+});
 
 // update form with existing user profile info (if present)
 function updateForm(userProfileData) {
@@ -33,7 +27,9 @@ function updateForm(userProfileData) {
   document.getElementById("firstName").value = userProfileData.FirstName;
   document.getElementById("lastName").value = userProfileData.LastName;
   var startDate = new Date(userProfileData.StartDate);
-  document.getElementById("StartDate").value = startDate.toISOString().split('T')[0];
+  document.getElementById("StartDate").value = startDate
+    .toISOString()
+    .split("T")[0];
   document.getElementById("weight").value = userProfileData.Weight;
   document.getElementById("heightInches").value = userProfileData.HeightInches;
   document.getElementById("waistCirc").value = userProfileData.WaistCirc;
@@ -71,8 +67,8 @@ function serializeProfile(form) {
 function submitForm() {
   //check that form is valid before sending
   if (document.getElementById("ProfileForm").checkValidity() == false) {
-    console.log("Form Invalid.")
-    return
+    console.log("Form Invalid.");
+    return;
   }
   //serialize form to JSON
   var dataObject = serializeProfile(document.getElementById("ProfileForm"));
@@ -84,22 +80,24 @@ function submitForm() {
     apiEndpoint = "generateUserBaseline";
   }
   //POST JSON to api
-  var xmlHttp = new XMLHttpRequest();
-  xmlHttp.open( "POST", "http://localhost:8888/" + apiEndpoint, false );
-  xmlHttp.setRequestHeader("Session-Token",getCookie("Session-Token"));
-  // xmlHttp.setRequestHeader("Session-Token",myToken); //FIXME use correct session-token
-  xmlHttp.send(jsonData);
-  console.log(jsonData);
-  console.log("Server response: " + xmlHttp.responseText);
-  //show note that save was successful
-  document.getElementById("SaveConfirmationText").innerHTML = "Saved! Go to <a href=/daily-update>Daily-Update</a>";
+  fetch("http://localhost:8888/" + apiEndpoint, {
+    method: "post",
+    body: jsonData,
+  }).then(function (response) {
+    console.log("Server response: " + response);
+    document.getElementById("SaveConfirmationText").innerHTML =
+      "Saved! Go to <a href=/daily-update>Daily-Update</a>";
+  });
 }
 
 // returns true if user has no baseline recommendation (if user never completed profile)
 function isNewUser(userData) {
-  if (userData.Recommendation == null || !userData.Recommendation[0].NormalDayProtein) {
-    return true
+  if (
+    userData.Recommendation == null ||
+    !userData.Recommendation[0].NormalDayProtein
+  ) {
+    return true;
   } else {
-    return false
+    return false;
   }
 }
