@@ -23,4 +23,5 @@ CMD ["/root/auth"]
 # ENV REDIS_CONNECTION_STRING="redis://user:pass:@localhost:6379/0"
 # ENV PROVIDER_SECRET=""
 # ENV PROVIDER_KEY=""
+# ENV WEBSITE_BASE_URL="http://localhost:3000"
 EXPOSE 8070

@@ -178,11 +178,15 @@ func main() {
 	//populate environment variables
 	listenAddress := os.Getenv("AUTH_LISTEN_ADDRESS")
 	redisConnectionString := os.Getenv("REDIS_CONNECTION_STRING")
+	websiteBaseURL := os.Getenv("WEBSITE_BASE_URL")
 	adminsEnv := os.Getenv("ADMINS")
 	testEnv := os.Getenv("TEST")
 	//set default values for missing env vars
 	if listenAddress == "" {
 		listenAddress = "0.0.0.0:8070"
+	}
+	if websiteBaseURL == "" {
+		websiteBaseURL = "http://localhost:3000"
 	}
 	if redisConnectionString == "" {
 		// redisConnectionString = "redis://user:pass:@localhost:6379/0"
@@ -213,8 +217,8 @@ func main() {
 		}
 		// instantiate goth providers
 		goth.UseProviders(
-			// google.New(os.Getenv("PROVIDER_KEY"), os.Getenv("PROVIDER_SECRET"), "http://localhost:3000/auth/google/callback"),
-			github.New(os.Getenv("PROVIDER_KEY"), os.Getenv("PROVIDER_SECRET"), "http://localhost:3000/auth/github/callback"),
+			// google.New(os.Getenv("PROVIDER_KEY"), os.Getenv("PROVIDER_SECRET"), websiteBaseURL+"/auth/google/callback"),
+			github.New(os.Getenv("PROVIDER_KEY"), os.Getenv("PROVIDER_SECRET"), websiteBaseURL+"/auth/github/callback"),
 		)
 	}
 
