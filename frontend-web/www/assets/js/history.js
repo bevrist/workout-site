@@ -1,5 +1,9 @@
 document.title = "History";
 
+//global variables, will be set by fetch
+userData = "";
+startDate = "";
+
 //get UserProfile json object from server, call other functions on complete
 fetch("http://localhost:8888/userInfo").then(function (response) {
   if (response.status === 401) {
@@ -7,7 +11,8 @@ fetch("http://localhost:8888/userInfo").then(function (response) {
     console.log("auth fail. redirecting...");
     window.location.href = "http://localhost:5500/auth";
   } else {
-    response.json().then(function (userData) {
+    response.json().then(function (uData) {
+      userData = uData;
       if (userData.FirstName == "") {
         console.log("user profile incomplete, redirecting to profile page...");
         // window.location.replace('http://localhost:5500/profile');
@@ -20,7 +25,7 @@ fetch("http://localhost:8888/userInfo").then(function (response) {
       var currentWeekLink = "#";
 
       // populate starting date
-      var startDate = new Date(userData.StartDate);
+      startDate = new Date(userData.StartDate);
       document.getElementById("StartDateText").innerHTML =
         "Starting Date: " + startDate.toISOString().split("T")[0];
 
@@ -277,21 +282,16 @@ function makeWeekChart(weekNum, dayNum) {
 
   document.getElementById("fat").value = userData.Week[weekNum].Day[dayNum].Fat;
   document.getElementById("fat").id = "fat-" + weekNum + dayNum;
-  document.getElementById("carbs").value =
-    userData.Week[weekNum].Day[dayNum].Carbs;
+  document.getElementById("carbs").value = userData.Week[weekNum].Day[dayNum].Carbs;
   document.getElementById("carbs").id = "carbs-" + weekNum + dayNum;
-  document.getElementById("protein").value =
-    userData.Week[weekNum].Day[dayNum].Protein;
+  document.getElementById("protein").value = userData.Week[weekNum].Day[dayNum].Protein;
   document.getElementById("protein").id = "protein-" + weekNum + dayNum;
-  document.getElementById("calories").value =
-    userData.Week[weekNum].Day[dayNum].TotalCalories;
+  document.getElementById("calories").value = userData.Week[weekNum].Day[dayNum].TotalCalories;
   document.getElementById("calories").id = "calories-" + weekNum + dayNum;
-  document.getElementById("weight").value =
-    userData.Week[weekNum].Day[dayNum].Weight;
+  document.getElementById("weight").value = userData.Week[weekNum].Day[dayNum].Weight;
   document.getElementById("weight").id = "weight-" + weekNum + dayNum;
   if ("WaistCirc" in userData.Week[weekNum].Day[dayNum]) {
-    document.getElementById("waist-circ").value =
-      userData.Week[weekNum].Day[dayNum].WaistCirc;
+    document.getElementById("waist-circ").value = userData.Week[weekNum].Day[dayNum].WaistCirc;
   }
   document.getElementById("waist-circ").id = "waist-circ-" + weekNum + dayNum;
   //clone table row
