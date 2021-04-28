@@ -6,16 +6,19 @@ if (userUid == "") {
   console.log("no uid URL parameter, redirecting to admin/users...");
   // window.location.replace('http://localhost:5500/admin/users');
 }
-//get user data from api and store JSON in "userData"
-var xmlHttp = new XMLHttpRequest();
-xmlHttp.open("GET", "http://localhost:8888/admin/userInfo", false);
-xmlHttp.setRequestHeader("User-UID", userUid);
-xmlHttp.setRequestHeader("Session-Token",getCookie("Session-Token"));
-// xmlHttp.setRequestHeader("Session-Token", "testUID"); //FIXME use correct session-token
-xmlHttp.send(null);
-var userData = JSON.parse(xmlHttp.responseText);
 
-updateForm(userData);
+fetch("http://localhost:8888/admin/userInfo", { headers: { "User-UID": userUid }}).then(function (response) {
+  if (response.status === 401) {
+    //redirect to sign in on auth failure
+    console.log("auth fail. redirecting...")
+    window.location.href = "http://localhost:5500/auth";
+  } else {
+    response.json().then(function (uData) {
+      updateForm(uData);
+    });
+  }
+});
+
 // update week-number on form to current week for user
 function updateForm(userData) {
   //calculate current week from user profile.startDate
@@ -59,15 +62,12 @@ function submitForm() {
   var dataObject = serializeRecForm(document.getElementById("RecForm"));
   var jsonData = JSON.stringify(dataObject);
   //POST JSON to api
-  var xmlHttp = new XMLHttpRequest();
-  xmlHttp.open("POST", "http://localhost:8888/admin/userRecommendation/" + dataObject.WeekNumber-1, false);
-  xmlHttp.setRequestHeader("Session-Token", getCookie("Session-Token"));
-  xmlHttp.setRequestHeader("User-UID", userUid);
-  // xmlHttp.setRequestHeader("Session-Token",myToken); //FIXME use correct session-token
-  xmlHttp.send(jsonData);
-  console.log(jsonData);
-  console.log("Server response: " + xmlHttp.responseText);
-  //show note that save was successful
-  document.getElementById("SaveConfirmationText").innerHTML =
-    "Saved!";
+  fetch("http://localhost:8888/admin/userRecommendation/" + (dataObject.WeekNumber - 1), {
+    headers: { "User-UID": userUid },
+    method: "post",
+    body: jsonData,
+  }).then(function (response) {
+    console.log("Server response: " + response);
+    document.getElementById("SaveConfirmationText").innerHTML = "Saved!";
+  });
 }
