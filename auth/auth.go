@@ -198,7 +198,7 @@ func main() {
 		redisConnectionString = "redis://localhost:6379/0"
 	}
 	if adminsEnv == "" {
-		log.Println(`WARN: No ADMINS provided, list expected in the form "ADMINS='testUID,test3,test@example.com'"`)
+		log.Fatalln(`WARN: No ADMINS provided, list expected in the form "ADMINS='testUID,test3,test@example.com'"`)
 	}
 	if strings.ToLower(testEnv) == "true" || testEnv == "1" {
 		log.Println("WARN: TEST MODE ENABLED!")

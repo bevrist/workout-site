@@ -105,7 +105,7 @@ jobs:
     - run: sleep 10
     # preparing auth integration test
     - run: docker network create --driver bridge auth_net
-    - run: docker run --rm -d --name=test-auth_auth-service --net=auth_net -e TEST=1 -e AUTH_LISTEN_ADDRESS="0.0.0.0:80" auth:$(git describe --always)
+    - run: docker run --rm -d --name=test-auth_auth-service --net=auth_net -e TEST=1 -e ADMINS='testUID' -e AUTH_LISTEN_ADDRESS="0.0.0.0:80" auth:$(git describe --always)
     # testing auth
     - run: sleep 10 && docker run --rm -i --name=auth-test --net=auth_net -e AUTH_SERVICE_ADDRESS=test-auth_auth-service auth-test:$(git describe --always)
     # cleaning up
