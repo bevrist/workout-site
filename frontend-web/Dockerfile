@@ -26,6 +26,8 @@ RUN rm -rf /etc/nginx/conf.d/*
 # copy static site and config
 COPY --from=builder /app /var/www/
 COPY ./nginx.conf /etc/nginx/conf.d/nginx.conf
+# enable site
+RUN sed -i 's,#include /etc/nginx/conf.d/*.conf;,include /etc/nginx/conf.d/*.conf;,' /etc/nginx/nginx.conf
 # link logs to docker output
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log

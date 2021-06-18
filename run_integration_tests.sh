@@ -103,22 +103,22 @@ docker stop mongodb-mock-database
 docker network rm frontend-api_net
 echo ""
 
-# # frontend-web test
-# echo "cleaning up hanging containers..."
-# docker stop frontend-api-service || :
-# docker stop frontend-web-service || :
-# docker network rm frontend-web_net ||:
-# sleep 1
-# echo "preparing frontend-web integration test..."
-# docker network create --driver bridge frontend-web_net
-# sleep 1 && docker run -d --rm --name=frontend-api-service --net=frontend-web_net -e BACKEND_ADDRESS=backend-service -e AUTH_ADDRESS=auth-service -e FRONTEND_API_LISTEN_ADDRESS=0.0.0.0:80 frontend-api:$(git describe --always)
-# sleep 1 && docker run -d --rm --name=frontend-web-service --net=frontend-web_net -e FRONTEND_API_URL=http://frontend-api-service:8888 frontend-web:$(git describe --always)
-# echo "testing frontend-web..."
-# sleep 1 && docker run --rm -i --name=frontend-web-test --net=frontend-web_net -e FRONTEND_WEB_ADDRESS=http://frontend-web-service frontend-web-test:$(git describe --always)
-# echo "cleaning up..."
-# docker stop frontend-web-service
-# docker stop frontend-api-service
-# docker network rm frontend-web_net
-# echo ""
+# frontend-web test
+echo "cleaning up hanging containers..."
+docker stop frontend-api-service || :
+docker stop frontend-web-service || :
+docker network rm frontend-web_net ||:
+sleep 1
+echo "preparing frontend-web integration test..."
+docker network create --driver bridge frontend-web_net
+sleep 1 && docker run -d --rm --name=frontend-api-service --net=frontend-web_net -e BACKEND_ADDRESS=backend-service -e AUTH_ADDRESS=auth-service -e FRONTEND_API_LISTEN_ADDRESS=0.0.0.0:80 frontend-api:$(git describe --always)
+sleep 1 && docker run -d --rm --name=frontend-web-service --net=frontend-web_net -e FRONTEND_API_URL=http://frontend-api-service:8888 frontend-web:$(git describe --always)
+echo "testing frontend-web..."
+sleep 1 && docker run --rm -i --name=frontend-web-test --net=frontend-web_net -e FRONTEND_WEB_ADDRESS=http://frontend-web-service frontend-web-test:$(git describe --always)
+echo "cleaning up..."
+docker stop frontend-web-service
+docker stop frontend-api-service
+docker network rm frontend-web_net
+echo ""
 
 printf "\nALL TESTS PASSED!!! \n\n"
