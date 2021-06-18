@@ -22,22 +22,24 @@ RUN mkdir -p /run/nginx
 RUN apk add nginx tini
 # remove default site
 RUN rm -rf /var/www/*
-RUN rm -rf /etc/nginx/conf.d/*
+RUN rm -rf /etc/nginx/http.d/*
 # copy static site and config
 COPY --from=builder /app /var/www/
-COPY ./nginx.conf /etc/nginx/conf.d/nginx.conf
-# enable site
-RUN sed -i 's,#include /etc/nginx/conf.d/*.conf;,include /etc/nginx/conf.d/*.conf;,' /etc/nginx/nginx.conf
+COPY ./nginx.conf /etc/nginx/http.d/nginx.conf
 # link logs to docker output
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log
 
 RUN printf '#!/bin/sh \n\
     if [[ -n "${FRONTEND_API_URL}" ]]; then \n\
-        sed -i -e "s,<API_ADDRESS>,$FRONTEND_API_URL,g" /etc/nginx/conf.d/nginx.conf \n\
+        sed -i -e "s,<API_ADDRESS>,$FRONTEND_API_URL,g" /etc/nginx/http.d/nginx.conf \n\
+    else \n\
+        echo "ERROR: env var: FRONTEND_API_URL not set."; exit 1 \n\
     fi \n\
     if [[ -n "${AUTH_URL}" ]]; then \n\
-        sed -i -e "s,<AUTH_ADDRESS>,$AUTH_URL,g" /etc/nginx/conf.d/nginx.conf \n\
+        sed -i -e "s,<AUTH_ADDRESS>,$AUTH_URL,g" /etc/nginx/http.d/nginx.conf \n\
+    else \n\
+        echo "ERROR: env var: AUTH_URL not set."; exit 1 \n\
     fi \n\
     echo "frontend-web listening at: 0.0.0.0:80" \n\
     echo "forwarding api requests to: $FRONTEND_API_URL" \n\
