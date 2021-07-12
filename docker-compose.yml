@@ -78,6 +78,7 @@ services:
       PROVIDER_SECRET: $PROVIDER_SECRET
       PROVIDER_KEY: $PROVIDER_KEY
       ADMINS: 'a@example.c0m'
+      WEBSITE_BASE_URL: "http://dreamandachieve.net"
     restart: on-failure
 
   frontend-api_service:
