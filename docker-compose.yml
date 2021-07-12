@@ -1,5 +1,5 @@
 # Docker compose for quick local instance of workout app
-# run with `docker-compose down && PROVIDER_SECRET="<SECRET>" PROVIDER_KEY="<KEY>" docker-compose up --build`
+# run with `docker buildx bake && docker-compose down && PROVIDER_SECRET="<SECRET>" PROVIDER_KEY="<KEY>" docker-compose up`
 
 version: "3"
 

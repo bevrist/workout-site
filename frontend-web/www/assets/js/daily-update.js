@@ -1,6 +1,6 @@
 document.title = "Daily Update";
 
-var userData = "";
+userData = "";
 
 //get UserProfile json object from server, call other functions on complete
 fetch("http://localhost:8888/userInfo").then(function (response) {
@@ -9,7 +9,8 @@ fetch("http://localhost:8888/userInfo").then(function (response) {
     console.log("auth fail. redirecting...");
     window.location.href = "http://localhost:5500/auth";
   } else {
-    response.json().then(function (userData) {
+    response.json().then(function (uData) {
+      userData = uData;
       //if new user, direct to profile
       if (isNewUser(userData) == true) {
         console.log("user baseline missing, redirecting to profile page...");
@@ -35,15 +36,15 @@ document.getElementById("TodayDateText").innerHTML =
 //TODO disable form when out of active time <fieldset disabled="disabled">
 
 // updates baseline & recommendation charts with user data
-function updateCharts(userData) {
+function updateCharts(userData1) {
   // redirect to profile page on empty data
-  if (userData.Recommendation[0].NormalDayCalories == 0) {
+  if (userData1.Recommendation[0].NormalDayCalories == 0) {
     console.log("Baseline data blank, redirecting to profile...");
     // window.location.replace('http://localhost:5500/profile');
   }
 
   //remove WaistCirc form field if data has been entered for the current week
-  userData.Week[getCurrentWeek(userData.StartDate)].Day.some((item) => {
+  userData.Week[getCurrentWeek(userData1.StartDate)].Day.some((item) => {
     //array.some so that return "true" breaks loop
     if (item.WaistCirc) {
       console.log("WaistCirc form field removed...");
@@ -54,7 +55,7 @@ function updateCharts(userData) {
 
   // === COACH RECOMMENDATION CHART ===
   //get latest recommendation object for charts
-  var latestRec = getLatestRecommendation(userData);
+  var latestRec = getLatestRecommendation(userData1);
   // only show if a recommendation exists
   if (!latestRec) {
     document.getElementById("CoachRecContainer").remove();
@@ -210,10 +211,10 @@ function updateCharts(userData) {
 // Helper Functions
 
 // returns true if user has no baseline recommendation (if user never completed profile)
-function isNewUser(userData) {
+function isNewUser(userData1) {
   if (
-    userData.Recommendation == null ||
-    !userData.Recommendation[0].NormalDayProtein
+    userData1.Recommendation == null ||
+    !userData1.Recommendation[0].NormalDayProtein
   ) {
     return true;
   } else {
@@ -222,7 +223,7 @@ function isNewUser(userData) {
 }
 
 // returns latest recommendation object that has an "ModifiedDate"
-function getLatestRecommendation(userData) {
+function getLatestRecommendation(userData1) {
   var latestRec = userData.Recommendation.filter(
     (value) => Object.keys(value).length !== 0
   ).slice(-1)[0];

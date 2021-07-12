@@ -4,6 +4,7 @@ package main
 
 import (
 	"context"
+	_ "embed"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -28,6 +29,10 @@ var apiVersion string = "1.0" //the api version this service implements
 // list of admin UID's
 var admins []string
 var test = false
+
+// Embed the file content as string.
+//go:embed auth.html
+var authHtml string
 
 // var client *auth.Client //firebase app instance
 // var useFirebase bool    //debug flag for using firebase
@@ -160,8 +165,8 @@ func authLoginHandler(res http.ResponseWriter, req *http.Request) {
 		}
 	}
 	//show login page
-	// TODO: swap this "page" with html file embedded
-	fmt.Fprint(res, `<h1>Login</h1><br><a href="/auth/github">login with github</a>`)
+	// fmt.Fprint(res, `<h1>Login</h1><br><a href="/auth/github">login with github</a>`)
+	fmt.Fprint(res, authHtml)
 }
 
 //generate random string of n length
@@ -193,7 +198,7 @@ func main() {
 		redisConnectionString = "redis://localhost:6379/0"
 	}
 	if adminsEnv == "" {
-		log.Println(`WARN: No ADMINS provided, list expected in the form "ADMINS='testUID,test3,test@example.com'"`)
+		log.Fatalln(`WARN: No ADMINS provided, list expected in the form "ADMINS='testUID,test3,test@example.com'"`)
 	}
 	if strings.ToLower(testEnv) == "true" || testEnv == "1" {
 		log.Println("WARN: TEST MODE ENABLED!")

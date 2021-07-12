@@ -15,8 +15,9 @@ digraph G {
     subgraph cluster_0 {
         color = white;
         label = "";
-        Client -> FrontendWeb [style=dotted];
-        FrontendWeb -> FrontendApi, Auth [style=dotted];
+        Client -> FrontendWeb [label="/*" style=dotted];
+        FrontendWeb -> FrontendApi [label="/*" style=dotted];
+        FrontendWeb -> Auth [label="/auth" style=dotted];
         FrontendApi -> Backend, Auth [style=dashed];
         Backend -> Database [style=dashed];
         Database -> MongoDB [minlen=0.5];

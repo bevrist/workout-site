@@ -47,7 +47,7 @@ docker network rm auth_net || :
 sleep 1
 echo "preparing auth integration test..."
 docker network create --driver bridge auth_net
-docker run --rm -i --name=auth-service --net=auth_net -e TEST=1 -e AUTH_LISTEN_ADDRESS="0.0.0.0:80" auth:$(git describe --always) &
+docker run --rm -i --name=auth-service --net=auth_net -e TEST=1 -e ADMINS='testUID' -e AUTH_LISTEN_ADDRESS="0.0.0.0:80" auth:$(git describe --always) &
 echo "testing auth..."
 sleep 1 && docker run --rm -i --name=auth-test --net=auth_net -e AUTH_SERVICE_ADDRESS=auth-service auth-test:$(git describe --always)
 echo "cleaning up..."

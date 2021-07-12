@@ -1,41 +1,59 @@
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
-const userUid = urlParams.get('uid')
+const userUid = urlParams.get('uid');
 //if uid url parameter is empty redirect to /admin/users
 if (userUid == "") {
-  console.log("no uid URL parameter, redirecting to admin/users...")
-      // window.location.replace('http://localhost:5500/admin/users');
-}
-//get user data from api and store JSON in "userData"
-var xmlHttp = new XMLHttpRequest();
-xmlHttp.open("GET", "http://localhost:8888/admin/userInfo", false);
-xmlHttp.setRequestHeader("User-UID",userUid);
-xmlHttp.setRequestHeader("Session-Token",getCookie("Session-Token"));
-// xmlHttp.setRequestHeader("Session-Token", "testUID"); //FIXME use correct session-token
-xmlHttp.send(null);
-var userData = JSON.parse(xmlHttp.responseText);
-//abort if data is invalid
-if (userData.FirstName == "") {
-  document.getElementById("UserNameText").innerHTML = "Invalid Request"
-  document.getElementById("myContainer").remove();
-  exit();
+  console.log("no uid URL parameter, redirecting to admin/users...");
+  // window.location.replace('http://localhost:5500/admin/users');
 }
 
+// var userData = JSON.parse(xmlHttp.responseText); //############################
+userdata = "";
+startDate = "";
+currentWeekLink = "";
 
-document.title = "ADMIN-" + userData.FirstName + " " + userData.LastName;
+fetch("http://localhost:8888/admin/userInfo", { headers: { "User-UID": userUid }}).then(function (response) {
+  if (response.status === 401) {
+    //redirect to sign in on auth failure
+    console.log("auth fail. redirecting...")
+    window.location.href = "http://localhost:5500/auth";
+  } else {
+    response.json().then(function (uData) {
+      userData = uData;
+      generatePage();
+    });
+  }
+});
 
-//link to current week
-var currentWeekLink = "#";
+function generatePage(){
+  //abort if data is invalid
+  if (userData.FirstName == "") {
+    document.getElementById("UserNameText").innerHTML = "Invalid Request"
+    document.getElementById("myContainer").remove();
+    exit();
+  }
 
-// populate starting date
-var startDate = new Date(userData.StartDate);
-document.getElementById("UserNameText").innerHTML = "Viewing User: " + userData.FirstName + " " + userData.LastName;
+  document.title = "ADMIN-" + userData.FirstName + " " + userData.LastName;
 
-//helper function for adding days to date
-Date.prototype.addDays = function (days) {
-  var date = new Date(this.valueOf());
-  date.setDate(date.getDate() + days);
-  return date;
+  //link to current week
+  currentWeekLink = "#";
+
+  // populate starting date
+  startDate = new Date(userData.StartDate);
+  document.getElementById("UserNameText").innerHTML = "Viewing User: " + userData.FirstName + " " + userData.LastName;
+
+  //helper function for adding days to date
+  Date.prototype.addDays = function (days) {
+    var date = new Date(this.valueOf());
+    date.setDate(date.getDate() + days);
+    return date;
+  }
+
+  //clone through week 24
+  for (var i = 1; i <= userData.Week.length; i++) {
+    cloneForm(i);
+  }
+  document.getElementById("myContainer").remove(); // delete empty clone form at end
 }
 
 // this function clones a unique form and renames items in form
@@ -241,9 +259,3 @@ function makeWeekChart(weekNum, dayNum) {
   document.getElementById("tableRowNext").parentElement.appendChild(divClone2);
   document.getElementById("tableRowNext").removeAttribute("id");
 }
-
-//clone through week 24
-for (var i = 1; i <= userData.Week.length; i++) {
-  cloneForm(i);
-}
-document.getElementById("myContainer").remove(); // delete empty clone form at end
