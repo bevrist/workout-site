@@ -20,8 +20,10 @@ spec:
         image: aduckonquack/workout-app-frontend-web
         env:
           - name: FRONTEND_API_URL
-            value: "frontend-api:8888"
-        imagePullPolicy: IfNotPresent
+            value: "http://frontend-api:8888"
+          - name: AUTH_URL
+            value: "http://auth:8070"
+        imagePullPolicy: Always
         ports:
         - name: web-port
           containerPort: 80

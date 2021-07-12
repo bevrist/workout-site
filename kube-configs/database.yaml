@@ -28,7 +28,7 @@ spec:
            value: adminz
          - name: DATABASE_PASSWORD
            value: cheeksbutt
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         ports:
         - name: db-svc-port
           containerPort: 8050

@@ -25,7 +25,7 @@ spec:
             value: "backend:8090"
           - name: AUTH_ADDRESS
             value: "auth:8070"
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         ports:
         - name: front-api-port
           containerPort: 8888

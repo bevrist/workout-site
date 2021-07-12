@@ -23,7 +23,7 @@ spec:
           value: "database-svc:8050"
         - name: BACKEND_LISTEN_ADDRESS
           value: "0.0.0.0:8090"
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         ports:
         - name: backend-port
           containerPort: 8090
