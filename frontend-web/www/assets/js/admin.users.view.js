@@ -106,15 +106,15 @@ function populateCoachRecChart(weekNum) {
     //Normal Day
     document.getElementById("coach-NProteinAmount").innerHTML = coachRec.NormalDayProtein;
     document.getElementById("coach-NProteinAmount").removeAttribute("id");
-    document.getElementById("coach-NProteinRatio").innerHTML = (coachRec.NormalDayProtein / coachRec.NormalDayCalories).toPrecision(1) + "%";
+    document.getElementById("coach-NProteinRatio").innerHTML = ((coachRec.NormalDayProtein * 4) / coachRec.NormalDayCalories).toPrecision(1) + "%";
     document.getElementById("coach-NProteinRatio").removeAttribute("id");
     document.getElementById("coach-NCarbAmount").innerHTML = coachRec.NormalDayCarb;
     document.getElementById("coach-NCarbAmount").removeAttribute("id");
-    document.getElementById("coach-NCarbRatio").innerHTML = (coachRec.NormalDayCarb / coachRec.NormalDayCalories).toPrecision(1) + "%";
+    document.getElementById("coach-NCarbRatio").innerHTML = ((coachRec.NormalDayCarb * 4) / coachRec.NormalDayCalories).toPrecision(1) + "%";
     document.getElementById("coach-NCarbRatio").removeAttribute("id");
     document.getElementById("coach-NFatAmount").innerHTML = coachRec.NormalDayFat;
     document.getElementById("coach-NFatAmount").removeAttribute("id");
-    document.getElementById("coach-NFatRatio").innerHTML = (coachRec.NormalDayFat / coachRec.NormalDayCalories).toPrecision(1) + "%";
+    document.getElementById("coach-NFatRatio").innerHTML = ((coachRec.NormalDayFat * 9) / coachRec.NormalDayCalories).toPrecision(1) + "%";
     document.getElementById("coach-NFatRatio").removeAttribute("id");
     document.getElementById("coach-NCalories").innerHTML = coachRec.NormalDayCalories;
     document.getElementById("coach-NCalories").removeAttribute("id");
@@ -123,15 +123,15 @@ function populateCoachRecChart(weekNum) {
     //High Day
     document.getElementById("coach-HProteinAmount").innerHTML = coachRec.HighDayProtein;
     document.getElementById("coach-HProteinAmount").removeAttribute("id");
-    document.getElementById("coach-HProteinRatio").innerHTML = (coachRec.HighDayProtein / coachRec.HighDayCalories).toPrecision(1) + "%";
+    document.getElementById("coach-HProteinRatio").innerHTML = ((coachRec.HighDayProtein * 4) / coachRec.HighDayCalories).toPrecision(1) + "%";
     document.getElementById("coach-HProteinRatio").removeAttribute("id");
     document.getElementById("coach-HCarbAmount").innerHTML = coachRec.HighDayCarb;
     document.getElementById("coach-HCarbAmount").removeAttribute("id");
-    document.getElementById("coach-HCarbRatio").innerHTML = (coachRec.HighDayCarb / coachRec.HighDayCalories).toPrecision(1) + "%";
+    document.getElementById("coach-HCarbRatio").innerHTML = ((coachRec.HighDayCarb * 4) / coachRec.HighDayCalories).toPrecision(1) + "%";
     document.getElementById("coach-HCarbRatio").removeAttribute("id");
     document.getElementById("coach-HFatAmount").innerHTML = coachRec.HighDayFat;
     document.getElementById("coach-HFatAmount").removeAttribute("id");
-    document.getElementById("coach-HFatRatio").innerHTML = (coachRec.HighDayFat / coachRec.HighDayCalories).toPrecision(1) + "%";
+    document.getElementById("coach-HFatRatio").innerHTML = ((coachRec.HighDayFat * 9) / coachRec.HighDayCalories).toPrecision(1) + "%";
     document.getElementById("coach-HFatRatio").removeAttribute("id");
     document.getElementById("coach-HCalories").innerHTML = coachRec.HighDayCalories;
     document.getElementById("coach-HCalories").removeAttribute("id");
@@ -140,15 +140,15 @@ function populateCoachRecChart(weekNum) {
     //Low Day
     document.getElementById("coach-LProteinAmount").innerHTML = coachRec.LowDayProtein;
     document.getElementById("coach-LProteinAmount").removeAttribute("id");
-    document.getElementById("coach-LProteinRatio").innerHTML = (coachRec.LowDayProtein / coachRec.LowDayCalories).toPrecision(1) + "%";
+    document.getElementById("coach-LProteinRatio").innerHTML = ((coachRec.LowDayProtein * 4) / coachRec.LowDayCalories).toPrecision(1) + "%";
     document.getElementById("coach-LProteinRatio").removeAttribute("id");
     document.getElementById("coach-LCarbAmount").innerHTML = coachRec.LowDayCarb;
     document.getElementById("coach-LCarbAmount").removeAttribute("id");
-    document.getElementById("coach-LCarbRatio").innerHTML = (coachRec.LowDayCarb / coachRec.LowDayCalories).toPrecision(1) + "%";
+    document.getElementById("coach-LCarbRatio").innerHTML = ((coachRec.LowDayCarb * 4) / coachRec.LowDayCalories).toPrecision(1) + "%";
     document.getElementById("coach-LCarbRatio").removeAttribute("id");
     document.getElementById("coach-LFatAmount").innerHTML = coachRec.LowDayFat;
     document.getElementById("coach-LFatAmount").removeAttribute("id");
-    document.getElementById("coach-LFatRatio").innerHTML = (coachRec.LowDayFat / coachRec.LowDayCalories).toPrecision(1) + "%";
+    document.getElementById("coach-LFatRatio").innerHTML = ((coachRec.LowDayFat * 9) / coachRec.LowDayCalories).toPrecision(1) + "%";
     document.getElementById("coach-LFatRatio").removeAttribute("id");
     document.getElementById("coach-LCalories").innerHTML = coachRec.LowDayCalories;
     document.getElementById("coach-LCalories").removeAttribute("id");
